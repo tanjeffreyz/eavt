@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.logger import logger
 from pymongo import MongoClient
 from src.common import config
+from src.api.routes import router
 
 
 app = FastAPI()
@@ -20,6 +21,9 @@ def connect_db():
 def connect_db():
     app.db_client.close()
 
+
+# Initialize API routes
+app.include_router(router, prefix='/api')
 
 # Set up logging
 uvicorn_logger = logging.getLogger('uvicorn')

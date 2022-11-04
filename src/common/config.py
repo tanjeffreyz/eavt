@@ -3,7 +3,7 @@
 
 class DB:
     URI = 'mongodb://localhost:27017'
-    NAME = 'Oz'
+    NAME = 'oz'
 
 
 class API:
