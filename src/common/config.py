@@ -9,3 +9,4 @@ class DB:
 class API:
     HOST = 'localhost'
     PORT = 1939
+    PREFIX = '/api'

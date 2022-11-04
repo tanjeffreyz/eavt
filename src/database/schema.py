@@ -1,4 +1,3 @@
-import uuid
 from enum import Enum
 from pydantic import BaseModel, Field
 
@@ -6,42 +5,36 @@ from pydantic import BaseModel, Field
 #########################
 #        Common         #
 #########################
-class Document(BaseModel):
-    """Base model for all MongoDB documents"""
-
-    id: str = Field(default_factory=uuid.uuid4, alias='_id')
-
-
 class Flag(str, Enum):
+    """States to mark and highlight specific documents."""
+
     NONE = 'none'
     STAR = 'star'
     ERROR = 'error'
 
 
+class Document(BaseModel):
+    """Base model for all MongoDB documents"""
+
+    # Client defined unique ID, path to document from root
+    id: str = Field(alias='_id')        # Aliases are only used when converting to JSON
+
+    flag: Flag = Field(default=Flag.NONE)
+
+
 class Frame(Document):
-    path: str
-    flag: Flag
-
-
-from fastapi.encoders import jsonable_encoder
-f = Frame(path='asdf', flag=Flag.NONE)
-json = jsonable_encoder(f)
-print(json)
+    ...
 
 
 #########################
 #       Sessions        #
 #########################
 class Session(Document):
-    name: str
-    path: str
+    comments: list[str] = Field(default=[])
 
 
 #########################
 #        Trials         #
 #########################
 class Trial(Document):
-    name: str
-    path: str
     desin: list[Frame]
-
