@@ -1,7 +1,11 @@
-"""Global variables shared by multiple modules."""
+"""Global namespaces shared by multiple modules."""
 
 
-DB_URI = 'http://localhost:27017'
-DB_NAME = 'Oz'
+class DB:
+    URI = 'mongodb://localhost:27017'
+    NAME = 'Oz'
 
-API_URL = 'http://localhost:1939/api'
+
+class API:
+    HOST = 'localhost'
+    PORT = 1939
