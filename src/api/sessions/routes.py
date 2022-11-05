@@ -61,11 +61,7 @@ def list_sessions(rq: Request, cursor: str = 'null', limit: int = 100):
     response_model=Trial
 )
 def create_trial_within_session(rq: Request, session_id: str, body: CreateTrialRq):
-    if (session := rq.app.db['sessions'].find_one({'_id': session_id})) is None:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Session ID does not exist: {session_id}"
-        )
+    session = validate_session_exists(rq, session_id)
     if rq.app.db['trials'].find_one({'path': body.path}) is not None:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
@@ -106,6 +102,7 @@ def create_trial_within_session(rq: Request, session_id: str, body: CreateTrialR
     response_model=ListTrialsRs
 )
 def list_trials_within_session(rq: Request, session_id: str, cursor: str = 'null', limit: int = 100):
+    session = validate_session_exists(rq, session_id)
     if cursor == 'null':
         query = {}
     else:
@@ -119,3 +116,15 @@ def list_trials_within_session(rq: Request, session_id: str, cursor: str = 'null
         'trials': trials,
         'cursor': next_cursor
     }
+
+
+#############################
+#       Helper Methods      #
+#############################
+def validate_session_exists(rq: Request, session_id: str):
+    if (session := rq.app.db['sessions'].find_one({'_id': session_id})) is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Session ID does not exist: {session_id}"
+        )
+    return session

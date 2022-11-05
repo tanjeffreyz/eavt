@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from src.database.schema import Session, Trial
-from ..interfaces import Required, Optional
+from src.database.interfaces import Required, Optional
 
 
 class CreateSessionRq(Required.Path, Optional.DateTime):

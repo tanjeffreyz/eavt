@@ -1,1 +1,1 @@
-from .main import router as sessions_router
+from .routes import router as sessions_router
