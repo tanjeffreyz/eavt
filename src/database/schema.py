@@ -1,11 +1,11 @@
 from pydantic import Field
-from .interfaces import Required, Optional
+from .interfaces import Req, Opt
 
 
 #########################
 #        Common         #
 #########################
-class Document(Required.ID, Required.Path, Optional.DateTime, Optional.Flag):
+class Document(Req.ID, Req.Path, Opt.DateTime, Opt.Flag):
     """Base model for all MongoDB documents"""
 
 
@@ -18,7 +18,7 @@ class Frame(Document):      # TODO: does granularity need to include individual 
     ...
 
 
-class Trial(Document, Optional.Comments):
+class Trial(Document, Opt.Rank, Opt.Comments):
     # Parent session
     session: str
 
@@ -26,6 +26,6 @@ class Trial(Document, Optional.Comments):
 #########################
 #       Sessions        #
 #########################
-class Session(Document, Optional.Comments):
+class Session(Document, Opt.Rank, Opt.Comments):
     # List of trial IDs in this session
     trials: list[str] = Field(default=[])

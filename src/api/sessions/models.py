@@ -1,14 +1,14 @@
 from pydantic import BaseModel, Field
 from src.database.schema import Session, Trial
-from src.database.interfaces import Required, Optional
+from src.database.interfaces import Req, Opt
 
 
-class CreateSessionRq(Required.Path, Optional.DateTime):
+class CreateSessionRq(Req.Path, Opt.DateTime):
     subjects: list[str]
     comments: list[str] = Field(default=[])
 
 
-class CreateTrialRq(Required.Path, Optional.DateTime):
+class CreateTrialRq(Req.Path, Opt.DateTime):
     ...
 
 

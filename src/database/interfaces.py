@@ -27,7 +27,7 @@ class Rank(int, Enum):
 #########################
 #       Interfaces      #
 #########################
-class Required:
+class Req:
     """Attributes that must be present in the schema."""
 
     class ID(BaseModel):
@@ -50,7 +50,7 @@ class Required:
             return p
 
 
-class Optional:
+class Opt:
     """Attributes that have default values."""
 
     class DateTime(BaseModel):
