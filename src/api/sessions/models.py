@@ -3,12 +3,12 @@ from src.database.schema import Session, Trial
 from src.database.interfaces import Req, Opt
 
 
-class CreateSessionRq(Req.Path, Opt.DateTime):
+class CreateSessionRq(Req.Path):
     subjects: list[str]
     comments: list[str] = Field(default=[])
 
 
-class CreateTrialRq(Req.Path, Opt.DateTime):
+class CreateTrialRq(Req.Path):
     ...
 
 
