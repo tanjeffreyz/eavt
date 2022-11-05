@@ -51,7 +51,7 @@ class Req:
 
 
 class Opt:
-    """Attributes that have default values."""
+    """Optional attributes that have default values."""
 
     class DateTime(BaseModel):
         dt: datetime = Field(default_factory=datetime.now)
