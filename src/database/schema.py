@@ -1,7 +1,6 @@
 from uuid import uuid4
 from enum import Enum, auto
-from pydantic import BaseModel, Field, validator
-from src.common import utils
+from pydantic import BaseModel, Field
 
 
 #########################
