@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from src.database.schema import Session
+from src.database.schema import Session, Trial
 from ..interfaces import Required, Optional
 
 
@@ -14,4 +14,9 @@ class CreateTrialRq(Required.Path, Optional.DateTime):
 
 class ListSessionsRs(BaseModel):
     sessions: list[Session]
+    cursor: str | None
+
+
+class ListTrialsRs(BaseModel):
+    trials: list[Trial]
     cursor: str | None

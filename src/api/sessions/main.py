@@ -6,13 +6,13 @@ from src.common import config
 from .models import *
 
 
-router = APIRouter(prefix='/session')
+router = APIRouter(prefix='/sessions')
 
 
 @router.post(
     '/',
     status_code=status.HTTP_201_CREATED,
-    response_description='Created a new session',
+    response_description='Create a new session',
     response_model=Session
 )
 def create_session(rq: Request, body: CreateSessionRq):
@@ -38,11 +38,11 @@ def create_session(rq: Request, body: CreateSessionRq):
 
 @router.get(
     '/',
-    response_description='Listed a page of sessions',
+    response_description='List a page of sessions',
     response_model=ListSessionsRs
 )
 def list_sessions(rq: Request, cursor: str = 'null', limit: int = 100):
-    # ID's are naturally sorted in descending order, so paginate towards lower IDs
+    # IDs are naturally sorted in descending order, so paginate towards lower IDs
     id_query = ({} if cursor == 'null' else {'id': {'$lt': cursor}})
     sessions = list(rq.app.db['sessions'].find(id_query, limit=limit))
     next_cursor = (None if len(sessions) < limit else sessions[-1]['_id'])
@@ -55,9 +55,9 @@ def list_sessions(rq: Request, cursor: str = 'null', limit: int = 100):
 
 
 @router.post(
-    '/{session_id}/trial',
-    status_code=status.HTTP_201_CREATED,
-    response_description='Created a new trial within existing session',
+    '/{session_id}/trials',
+    status_code=status.HTTP_200_OK,
+    response_description='Create a new trial within existing session',
     response_model=Trial
 )
 def create_trial_within_session(rq: Request, session_id: str, body: CreateTrialRq):
@@ -97,3 +97,25 @@ def create_trial_within_session(rq: Request, session_id: str, body: CreateTrialR
     return rq.app.db['trials'].find_one(
         {'_id': db_trial.inserted_id}
     )
+
+
+@router.get(
+    '/{session_id}/trials',
+    status_code=status.HTTP_200_OK,
+    response_description='List all trials within the session',
+    response_model=ListTrialsRs
+)
+def list_trials_within_session(rq: Request, session_id: str, cursor: str = 'null', limit: int = 100):
+    if cursor == 'null':
+        query = {}
+    else:
+        query = {
+            'session': session_id,
+            'id': {'$lt': cursor},
+        }
+    trials = list(rq.app.db['trials'].find(query, limit=limit))
+    next_cursor = (None if len(trials) < limit else trials[-1]['_id'])
+    return {
+        'trials': trials,
+        'cursor': next_cursor
+    }

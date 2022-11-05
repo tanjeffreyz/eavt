@@ -9,7 +9,6 @@ from pydantic import BaseModel, Field
 class Flag(str, Enum):
     """States to mark and highlight specific documents."""
 
-    NONE = 'null'
     STAR = 'star'
     ERROR = 'error'
 
@@ -32,7 +31,7 @@ class Document(BaseModel):
     path: str
 
     # User-set flag to mark interesting/unusual documents
-    flag: Flag = Field(default=Flag.NONE)
+    flag: Flag | None
 
 
 #########################
