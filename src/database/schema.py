@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field
 class Flag(str, Enum):
     """States to mark and highlight specific documents."""
 
-    NONE = 'none'
+    NONE = 'null'
     STAR = 'star'
     ERROR = 'error'
 

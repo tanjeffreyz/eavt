@@ -38,11 +38,20 @@ def create_session(rq: Request, body: CreateSessionRq):
 
 @router.get(
     '/',
-    response_description='List all sessions',
-    response_model=list[Session]
+    response_description='Listed a page of sessions',
+    response_model=ListSessionsRs
 )
-def list_sessions(rq: Request):
-    return list(rq.app.db['sessions'].find(limit=100))
+def list_sessions(rq: Request, cursor: str = 'null', limit: int = 100):
+    # ID's are naturally sorted in descending order, so paginate towards lower IDs
+    id_query = ({} if cursor == 'null' else {'id': {'$lt': cursor}})
+    sessions = list(rq.app.db['sessions'].find(id_query, limit=limit))
+    next_cursor = (None if len(sessions) < limit else sessions[-1]['_id'])
+
+    # Response dict is used as parameters for ListSessionsRs and validated
+    return {
+        'sessions': sessions,
+        'cursor': next_cursor
+    }
 
 
 @router.post(
