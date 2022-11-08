@@ -1,7 +1,6 @@
 from pathlib import Path
 from fastapi import APIRouter, HTTPException, Request, status
 from fastapi.encoders import jsonable_encoder
-from src.database.schema import Session, Trial
 from src.common import config
 from .models import *
 
@@ -78,7 +77,7 @@ def create_trial_within_session(rq: Request, session_id: str, body: CreateTrialR
     # Create new trial and add it to the database
     new_trial = Trial(
         **jsonable_encoder(body),
-        session=session['_id']
+        parent=session['_id']
     )
     new_document = jsonable_encoder(new_trial)
     db_trial = rq.app.db['trials'].insert_one(new_document)

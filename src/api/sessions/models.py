@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
-from src.database.schema import Session, Trial
+from src.database.schema.trial import Trial
+from src.database.schema.session import Session
 from src.database.interfaces import Req
 
 

@@ -9,6 +9,11 @@ from src.common import utils
 #####################
 #       Enums       #
 #####################
+class MediaType(str, Enum):
+    JSON = 'json'
+    PNG = 'png'
+
+
 class Flag(str, Enum):
     """States to mark and highlight specific documents."""
 
@@ -24,9 +29,9 @@ class Rank(int, Enum):
     HIGH = auto()        # Only viewable by us
 
 
-#########################
-#       Interfaces      #
-#########################
+#################################
+#       Common Attributes       #
+#################################
 class Req:
     """Attributes that must be present in the schema."""
 
@@ -68,3 +73,25 @@ class Opt:
 
     class Comments(BaseModel):
         comments: list[str] = Field(default=[])
+
+
+#########################
+#       Interfaces      #
+#########################
+class Node(Req.ID, Req.Path, Opt.DateTime, Opt.Flag):
+    """Queryable base model for all documents that refer to a path on disk"""
+
+    parent: str | None
+
+
+class Frame(Node):      # TODO: does granularity need to include individual frames?
+    """Queryable Reference to a single image or microdose frame"""
+
+    ...
+
+
+class Video(Node):     # TODO: still not sure if we need this, can just store list of frames in trial
+    """A list of Frames that share a folder and comprise a video"""
+
+    folder: str
+    frames: list[Frame] = Field(default=[])
