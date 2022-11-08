@@ -78,10 +78,15 @@ class Opt:
 #########################
 #       Interfaces      #
 #########################
-class Node(Req.ID, Req.Path, Opt.DateTime, Opt.Flag):
+class Document(BaseModel):
+    # Random unique ID for MongoDB
+    id: str = Field(default_factory=uuid4, alias='_id')  # Aliases are only used when converting to JSON
+
+
+class Node(Document, Req.Path, Opt.DateTime, Opt.Flag):
     """Queryable base model for all documents that refer to a path on disk"""
 
-    parent: str | None
+    parent_id: str | None
 
 
 class Frame(Node):      # TODO: does granularity need to include individual frames?
@@ -93,5 +98,4 @@ class Frame(Node):      # TODO: does granularity need to include individual fram
 class Video(Node):     # TODO: still not sure if we need this, can just store list of frames in trial
     """A list of Frames that share a folder and comprise a video"""
 
-    folder: str
     frames: list[Frame] = Field(default=[])
