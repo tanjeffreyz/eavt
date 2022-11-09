@@ -1,9 +1,11 @@
 from src.common import config
-from src.api.sessions import sessions_router
+from .sessions.routes import router as sessions_router
+from .trials.routes import router as trials_router
 
 
 ROUTERS = (
     sessions_router,
+    trials_router
 )
 
 

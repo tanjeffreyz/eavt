@@ -4,11 +4,11 @@ from src.database.schema.session import Session
 from src.database.fields import Req
 
 
-class CreateSessionRq(Req.Folder):
+class CreateSessionRq(Req.Path):
     subject: str
 
 
-class CreateTrialRq(Req.Folder):
+class CreateTrialRq(Req.Path):
     pass
 
 

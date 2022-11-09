@@ -1,4 +1,5 @@
-from pydantic import BaseModel, Field
+from uuid import uuid4
+from pydantic import BaseModel, Field, validator
 from datetime import datetime
 from enum import Enum, auto
 
@@ -21,24 +22,26 @@ class Flag(str, Enum):
 class Rank(int, Enum):
     """Indicates which types of accounts can view a document."""
 
-    HIGH = auto()  # Only viewable by us
-    MEDIUM = auto()      # Viewable by select guests
-    LOW = auto()  # Anyone can view
+    HIGHEST = auto()    # Only viewable by us
+    HIGH = auto()
+    MEDIUM = auto()     # Viewable by select guests
+    LOW = auto()
+    LOWEST = auto()     # Anyone can view
 
 
 #############################
-#       Common Fields       #
+#       Required Fields     #
 #############################
 class Req:
     """Attributes that must be present in the schema."""
 
-    class File(BaseModel):
-        file: str
-
-    class Folder(BaseModel):
-        folder: str
+    class Path(BaseModel):
+        path: str
 
 
+#############################
+#       Optional Fields     #
+#############################
 class Opt:
     """Optional attributes that have default values."""
 
@@ -48,7 +51,7 @@ class Opt:
     class Rank(BaseModel):
         """Decides who is able to view this document"""
 
-        rank: Rank = Field(default=Rank.HIGH)
+        rank: Rank = Field(default=Rank.HIGHEST)
 
     class Flag(BaseModel):
         """User-set flag to mark interesting/unusual documents"""
@@ -57,3 +60,46 @@ class Opt:
 
     class Comments(BaseModel):
         comments: list[str] = Field(default=[])
+
+
+###############################
+#       Immutable Fields      #
+###############################
+class Immutable(str):
+    @staticmethod
+    def validate(v):
+        return None if v is None else Immutable(v)
+
+
+class Imm:
+    """String fields that cannot be changed once set"""
+
+    class ID(BaseModel):
+        """Random unique ID required by MongoDB"""
+
+        id: Immutable = Field(
+            default_factory=lambda: Immutable(uuid4()),
+            alias='_id'       # Aliases are only used when converting to JSON
+        )
+
+        @validator('id')
+        def to_immutable(cls, v):
+            return Immutable.validate(v)
+
+    class ParentID(BaseModel):
+        """ID of this document's parent document"""
+
+        parent_id: Immutable | None
+
+        @validator('parent_id')
+        def to_immutable(cls, v):
+            return Immutable.validate(v)
+
+    class Path(BaseModel):
+        """The path referred to on disk"""
+
+        path: Immutable
+
+        @validator('path')
+        def to_immutable(cls, v):
+            return Immutable.validate(v)

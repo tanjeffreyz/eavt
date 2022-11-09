@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from src.database.interfaces import Document
-from src.database.fields import Req, Opt
+from src.database.fields import Imm, Opt
 from src.database.validators import Val
 
 
@@ -22,7 +22,7 @@ class Raw(BaseModel):
 
     stripRaw: list[str] = Field(default=[])
     stripRawOutput: list[str] = Field(default=[])
-    rasterized: str | None
+    rasterize: str | None
     trajectory: str | None
     desinusoidLUT: str | None
     tcaCorrection: str | None
@@ -37,8 +37,8 @@ class Processed(BaseModel):
 ####################
 #       Main       #
 ####################
-class Trial(Document,
-            Req.Folder,
+class Trial(Document,       # TODO: add verification for trial folder length/depth
+            Imm.Path,
             Opt.Rank, Opt.Comments,
             Val.FolderExists):
     metadata: Metadata = Field(default_factory=Metadata)
