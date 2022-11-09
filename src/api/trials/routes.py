@@ -15,14 +15,30 @@ router = APIRouter(prefix='/trials')
 )
 def reindex_trial(rq: Request, trial_id: str):
     old_trial = Trial(**get_trial_from_id(rq, trial_id))
-    diff = utils.parse_trial(old_trial.folder)
+    diff = utils.parse_trial(old_trial.path)
     new_trial = utils.update_model(old_trial, diff)
     rq.app.db['trials'].replace_one(
         {'_id': trial_id},
         jsonable_encoder(new_trial)
     )
 
-    # Return document as response
+    return rq.app.db['trials'].find_one({'_id': trial_id})
+
+
+@router.patch(
+    '/{trial_id}',
+    status_code=status.HTTP_200_OK,
+    response_description='Patches the trial with new information',
+    response_model=Trial
+)
+def update_trial(rq: Request, trial_id: str, body: Trial):
+    old_trial = Trial(**get_trial_from_id(rq, trial_id))
+    new_trial = utils.update_model(old_trial, body.dict())
+    rq.app.db['trials'].replace_one(
+        {'_id': trial_id},
+        jsonable_encoder(new_trial)
+    )
+
     return rq.app.db['trials'].find_one({'_id': trial_id})
 
 

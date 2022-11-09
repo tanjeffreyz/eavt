@@ -1,4 +1,5 @@
-from pydantic import BaseModel, Field
+from uuid import uuid4
+from pydantic import BaseModel, Field, validator
 from datetime import datetime
 from enum import Enum, auto
 
@@ -29,18 +30,18 @@ class Rank(int, Enum):
 
 
 #############################
-#       Common Fields       #
+#       Required Fields     #
 #############################
 class Req:
     """Attributes that must be present in the schema."""
 
-    class File(BaseModel):
-        file: str
-
-    class Folder(BaseModel):
-        folder: str
+    class Path(BaseModel):
+        path: str
 
 
+#############################
+#       Optional Fields     #
+#############################
 class Opt:
     """Optional attributes that have default values."""
 
@@ -59,3 +60,46 @@ class Opt:
 
     class Comments(BaseModel):
         comments: list[str] = Field(default=[])
+
+
+###############################
+#       Immutable Fields      #
+###############################
+class Immutable(str):
+    @staticmethod
+    def validate(v):
+        return None if v is None else Immutable(v)
+
+
+class Imm:
+    """String fields that cannot be changed once set"""
+
+    class ID(BaseModel):
+        """Random unique ID required by MongoDB"""
+
+        id: Immutable = Field(
+            default_factory=lambda: Immutable(uuid4()),
+            alias='_id'       # Aliases are only used when converting to JSON
+        )
+
+        @validator('id')
+        def to_immutable(cls, v):
+            return Immutable.validate(v)
+
+    class ParentID(BaseModel):
+        """ID of this document's parent document"""
+
+        parent_id: Immutable | None
+
+        @validator('parent_id')
+        def to_immutable(cls, v):
+            return Immutable.validate(v)
+
+    class Path(BaseModel):
+        """The path referred to on disk"""
+
+        path: Immutable
+
+        @validator('path')
+        def to_immutable(cls, v):
+            return Immutable.validate(v)

@@ -7,7 +7,7 @@ class Val:
     class FileExists(BaseModel):
         """Makes sure all file references actually exist on disk."""
 
-        @validator('file', check_fields=False)
+        @validator('path', check_fields=False)
         def file_exists(cls, p):
             if not utils.is_file(p):
                 raise HTTPException(
@@ -19,7 +19,7 @@ class Val:
     class FolderExists(BaseModel):
         """Makes sure all folder references actually exist on disk."""
 
-        @validator('folder', check_fields=False)
+        @validator('path', check_fields=False)
         def folder_exists(cls, p):
             if not utils.is_folder(p):
                 raise HTTPException(

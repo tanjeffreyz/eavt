@@ -39,14 +39,14 @@ def list_sessions(rq: Request, cursor: str = 'null', limit: int = 100):
 )
 def create_session(rq: Request, body: CreateSessionRq):
     # Check for duplicate in database
-    if rq.app.db['sessions'].find_one({'folder': body.folder}) is not None:
+    if rq.app.db['sessions'].find_one({'path': body.path}) is not None:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail=f"Session already exists in database: {body.folder}"
+            detail=f"Session already exists in database: {body.path}"
         )
 
     # Create the session folder and document
-    utils.abs_path(body.folder).mkdir(exist_ok=True)
+    utils.abs_path(body.path).mkdir(exist_ok=True)
     new_session = Session(**jsonable_encoder(body))
 
     # Add to database
@@ -93,19 +93,19 @@ def list_trials_within_session(rq: Request, session_id: str, cursor: str = 'null
 def create_trial_within_session(rq: Request, session_id: str, body: CreateTrialRq):
     # Check that trial does not already exist in database
     session = Session(**get_session_from_id(rq, session_id))
-    if rq.app.db['trials'].find_one({'folder': body.folder}) is not None:
+    if rq.app.db['trials'].find_one({'path': body.path}) is not None:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail=f"Trial already exists in database: {body.folder}"
+            detail=f"Trial already exists in database: {body.path}"
         )
 
     # Check that session is strictly a prefix of trial folder
-    s_path = Path(config.OZ.ROOT, session.folder)
-    t_path = Path(config.OZ.ROOT, body.folder)
+    s_path = Path(config.OZ.ROOT, session.path)
+    t_path = Path(config.OZ.ROOT, body.path)
     if t_path.samefile(s_path) or s_path not in t_path.parents:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Trial does not belong to this session: {body.folder}"
+            detail=f"Trial does not belong to this session: {body.path}"
         )
 
     # Create new trial and add it to the database
