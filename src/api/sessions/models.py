@@ -1,16 +1,15 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from src.database.schema.trial import Trial
 from src.database.schema.session import Session
-from src.database.interfaces import Req
+from src.database.fields import Req
 
 
-class CreateSessionRq(Req.Path):
-    subjects: list[str]
-    comments: list[str] = Field(default=[])
+class CreateSessionRq(Req.Folder):
+    subject: str
 
 
-class CreateTrialRq(Req.Path):
-    ...
+class CreateTrialRq(Req.Folder):
+    pass
 
 
 class ListSessionsRs(BaseModel):

@@ -1,5 +1,8 @@
 from pydantic import BaseModel, Field
-from src.database.interfaces import Node, Video, Opt
+from src.database.interfaces import Document
+from src.database.schema.video import Video
+from src.database.fields import Req, Opt
+from src.database.validators import Val
 
 
 class LMSRatio(BaseModel):
@@ -18,7 +21,10 @@ class TrialData(BaseModel):
 ####################
 #       Main       #
 ####################
-class Trial(Node, Opt.Rank, Opt.Comments):
+class Trial(Document,
+            Req.Folder,
+            Opt.Rank, Opt.Comments,
+            Val.FolderExists):
     data: TrialData = Field(default_factory=TrialData)
     microdoses: Video | None
     strips: Video | None
