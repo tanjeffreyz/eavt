@@ -20,10 +20,6 @@ def is_file(path):
     return abs_path(path).is_file()
 
 
-def is_immutable_key(key: str):
-    return key == 'id' or key == 'path' or key.endswith('_id') or key.endswith('_ids')
-
-
 def update_model(model: BaseModel, diff: dict):
     """Updates the model using the given differences, recurses on submodels"""
 
