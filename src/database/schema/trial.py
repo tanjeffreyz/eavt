@@ -1,6 +1,5 @@
 from pydantic import BaseModel, Field
 from src.database.interfaces import Document
-from src.database.schema.video import Video
 from src.database.fields import Req, Opt
 from src.database.validators import Val
 
@@ -11,11 +10,25 @@ class LMSRatio(BaseModel):
     s: float | None
 
 
-class TrialData(BaseModel):
+class Metadata(BaseModel):
     """Nested document to hold numerical trial data."""
 
     lmsRatio: LMSRatio = Field(default_factory=LMSRatio)
     jitter: float | None
+
+
+class Raw(BaseModel):
+    """Raw data that is immediately available on disk."""
+
+    stripRaw: list[str] = Field(default=[])
+    stripRawOutput: list[str] = Field(default=[])
+    rasterized: str | None
+
+
+class Processed(BaseModel):
+    """Processed data that is not immediately available."""
+
+    desin: list[str] = Field(default=[])
 
 
 ####################
@@ -25,6 +38,6 @@ class Trial(Document,
             Req.Folder,
             Opt.Rank, Opt.Comments,
             Val.FolderExists):
-    data: TrialData = Field(default_factory=TrialData)
-    microdoses: Video | None
-    strips: Video | None
+    metadata: Metadata = Field(default_factory=Metadata)
+    raw: Raw = Field(default_factory=Raw)
+    processed: Processed = Field(default_factory=Processed)
