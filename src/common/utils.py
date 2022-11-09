@@ -1,4 +1,5 @@
 from pathlib import Path
+from pydantic import BaseModel
 from src.common import config
 
 
@@ -14,3 +15,8 @@ def is_folder(path: str):
 
 def is_file(path: str):
     return get_path(path).is_file()
+
+
+def update_model(model: BaseModel, diff: dict):
+    diff.pop('id', None)
+    return model.copy(update=diff)

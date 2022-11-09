@@ -37,7 +37,7 @@ class Processed(BaseModel):
 ####################
 #       Main       #
 ####################
-class Trial(Document,
+class Trial(Document,       # TODO: add verification for trial folder length/depth
             Req.Folder,
             Opt.Rank, Opt.Comments,
             Val.FolderExists):

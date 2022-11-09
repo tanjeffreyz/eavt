@@ -4,7 +4,7 @@ from src.database.fields import Req, Opt
 from src.database.validators import Val
 
 
-class Session(Document,
+class Session(Document,     # TODO: validate folder length/depth = 1
               Req.Folder,
               Opt.Rank, Opt.Comments,
               Val.FolderExists):
