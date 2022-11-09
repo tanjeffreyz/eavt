@@ -22,10 +22,8 @@ def create_session(rq: Request, body: CreateSessionRq):
             detail=f"Session already exists in database: {body.folder}"
         )
 
-    # Create the session folder
+    # Create the session folder and document
     utils.get_path(body.folder).mkdir(exist_ok=True)
-
-    # Create new Session document      TODO: server can create folders?
     new_session = Session(**jsonable_encoder(body))
 
     # Add to database
