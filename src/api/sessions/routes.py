@@ -46,7 +46,7 @@ def create_session(rq: Request, body: CreateSessionRq):
         )
 
     # Create the session folder and document
-    utils.get_path(body.folder).mkdir(exist_ok=True)
+    utils.abs_path(body.folder).mkdir(exist_ok=True)
     new_session = Session(**jsonable_encoder(body))
 
     # Add to database
@@ -92,7 +92,7 @@ def list_trials_within_session(rq: Request, session_id: str, cursor: str = 'null
 )
 def create_trial_within_session(rq: Request, session_id: str, body: CreateTrialRq):
     # Check that trial does not already exist in database
-    session = get_session_from_id(rq, session_id)
+    session = Session(**get_session_from_id(rq, session_id))
     if rq.app.db['trials'].find_one({'folder': body.folder}) is not None:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
@@ -100,7 +100,7 @@ def create_trial_within_session(rq: Request, session_id: str, body: CreateTrialR
         )
 
     # Check that session is strictly a prefix of trial folder
-    s_path = Path(config.OZ.ROOT, session['folder'])
+    s_path = Path(config.OZ.ROOT, session.folder)
     t_path = Path(config.OZ.ROOT, body.folder)
     if t_path.samefile(s_path) or s_path not in t_path.parents:
         raise HTTPException(
@@ -111,13 +111,13 @@ def create_trial_within_session(rq: Request, session_id: str, body: CreateTrialR
     # Create new trial and add it to the database
     new_trial = Trial(
         **jsonable_encoder(body),
-        parent_id=session['_id']
+        parent_id=session.id
     )
     db_trial = rq.app.db['trials'].insert_one(jsonable_encoder(new_trial))
 
     # Attach trial ID to parent session
     rq.app.db['sessions'].update_one(
-        {'_id': session['_id']},
+        {'_id': session.id},
         {'$push': {'trials': db_trial.inserted_id}}
     )
 
