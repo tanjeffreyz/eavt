@@ -23,6 +23,9 @@ class Raw(BaseModel):
     stripRaw: list[str] = Field(default=[])
     stripRawOutput: list[str] = Field(default=[])
     rasterized: str | None
+    trajectory: str | None
+    desinusoidLUT: str | None
+    tcaCorrection: str | None
 
 
 class Processed(BaseModel):

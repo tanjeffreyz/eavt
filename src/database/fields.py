@@ -26,9 +26,9 @@ class Rank(int, Enum):
     LOW = auto()  # Anyone can view
 
 
-#################################
-#       Common Attributes       #
-#################################
+#############################
+#       Common Fields       #
+#############################
 class Req:
     """Attributes that must be present in the schema."""
 
