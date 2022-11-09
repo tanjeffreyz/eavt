@@ -21,9 +21,11 @@ class Flag(str, Enum):
 class Rank(int, Enum):
     """Indicates which types of accounts can view a document."""
 
-    HIGH = auto()  # Only viewable by us
-    MEDIUM = auto()      # Viewable by select guests
-    LOW = auto()  # Anyone can view
+    HIGHEST = auto()    # Only viewable by us
+    HIGH = auto()
+    MEDIUM = auto()     # Viewable by select guests
+    LOW = auto()
+    LOWEST = auto()     # Anyone can view
 
 
 #############################
@@ -48,7 +50,7 @@ class Opt:
     class Rank(BaseModel):
         """Decides who is able to view this document"""
 
-        rank: Rank = Field(default=Rank.HIGH)
+        rank: Rank = Field(default=Rank.HIGHEST)
 
     class Flag(BaseModel):
         """User-set flag to mark interesting/unusual documents"""
