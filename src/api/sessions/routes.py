@@ -1,8 +1,7 @@
 from pathlib import Path
 from fastapi import APIRouter, HTTPException, Request, status
 from fastapi.encoders import jsonable_encoder
-from src.database.schema import Session, Trial
-from src.common import config
+from src.common import config, utils
 from .models import *
 
 
@@ -16,14 +15,15 @@ router = APIRouter(prefix='/sessions')
     response_model=Session
 )
 def create_session(rq: Request, body: CreateSessionRq):
-    # Check for duplicates
-    if rq.app.db['sessions'].find_one({'path': body.path}) is not None:
+    # Check for duplicate in database
+    if rq.app.db['sessions'].find_one({'folder': body.folder}) is not None:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail=f"Session already exists: {body.path}"
+            detail=f"Session already exists in database: {body.folder}"
         )
 
-    # Create new session      TODO: server can create folders?
+    # Create the session folder and document
+    utils.get_path(body.folder).mkdir(exist_ok=True)
     new_session = Session(**jsonable_encoder(body))
 
     # Add to database
@@ -61,24 +61,24 @@ def list_sessions(rq: Request, cursor: str = 'null', limit: int = 100):
     response_model=Trial
 )
 def create_trial_within_session(rq: Request, session_id: str, body: CreateTrialRq):
-    session = validate_session_exists(rq, session_id)
-    if rq.app.db['trials'].find_one({'path': body.path}) is not None:
+    session = get_session_from_id(rq, session_id)
+    if rq.app.db['trials'].find_one({'folder': body.folder}) is not None:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail=f"Trial already exists: {body.path}"
+            detail=f"Trial already exists: {body.folder}"
         )
-    s_path = Path(config.OZ.ROOT, session['path'])
-    t_path = Path(config.OZ.ROOT, body.path)
+    s_path = Path(config.OZ.ROOT, session['folder'])
+    t_path = Path(config.OZ.ROOT, body.folder)
     if t_path.samefile(s_path) or s_path not in t_path.parents:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Trial does not belong to this session: {body.path}"
+            detail=f"Trial does not belong to this session: {body.folder}"
         )
 
     # Create new trial and add it to the database
     new_trial = Trial(
         **jsonable_encoder(body),
-        session=session['_id']
+        parent=session['_id']
     )
     new_document = jsonable_encoder(new_trial)
     db_trial = rq.app.db['trials'].insert_one(new_document)
@@ -102,13 +102,13 @@ def create_trial_within_session(rq: Request, session_id: str, body: CreateTrialR
     response_model=ListTrialsRs
 )
 def list_trials_within_session(rq: Request, session_id: str, cursor: str = 'null', limit: int = 100):
-    session = validate_session_exists(rq, session_id)
+    session = get_session_from_id(rq, session_id)
     if cursor == 'null':
         query = {}
     else:
         query = {
-            'session': session_id,
-            'id': {'$lt': cursor},
+            'parent_id': session_id,
+            '_id': {'$lt': cursor},
         }
     trials = list(rq.app.db['trials'].find(query, limit=limit))
     next_cursor = (None if len(trials) < limit else trials[-1]['_id'])
@@ -121,7 +121,7 @@ def list_trials_within_session(rq: Request, session_id: str, cursor: str = 'null
 #############################
 #       Helper Methods      #
 #############################
-def validate_session_exists(rq: Request, session_id: str):
+def get_session_from_id(rq: Request, session_id: str):
     if (session := rq.app.db['sessions'].find_one({'_id': session_id})) is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
