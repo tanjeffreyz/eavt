@@ -1,0 +1,18 @@
+"""Extend boilerplate functionality of Pydantic"""
+
+import pydantic
+from src.database.types import Immutable
+
+
+# Set up Pydantic arbitrary type-casting
+class NewBaseModel(pydantic.BaseModel):
+    @pydantic.validator('*')
+    def force_type(cls, v, field):
+        if v is None:
+            return None
+        if issubclass(field.type_, Immutable):
+            return field.type_(v)
+        return v
+
+
+pydantic.BaseModel = NewBaseModel

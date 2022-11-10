@@ -1,6 +1,6 @@
+from src.database.fields import ImmutableString
 from pathlib import Path
 from pydantic import BaseModel
-from src.database.fields import Immutable
 from src.common import config
 
 
@@ -30,7 +30,9 @@ def update_model(model: BaseModel, diff: dict):
     for key, value in diff.items():
         if not hasattr(model, key):
             continue    # Enforce Pydantic schema, ignore keys not in current model
-        if isinstance((field := getattr(model, key)), Immutable):
+        field = getattr(model, key)
+        print(key, type(field))
+        if isinstance(field, ImmutableString):
             continue    # Cannot change immutable fields
         if isinstance(field, BaseModel):
             value = update_model(field, diff[key])     # Recurse on nested models
