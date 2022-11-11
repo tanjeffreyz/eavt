@@ -31,7 +31,6 @@ def update_model(model: BaseModel, diff: dict):
         if not hasattr(model, key):
             continue    # Enforce Pydantic schema, ignore keys not in current model
         field = getattr(model, key)
-        print(key, type(field))
         if isinstance(field, ImmutableString):
             continue    # Cannot change immutable fields
         if isinstance(field, BaseModel):
