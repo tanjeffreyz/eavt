@@ -10,9 +10,6 @@ class Document(Opt.DateTime, Opt.Flag):
     Each type of Document, like Session or Trial, is stored in its own collection.
     """
 
-    id: ImmutableString = Field(
-        default_factory=lambda: ImmutableString(uuid4()),
-        alias='_id'       # Aliases are only used when converting to JSON
-    )
+    id: ImmutableString = Field(default_factory=uuid4, alias='_id')     # Aliases are only used when converting to JSON
 
     parent_id: ImmutableString | None
