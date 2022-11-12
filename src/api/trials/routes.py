@@ -5,7 +5,10 @@ from src.api.interfaces import QueryRq, QueryRs
 from src.database.schema import Trial
 
 
-router = APIRouter(prefix='/trials')
+router = APIRouter(
+    prefix='/trials',
+    tags=['Trials']
+)
 
 
 #############################
@@ -71,6 +74,8 @@ async def query_trials_by_multiple_fields(rq: Request, body: list[QueryRq], curs
 #############################
 #       Get Trial Data      #
 #############################
-# @router.get(
-#     '/data'
-# )
+@router.get(
+    '/data'
+)
+async def get_trial_data():
+    pass
