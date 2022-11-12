@@ -3,8 +3,9 @@ from fastapi import APIRouter, HTTPException, Request, status
 from fastapi.encoders import jsonable_encoder
 from src.common import config, utils
 from src.database.schema import Trial, Session
-from .models import CreateTrialRq, CreateSessionRq, ListTrialsRs, ListSessionsRs
-from src.api.utils import get_document_by_id
+from .models import CreateTrialRq, CreateSessionRq
+from src.api.interfaces import QueryRs
+from src.api.utils import get_document_by_id, get_query_page
 
 router = APIRouter(prefix='/sessions')
 
@@ -14,31 +15,11 @@ router = APIRouter(prefix='/sessions')
 #########################
 @router.get(
     '/{field}',
-    response_description='Query a page of sessions',
-    response_model=ListSessionsRs
+    response_description='List Sessions',
+    response_model=QueryRs[Session]
 )
-def list_sessions(rq: Request, field: str, order: int = -1, cursor: str = 'null', limit: int = 100):
-    query = {field: {'$exists': True}}
-    if cursor != 'null':
-        query[field]['$lt'] = cursor
-
-    sessions = list(
-        rq.app.db['sessions']
-        .find(query)
-        .sort(field, order)
-        .limit(limit + 1)       # Try getting 1 more to check for leftovers
-    )
-
-    has_next = (len(sessions) > limit)
-    sessions = sessions[:limit]
-    next_cursor = (sessions[-1][field] if has_next else None)
-
-    # Response dict is used as parameters for ListSessionsRs and validated
-    return {
-        'sessions': sessions,
-        'cursor': next_cursor,
-        'hasNext': has_next
-    }
+def list_sessions_ordered_by_field(rq: Request, field: str, order: int = -1, cursor: str = 'null', limit: int = 100):
+    return get_query_page(rq.app.db['sessions'], field, order, cursor, limit, [])
 
 
 @router.post(
@@ -70,12 +51,12 @@ def create_session(rq: Request, body: CreateSessionRq):
 #####################################
 #       Trials Within Sessions      #
 #####################################
-@router.get(
-    '/{session_id}/trials',
-    status_code=status.HTTP_200_OK,
-    response_description='List all trials within the session',
-    response_model=ListTrialsRs
-)
+# @router.get(
+#     '/{session_id}/trials',
+#     status_code=status.HTTP_200_OK,
+#     response_description='List all trials within the session',
+#     response_model=ListTrialsRs
+# )
 def list_trials_within_session(rq: Request, session_id: str, cursor: str = 'null', limit: int = 100):
     # TODO: maintain order
     session = get_document_by_id(rq.app.db['sessions'], session_id)

@@ -2,7 +2,7 @@ from fastapi import HTTPException, Request, status
 from pydantic import BaseModel
 from src.common.utils import abs_path, rel_path
 from src.database.types import ImmutableString
-from src.api.interfaces import Query
+from src.api.interfaces import QueryRq
 
 
 def update_model(model: BaseModel, diff: dict):
@@ -24,19 +24,31 @@ def update_model(model: BaseModel, diff: dict):
     return model
 
 
+def get_all_paths(path, match):
+    return [str(rel_path(x)) for x in path.glob(match)]
+
+
+def get_first_path(path, match):
+    try:
+        return str(rel_path(next(path.glob(match))))
+    except StopIteration:
+        return None
+
+
 def parse_trial(path):
+    # Get file paths
     root = abs_path(path)
-    strip_raw_output = root / 'strip_raw_output'
-    rasterize = root / 'rasterize'
-    trajectory = root / 'trajectory'
+    tca_correction_path = str(rel_path(p)) if (p := root / 'tca_correction.json').exists() else None
+    desinusoid_path = str(rel_path(p)) if (p := root / 'desinusoid.lut').exists() else None
 
     raw = {
-        'stripRawOutput': [str(rel_path(x)) for x in strip_raw_output.glob('**/*.tar')],
-        'rasterize': str(rel_path(next(rasterize.glob('*.txt')))),
-        'trajectory': str(rel_path(next(trajectory.glob('*.txt')))),
-        'tcaCorrection': str(rel_path(root / 'tca_correction.json')),
-        'desinusoidLUT': str(rel_path(root / 'desinusoid.lut'))
+        'stripRawOutput': get_all_paths(root / 'strip_raw_output', '**/*.tar'),
+        'rasterize': get_first_path(root / 'rasterize', '*.txt'),
+        'trajectory': get_first_path(root / 'trajectory', '*.txt'),
+        'tcaCorrection': tca_correction_path,
+        'desinusoidLUT': desinusoid_path
     }
+
     return {'raw': raw}
 
 
@@ -49,11 +61,16 @@ def get_document_by_id(collection, _id: str):
     return result
 
 
-def get_page(collection, field, order, cursor, limit, body: list[Query]):
+def get_query_page(collection, field, order, cursor, limit, body: list[QueryRq]):
+    """Returns a page of results from the given query starting at CURSOR."""
+
     # Prepare primary field's query
     query = {field: {'$exists': True}}
     if cursor != 'null':
-        query[field]['$lt'] = cursor
+        # If in DECREASING order (negative), return the next few items that are BELOW the cursor
+        # If in INCREASING order (positive), return the next few items that are ABOVE the cursor
+        comparator = ('$lt' if order < 0 else '$gt')
+        query[field][comparator] = cursor
     sort = [(field, order)]
 
     # Additional queries specified by user
@@ -81,7 +98,7 @@ def get_page(collection, field, order, cursor, limit, body: list[Query]):
     documents = documents[:limit]
     next_cursor = (documents[-1][field] if has_next else None)
 
-    # Response dict is used as parameters for ListSessionsRs and validated
+    # Response dict is used as parameters for QueryRs and validated
     return {
         'documents': documents,
         'cursor': next_cursor,
