@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Request, status
 from fastapi.encoders import jsonable_encoder
-from src.api.utils import get_document_by_id, parse_trial, update_model
+from src.api.utils import get_document_by_id, parse_trial, update_model, get_query_page
+from src.api.interfaces import QueryRq, QueryRs
 from src.database.schema import Trial
 
 
@@ -40,3 +41,22 @@ def update_trial(rq: Request, trial_id: str, body: Trial):
     )
 
     return rq.app.db['trials'].find_one({'_id': trial_id})
+
+
+@router.get(
+    '/query/{field}',
+    response_description='Lists all trials ordered by a single field',
+    response_model=QueryRs[Trial]
+)
+def list_trials_by_single_field(rq: Request, field: str, order: int = -1, cursor: str = 'null', limit: int = 100):
+    query_requests = [QueryRq(field=field, order=order)]
+    return get_query_page(rq.app.db['trials'], query_requests, cursor, limit)
+
+
+@router.post(
+    '/query',
+    response_description='Performs a query on multiple fields across all trials',
+    response_model=QueryRs[Trial]
+)
+def query_trials_by_multiple_fields(rq: Request, body: list[QueryRq], cursor: str = 'null', limit: int = 100):
+    return get_query_page(rq.app.db['trials'], body, cursor, limit)

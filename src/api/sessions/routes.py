@@ -18,7 +18,7 @@ router = APIRouter(prefix='/sessions')
     response_description='Lists all sessions ordered by a single field',
     response_model=QueryRs[Session]
 )
-def query_sessions_by_single_field(rq: Request, field: str, order: int = -1, cursor: str = 'null', limit: int = 100):
+def list_sessions_by_single_field(rq: Request, field: str, order: int = -1, cursor: str = 'null', limit: int = 100):
     query_requests = [QueryRq(field=field, order=order)]
     return get_query_page(rq.app.db['sessions'], query_requests, cursor, limit)
 
@@ -33,7 +33,7 @@ def query_sessions_by_multiple_fields(rq: Request, body: list[QueryRq], cursor: 
 
 
 @router.post(
-    '/',
+    '',
     status_code=status.HTTP_201_CREATED,
     response_description='Create a new session',
     response_model=Session
@@ -120,6 +120,11 @@ def create_trial_within_session(rq: Request, session_id: str, body: CreateTrialR
     # Check that session is strictly a prefix of trial folder
     s_path = Path(config.OZ.ROOT, session.path)
     t_path = Path(config.OZ.ROOT, body.path)
+    if not t_path.exists():
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Trial path does not exist: {body.path}"
+        )
     if t_path.samefile(s_path) or s_path not in t_path.parents:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

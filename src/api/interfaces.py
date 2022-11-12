@@ -11,12 +11,12 @@ T = TypeVar('T')
 class QueryRq(BaseModel):
     field: str
     order: int = -1
-    min: str | float | int | None
-    max: str | float | int | None
-    eq: str | float | int | None
+    min: float | int | str | None       # Pydantic casts the value in this exact order
+    max: float | int | str | None       # Strings can cast anything, so put those last!
+    eq: float | int | str | None
 
 
 class QueryRs(GenericModel, Generic[T]):
     documents: list[T]
-    cursor: str | None
+    cursor: float | int | str | None
     hasNext: bool
