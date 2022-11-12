@@ -18,7 +18,7 @@ router = APIRouter(prefix='/sessions')
     response_description='Lists all sessions ordered by a single field',
     response_model=QueryRs[Session]
 )
-def list_sessions_by_single_field(rq: Request, field: str, order: int = -1, cursor: str = 'null', limit: int = 100):
+async def list_sessions_by_single_field(rq: Request, field: str, order: int = -1, cursor: str = 'null', limit: int = 100):
     query_requests = [QueryRq(field=field, order=order)]
     return get_query_page(rq.app.db['sessions'], query_requests, cursor, limit)
 
@@ -28,7 +28,7 @@ def list_sessions_by_single_field(rq: Request, field: str, order: int = -1, curs
     response_description='Performs a query on multiple fields across all sessions',
     response_model=QueryRs[Session]
 )
-def query_sessions_by_multiple_fields(rq: Request, body: list[QueryRq], cursor: str = 'null', limit: int = 100):
+async def query_sessions_by_multiple_fields(rq: Request, body: list[QueryRq], cursor: str = 'null', limit: int = 100):
     return get_query_page(rq.app.db['sessions'], body, cursor, limit)
 
 
@@ -38,7 +38,7 @@ def query_sessions_by_multiple_fields(rq: Request, body: list[QueryRq], cursor: 
     response_description='Create a new session',
     response_model=Session
 )
-def create_session(rq: Request, body: CreateSessionRq):
+async def create_session(rq: Request, body: CreateSessionRq):
     # Check for duplicate in database
     if rq.app.db['sessions'].find_one({'path': body.path}) is not None:
         raise HTTPException(
@@ -64,7 +64,7 @@ def create_session(rq: Request, body: CreateSessionRq):
     response_description='Patches the session with new information',
     response_model=Session
 )
-def update_session(rq: Request, session_id: str, body: Session):
+async def update_session(rq: Request, session_id: str, body: Session):
     old_session = Session(**get_document_by_id(rq.app.db['sessions'], session_id))
     new_session = update_model(old_session, body.dict())
     rq.app.db['sessions'].replace_one(
@@ -84,7 +84,7 @@ def update_session(rq: Request, session_id: str, body: Session):
 #     response_description='List all trials within the session',
 #     response_model=ListTrialsRs
 # )
-def list_trials_within_session(rq: Request, session_id: str, cursor: str = 'null', limit: int = 100):
+async def list_trials_within_session(rq: Request, session_id: str, cursor: str = 'null', limit: int = 100):
     # TODO: maintain order
     session = get_document_by_id(rq.app.db['sessions'], session_id)
     if cursor == 'null':
@@ -108,7 +108,7 @@ def list_trials_within_session(rq: Request, session_id: str, cursor: str = 'null
     response_description='Create a new trial within existing session',
     response_model=Trial
 )
-def create_trial_within_session(rq: Request, session_id: str, body: CreateTrialRq):
+async def create_trial_within_session(rq: Request, session_id: str, body: CreateTrialRq):
     # Check that trial does not already exist in database
     session = Session(**get_document_by_id(rq.app.db['sessions'], session_id))
     if rq.app.db['trials'].find_one({'path': body.path}) is not None:
