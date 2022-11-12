@@ -13,25 +13,6 @@ router = APIRouter(prefix='/sessions')
 #########################
 #       Sessions        #
 #########################
-@router.get(
-    '/query/{field}',
-    response_description='Lists all sessions ordered by a single field',
-    response_model=QueryRs[Session]
-)
-async def list_sessions_by_single_field(rq: Request, field: str, order: int = -1, cursor: str = 'null', limit: int = 100):
-    query_requests = [QueryRq(field=field, order=order)]
-    return get_query_page(rq.app.db['sessions'], query_requests, cursor, limit)
-
-
-@router.post(
-    '/query',
-    response_description='Performs a query on multiple fields across all sessions',
-    response_model=QueryRs[Session]
-)
-async def query_sessions_by_multiple_fields(rq: Request, body: list[QueryRq], cursor: str = 'null', limit: int = 100):
-    return get_query_page(rq.app.db['sessions'], body, cursor, limit)
-
-
 @router.post(
     '',
     status_code=status.HTTP_201_CREATED,
@@ -146,3 +127,25 @@ async def create_new_trial_within_session(rq: Request, session_id: str, body: Cr
 
     # Return document as response
     return rq.app.db['trials'].find_one({'_id': db_trial.inserted_id})
+
+
+#############################
+#       Query Sessions      #
+#############################
+@router.get(
+    '/query/{field}',
+    response_description='Lists all sessions ordered by a single field',
+    response_model=QueryRs[Session]
+)
+async def list_sessions_by_single_field(rq: Request, field: str, order: int = -1, cursor: str = 'null', limit: int = 100):
+    query_requests = [QueryRq(field=field, order=order)]
+    return get_query_page(rq.app.db['sessions'], query_requests, cursor, limit)
+
+
+@router.post(
+    '/query',
+    response_description='Performs a query on multiple fields across all sessions',
+    response_model=QueryRs[Session]
+)
+async def query_sessions_by_multiple_fields(rq: Request, body: list[QueryRq], cursor: str = 'null', limit: int = 100):
+    return get_query_page(rq.app.db['sessions'], body, cursor, limit)
