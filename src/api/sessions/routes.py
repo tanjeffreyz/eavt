@@ -38,7 +38,7 @@ async def query_sessions_by_multiple_fields(rq: Request, body: list[QueryRq], cu
     response_description='Create a new session',
     response_model=Session
 )
-async def create_session(rq: Request, body: CreateSessionRq):
+async def create_new_session(rq: Request, body: CreateSessionRq):
     # Check for duplicate in database
     if rq.app.db['sessions'].find_one({'path': body.path}) is not None:
         raise HTTPException(
@@ -108,7 +108,7 @@ async def list_trials_within_session(rq: Request, session_id: str, cursor: str =
     response_description='Create a new trial within existing session',
     response_model=Trial
 )
-async def create_trial_within_session(rq: Request, session_id: str, body: CreateTrialRq):
+async def create_new_trial_within_session(rq: Request, session_id: str, body: CreateTrialRq):
     # Check that trial does not already exist in database
     session = Session(**get_document_by_id(rq.app.db['sessions'], session_id))
     if rq.app.db['trials'].find_one({'path': body.path}) is not None:
