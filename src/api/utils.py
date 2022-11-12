@@ -62,7 +62,7 @@ def get_document_by_id(collection, _id: str):
 
 
 def get_query_page(collection, body: list[QueryRq], cursor, limit):
-    """Returns a page of results from the given query starting at CURSOR."""
+    """Returns a page of results from the given queries starting at CURSOR."""
 
     if len(body) == 0:
         raise HTTPException(
