@@ -4,7 +4,7 @@ from fastapi.encoders import jsonable_encoder
 from src.common import config, utils
 from src.database.schema import Trial, Session
 from .models import CreateTrialRq, CreateSessionRq, ListTrialsRs, ListSessionsRs
-
+from src.api.utils import get_document_by_id
 
 router = APIRouter(prefix='/sessions')
 
@@ -13,21 +13,31 @@ router = APIRouter(prefix='/sessions')
 #       Sessions        #
 #########################
 @router.get(
-    '/',
-    response_description='List a page of sessions',
+    '/{field}',
+    response_description='Query a page of sessions',
     response_model=ListSessionsRs
 )
-def list_sessions(rq: Request, cursor: str = 'null', limit: int = 100):
-    # TODO: maintain order
-    # IDs are naturally sorted in descending order, so paginate towards lower IDs
-    id_query = ({} if cursor == 'null' else {'id': {'$lt': cursor}})
-    sessions = list(rq.app.db['sessions'].find(id_query, limit=limit))
-    next_cursor = (None if len(sessions) < limit else sessions[-1]['_id'])
+def list_sessions(rq: Request, field: str, order: int = -1, cursor: str = 'null', limit: int = 100):
+    query = {field: {'$exists': True}}
+    if cursor != 'null':
+        query[field]['$lt'] = cursor
+
+    sessions = list(
+        rq.app.db['sessions']
+        .find(query)
+        .sort(field, order)
+        .limit(limit + 1)       # Try getting 1 more to check for leftovers
+    )
+
+    has_next = (len(sessions) > limit)
+    sessions = sessions[:limit]
+    next_cursor = (sessions[-1][field] if has_next else None)
 
     # Response dict is used as parameters for ListSessionsRs and validated
     return {
         'sessions': sessions,
-        'cursor': next_cursor
+        'cursor': next_cursor,
+        'hasNext': has_next
     }
 
 
@@ -68,7 +78,7 @@ def create_session(rq: Request, body: CreateSessionRq):
 )
 def list_trials_within_session(rq: Request, session_id: str, cursor: str = 'null', limit: int = 100):
     # TODO: maintain order
-    session = get_session_from_id(rq, session_id)
+    session = get_document_by_id(rq.app.db['sessions'], session_id)
     if cursor == 'null':
         query = {}
     else:
@@ -92,7 +102,7 @@ def list_trials_within_session(rq: Request, session_id: str, cursor: str = 'null
 )
 def create_trial_within_session(rq: Request, session_id: str, body: CreateTrialRq):
     # Check that trial does not already exist in database
-    session = Session(**get_session_from_id(rq, session_id))
+    session = Session(**get_document_by_id(rq.app.db['sessions'], session_id))
     if rq.app.db['trials'].find_one({'path': body.path}) is not None:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
@@ -123,15 +133,3 @@ def create_trial_within_session(rq: Request, session_id: str, body: CreateTrialR
 
     # Return document as response
     return rq.app.db['trials'].find_one({'_id': db_trial.inserted_id})
-
-
-#############################
-#       Helper Methods      #
-#############################
-def get_session_from_id(rq: Request, session_id: str):
-    if (session := rq.app.db['sessions'].find_one({'_id': session_id})) is None:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Session ID does not exist: {session_id}"
-        )
-    return session

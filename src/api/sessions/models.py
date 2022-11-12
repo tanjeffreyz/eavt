@@ -15,6 +15,7 @@ class CreateTrialRq(Req.Path):
 class ListSessionsRs(BaseModel):
     sessions: list[Session]
     cursor: str | None
+    hasNext: bool
 
 
 class ListTrialsRs(BaseModel):
