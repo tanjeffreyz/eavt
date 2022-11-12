@@ -13,6 +13,7 @@ class QueryRq(BaseModel):
     order: int = -1
     min: str | float | int | None
     max: str | float | int | None
+    eq: str | float | int | None
 
 
 class QueryRs(GenericModel, Generic[T]):

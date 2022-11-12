@@ -5,7 +5,7 @@ from src.common import config, utils
 from src.database.schema import Trial, Session
 from .models import CreateTrialRq, CreateSessionRq
 from src.api.interfaces import QueryRq, QueryRs
-from src.api.utils import get_document_by_id, get_query_page
+from src.api.utils import get_document_by_id, get_query_page, update_model
 
 router = APIRouter(prefix='/sessions')
 
@@ -56,6 +56,23 @@ def create_session(rq: Request, body: CreateSessionRq):
 
     # Return document as response
     return rq.app.db['sessions'].find_one({'_id': db_session.inserted_id})
+
+
+@router.patch(
+    '/{session_id}',
+    status_code=status.HTTP_200_OK,
+    response_description='Patches the session with new information',
+    response_model=Session
+)
+def update_session(rq: Request, session_id: str, body: Session):
+    old_session = Session(**get_document_by_id(rq.app.db['sessions'], session_id))
+    new_session = update_model(old_session, body.dict())
+    rq.app.db['sessions'].replace_one(
+        {'_id': session_id},
+        jsonable_encoder(new_session)
+    )
+
+    return rq.app.db['sessions'].find_one({'_id': session_id})
 
 
 #####################################

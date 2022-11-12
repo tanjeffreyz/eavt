@@ -81,10 +81,13 @@ def get_query_page(collection, body: list[QueryRq], cursor, limit):
             # If in INCREASING order (positive), return the next few items that are ABOVE the cursor
             comparator = ('$lt' if q.order < 0 else '$gt')
             subquery[comparator] = cursor
-        if q.min is not None:
-            subquery['$gte'] = q.min
-        if q.max is not None:
-            subquery['$lte'] = q.max
+        if q.eq is not None:
+            subquery['$eq'] = q.eq
+        else:
+            if q.min is not None:
+                subquery['$gte'] = q.min
+            if q.max is not None:
+                subquery['$lte'] = q.max
         query[q.field] = subquery
         sort.append((q.field, q.order))
 
