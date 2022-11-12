@@ -14,33 +14,9 @@ router = APIRouter(
 )
 
 
-#####################################
-#       Trials Within Sessions      #
-#####################################
-# @router.get(
-#     '/{session_id}/trials',
-#     status_code=status.HTTP_200_OK,
-#     response_description='List all trials within the session',
-#     response_model=ListTrialsRs
-# )
-async def list_trials_within_session(rq: Request, session_id: str, cursor: str = 'null', limit: int = 100):
-    # TODO: maintain order
-    session = get_document_by_id(rq.app.db['sessions'], session_id)
-    if cursor == 'null':
-        query = {}
-    else:
-        query = {
-            'parent_id': session_id,
-            '_id': {'$lt': cursor},
-        }
-    trials = list(rq.app.db['trials'].find(query, limit=limit))
-    next_cursor = (None if len(trials) < limit else trials[-1]['_id'])
-    return {
-        'trials': trials,
-        'cursor': next_cursor
-    }
-
-
+#############################
+#       Creating Trials     #
+#############################
 @router.post(
     '/{session_id}/trials',
     status_code=status.HTTP_200_OK,
@@ -85,3 +61,18 @@ async def create_new_trial_within_session(rq: Request, session_id: str, body: Cr
 
     # Return document as response
     return rq.app.db['trials'].find_one({'_id': db_trial.inserted_id})
+
+
+#############################
+#       Query Trials        #
+#############################
+# @router.get(
+#     '/{session_id}/trials',
+#     status_code=status.HTTP_200_OK,
+#     response_description='List all trials within the session',
+#     response_model=ListTrialsRs
+# )
+async def list_trials_within_session(rq: Request, session_id: str, cursor: str = 'null', limit: int = 100):
+    # TODO: maintain order
+    session = Session(**get_document_by_id(rq.app.db['sessions'], session_id))
+
