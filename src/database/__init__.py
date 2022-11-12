@@ -10,8 +10,12 @@ class NewBaseModel(pydantic.BaseModel):
     def force_type(cls, v, field):
         if v is None:
             return None
-        if issubclass(field.type_, Immutable):
-            return field.type_(v)
+        try:
+            # Cast Immutable types
+            if issubclass(field.type_, Immutable):
+                return field.type_(v)
+        except:
+            pass
         return v
 
 

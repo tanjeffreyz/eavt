@@ -61,29 +61,32 @@ def get_document_by_id(collection, _id: str):
     return result
 
 
-def get_query_page(collection, field, order, cursor, limit, body: list[QueryRq]):
+def get_query_page(collection, body: list[QueryRq], cursor, limit):
     """Returns a page of results from the given query starting at CURSOR."""
 
-    # Prepare primary field's query
-    query = {field: {'$exists': True}}
-    if cursor != 'null':
-        # If in DECREASING order (negative), return the next few items that are BELOW the cursor
-        # If in INCREASING order (positive), return the next few items that are ABOVE the cursor
-        comparator = ('$lt' if order < 0 else '$gt')
-        query[field][comparator] = cursor
-    sort = [(field, order)]
+    if len(body) == 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Must query over at least 1 field"
+        )
 
-    # Additional queries specified by user
-    for q in body:
+    # Parse user-specified queries
+    query = {}
+    sort = []
+    for i, q in enumerate(body):
         subquery = {'$exists': True}
+        if i == 0 and cursor != 'null':
+            # Apply cursor to primary (first) field:
+            # If in DECREASING order (negative), return the next few items that are BELOW the cursor
+            # If in INCREASING order (positive), return the next few items that are ABOVE the cursor
+            comparator = ('$lt' if q.order < 0 else '$gt')
+            subquery[comparator] = cursor
         if q.min is not None:
             subquery['$gte'] = q.min
         if q.max is not None:
             subquery['$lte'] = q.max
         query[q.field] = subquery
         sort.append((q.field, q.order))
-
-    print(query)
 
     # Execute queries
     documents = list(
@@ -96,7 +99,8 @@ def get_query_page(collection, field, order, cursor, limit, body: list[QueryRq])
     # Get pointers for future pagination
     has_next = (len(documents) > limit)
     documents = documents[:limit]
-    next_cursor = (documents[-1][field] if has_next else None)
+    primary_field = body[0].field
+    next_cursor = (documents[-1][primary_field] if has_next else None)
 
     # Response dict is used as parameters for QueryRs and validated
     return {
