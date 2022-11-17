@@ -39,3 +39,7 @@ class ImmutableString(Immutable, str):
 
 class ImmutableInteger(Immutable, int):
     pass
+
+
+class ImmutableList(Immutable, list):
+    pass

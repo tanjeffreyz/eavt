@@ -1,7 +1,7 @@
 from fastapi import HTTPException, Request, status
 from pydantic import BaseModel
 from src.common.utils import abs_path, rel_path
-from src.database.types import ImmutableString
+from src.database.types import Immutable
 from src.api.interfaces import QueryRq
 
 
@@ -16,7 +16,7 @@ def update_model(model: BaseModel, diff: dict):
         if not hasattr(model, key):
             continue    # Enforce Pydantic schema, ignore keys not in current model
         field = getattr(model, key)
-        if isinstance(field, ImmutableString):
+        if isinstance(field, Immutable):
             continue    # Cannot change immutable fields
         if isinstance(field, BaseModel):
             value = update_model(field, diff[key])     # Recurse on nested models

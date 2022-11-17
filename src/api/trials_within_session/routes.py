@@ -72,7 +72,14 @@ async def create_new_trial_within_session(rq: Request, session_id: str, body: Cr
     response_description='List all trials within the session',
     response_model=QueryRs[Trial]
 )
-async def list_trials_within_session(rq: Request, session_id: str, cursor: str = 'null', limit: int = 100):
+async def list_trials_within_session(rq: Request, session_id: str, cursor: int = -1, limit: int = 100):
     # TODO: maintain order
-    # session = Session(**get_document_by_id(rq.app.db['sessions'], session_id))
-    pass
+    session = Session(**get_document_by_id(rq.app.db['sessions'], session_id))
+    start = cursor + 1
+    trial_ids = session.trials[start:start+limit]
+    print(trial_ids)
+    return {
+        'documents': [],
+        'cursor': -1,
+        'hasNext': False
+    }
