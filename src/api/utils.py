@@ -1,7 +1,7 @@
 from fastapi import HTTPException, Request, status
 from pydantic import BaseModel
 from src.common.utils import abs_path, rel_path
-from src.database.types import ImmutableString
+from src.database.types import Immutable
 from src.api.interfaces import QueryRq
 
 
@@ -16,7 +16,7 @@ def update_model(model: BaseModel, diff: dict):
         if not hasattr(model, key):
             continue    # Enforce Pydantic schema, ignore keys not in current model
         field = getattr(model, key)
-        if isinstance(field, ImmutableString):
+        if isinstance(field, Immutable):
             continue    # Cannot change immutable fields
         if isinstance(field, BaseModel):
             value = update_model(field, diff[key])     # Recurse on nested models
@@ -59,6 +59,15 @@ def get_document_by_id(collection, _id: str):
             detail=f"Trial ID does not exist: {_id}"
         )
     return result
+
+
+def get_documents_by_ids(collection, ids):
+    pipeline = [
+        {'$match': {'_id': {'$in': ids}}},
+        {'$set': {'weight': get_projected_weights(ids)}},
+        {'$sort': {'weight': 1}}
+    ]
+    return list(collection.aggregate(pipeline))
 
 
 def get_query_page(collection, body: list[QueryRq], cursor, limit):
@@ -111,3 +120,18 @@ def get_query_page(collection, body: list[QueryRq], cursor, limit):
         'cursor': next_cursor,
         'hasNext': has_next
     }
+
+
+def get_projected_weights(ids):
+    """Returns a projection of weights to maintain the order of IDs in the query."""
+
+    result = len(ids) - 1
+    for i in reversed(range(len(ids) - 1)):
+        result = {
+            '$cond': [
+                {'$eq': ['$_id', ids[i]]},
+                i,
+                result
+            ]
+        }
+    return result
