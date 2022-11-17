@@ -69,13 +69,3 @@ async def list_trials_by_single_field(rq: Request, field: str, order: int = -1, 
 )
 async def query_trials_by_multiple_fields(rq: Request, body: list[QueryRq], cursor: str = 'null', limit: int = 100):
     return get_query_page(rq.app.db['trials'], body, cursor, limit)
-
-
-#############################
-#       Get Trial Data      #
-#############################
-@router.get(
-    '/data'
-)
-async def get_trial_data():
-    pass

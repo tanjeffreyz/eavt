@@ -64,15 +64,15 @@ async def create_new_trial_within_session(rq: Request, session_id: str, body: Cr
 
 
 #############################
-#       Query Trials        #
+#       List Trials        #
 #############################
-# @router.get(
-#     '/{session_id}/trials',
-#     status_code=status.HTTP_200_OK,
-#     response_description='List all trials within the session',
-#     response_model=ListTrialsRs
-# )
+@router.get(
+    '/{session_id}/trials',
+    status_code=status.HTTP_200_OK,
+    response_description='List all trials within the session',
+    response_model=QueryRs[Trial]
+)
 async def list_trials_within_session(rq: Request, session_id: str, cursor: str = 'null', limit: int = 100):
     # TODO: maintain order
-    session = Session(**get_document_by_id(rq.app.db['sessions'], session_id))
-
+    # session = Session(**get_document_by_id(rq.app.db['sessions'], session_id))
+    pass

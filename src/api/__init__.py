@@ -2,12 +2,14 @@ from src.common import config
 from .sessions.routes import router as sessions_router
 from .trials_within_session.routes import router as trials_within_session_router
 from .trials.routes import router as trials_router
+from .trial_data.routes import router as trial_data_router
 
 
 ROUTERS = (
     sessions_router,
     trials_within_session_router,
-    trials_router
+    trials_router,
+    trial_data_router
 )
 
 
