@@ -61,6 +61,15 @@ def get_document_by_id(collection, _id: str):
     return result
 
 
+def get_documents_by_ids(collection, ids):
+    pipeline = [
+        {'$match': {'_id': {'$in': ids}}},
+        {'$set': {'weight': get_projected_weights(ids)}},
+        {'$sort': {'weight': 1}}
+    ]
+    return list(collection.aggregate(pipeline))
+
+
 def get_query_page(collection, body: list[QueryRq], cursor, limit):
     """Returns a page of results from the given queries starting at CURSOR."""
 
@@ -111,3 +120,18 @@ def get_query_page(collection, body: list[QueryRq], cursor, limit):
         'cursor': next_cursor,
         'hasNext': has_next
     }
+
+
+def get_projected_weights(ids):
+    """Returns a projection of weights to maintain the order of IDs in the query."""
+
+    result = len(ids) - 1
+    for i in reversed(range(len(ids) - 1)):
+        result = {
+            '$cond': [
+                {'$eq': ['$_id', ids[i]]},
+                i,
+                result
+            ]
+        }
+    return result

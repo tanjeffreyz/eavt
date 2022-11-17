@@ -1,11 +1,11 @@
 from pathlib import Path
 from fastapi import APIRouter, HTTPException, Request, status
 from fastapi.encoders import jsonable_encoder
-from src.common import config, utils
+from src.common import config
 from src.database.schema import Trial, Session
 from .models import CreateTrialRq
 from src.api.interfaces import QueryRq, QueryRs
-from src.api.utils import get_document_by_id, get_query_page, update_model
+from src.api.utils import get_document_by_id, get_documents_by_ids
 
 
 router = APIRouter(
@@ -73,13 +73,23 @@ async def create_new_trial_within_session(rq: Request, session_id: str, body: Cr
     response_model=QueryRs[Trial]
 )
 async def list_trials_within_session(rq: Request, session_id: str, cursor: int = -1, limit: int = 100):
-    # TODO: maintain order
+    if cursor < -1:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Cursor must be at least -1"
+        )
     session = Session(**get_document_by_id(rq.app.db['sessions'], session_id))
+
     start = cursor + 1
-    trial_ids = session.trials[start:start+limit]
-    print(trial_ids)
+    end = start + limit
+    trial_ids = session.trials[start:end]
+    trials = get_documents_by_ids(rq.app.db['trials'], trial_ids)
+
+    has_next = (end < len(session.trials))
+    next_cursor = (end - 1) if has_next else None
+
     return {
-        'documents': [],
-        'cursor': -1,
-        'hasNext': False
+        'documents': trials,
+        'cursor': next_cursor,
+        'hasNext': has_next
     }
