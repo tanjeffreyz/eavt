@@ -4,7 +4,7 @@ from fastapi.encoders import jsonable_encoder
 from src.common import config
 from src.database.schema import Trial, Session
 from .models import CreateTrialRq
-from src.api.interfaces import QueryRq, QueryRs
+from src.api.interfaces import QueryRq, PageRs
 from src.api.utils import get_document_by_id, get_documents_by_ids
 
 
@@ -70,7 +70,7 @@ async def create_new_trial_within_session(rq: Request, session_id: str, body: Cr
     '/{session_id}/trials',
     status_code=status.HTTP_200_OK,
     response_description='List all trials within the session',
-    response_model=QueryRs[Trial]
+    response_model=PageRs[Trial]
 )
 async def list_trials_within_session(rq: Request, session_id: str, cursor: int = -1, limit: int = 100):
     if cursor < -1:

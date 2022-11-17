@@ -42,6 +42,7 @@ def parse_trial(path):
     desinusoid_path = str(rel_path(p)) if (p := root / 'desinusoid.lut').exists() else None
 
     raw = {
+        'stripRaw': get_all_paths(root / 'strip_raw', '**/*.tar'),
         'stripRawOutput': get_all_paths(root / 'strip_raw_output', '**/*.tar'),
         'rasterize': get_first_path(root / 'rasterize', '*.txt'),
         'trajectory': get_first_path(root / 'trajectory', '*.txt'),

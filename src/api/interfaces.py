@@ -16,7 +16,9 @@ class QueryRq(BaseModel):
     eq: float | int | str | None
 
 
-class QueryRs(GenericModel, Generic[T]):
+class PageRs(GenericModel, Generic[T]):
+    """One page of data from an endpoint that supports pagination."""
+
     documents: list[T]
     cursor: float | int | str | None
     hasNext: bool

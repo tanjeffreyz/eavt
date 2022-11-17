@@ -3,7 +3,7 @@ from fastapi.encoders import jsonable_encoder
 from src.common import utils
 from src.database.schema import Session
 from .models import CreateSessionRq
-from src.api.interfaces import QueryRq, QueryRs
+from src.api.interfaces import QueryRq, PageRs
 from src.api.utils import get_document_by_id, get_query_page, update_model
 
 router = APIRouter(
@@ -64,7 +64,7 @@ async def update_session(rq: Request, session_id: str, body: Session):
 @router.get(
     '/query/{field}',
     response_description='Lists all sessions ordered by a single field',
-    response_model=QueryRs[Session]
+    response_model=PageRs[Session]
 )
 async def list_sessions_by_single_field(rq: Request, field: str, order: int = -1, cursor: str = 'null', limit: int = 100):
     query_requests = [QueryRq(field=field, order=order)]
@@ -74,7 +74,7 @@ async def list_sessions_by_single_field(rq: Request, field: str, order: int = -1
 @router.post(
     '/query',
     response_description='Performs a query on multiple fields across all sessions',
-    response_model=QueryRs[Session]
+    response_model=PageRs[Session]
 )
 async def query_sessions_by_multiple_fields(rq: Request, body: list[QueryRq], cursor: str = 'null', limit: int = 100):
     return get_query_page(rq.app.db['sessions'], body, cursor, limit)
