@@ -2,7 +2,7 @@ from fastapi import HTTPException, Request, status
 from pydantic import BaseModel
 from src.common.utils import abs_path, rel_path
 from src.database.types import Immutable
-from src.api.interfaces import QueryRq
+from src.api.interfaces import QueryRq, DefaultCursor
 
 
 def update_model(model: BaseModel, diff: dict):
@@ -42,6 +42,7 @@ def parse_trial(path):
     desinusoid_path = str(rel_path(p)) if (p := root / 'desinusoid.lut').exists() else None
 
     raw = {
+        'stripRaw': get_all_paths(root / 'strip_raw', '**/*.tar'),
         'stripRawOutput': get_all_paths(root / 'strip_raw_output', '**/*.tar'),
         'rasterize': get_first_path(root / 'rasterize', '*.txt'),
         'trajectory': get_first_path(root / 'trajectory', '*.txt'),
@@ -84,7 +85,7 @@ def get_query_page(collection, body: list[QueryRq], cursor, limit):
     sort = []
     for i, q in enumerate(body):
         subquery = {'$exists': True}
-        if i == 0 and cursor != 'null':
+        if i == 0 and cursor != DefaultCursor.STR:
             # Apply cursor to primary (first) field:
             # If in DECREASING order (negative), return the next few items that are BELOW the cursor
             # If in INCREASING order (positive), return the next few items that are ABOVE the cursor
