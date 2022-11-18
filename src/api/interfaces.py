@@ -3,7 +3,6 @@
 from pydantic import BaseModel
 from pydantic.generics import GenericModel
 from typing import TypeVar, Generic
-from enum import Enum
 
 
 T = TypeVar('T')
@@ -25,9 +24,6 @@ class PageRs(GenericModel, Generic[T]):
     hasNext: bool
 
 
-#####################
-#       Enums       #
-#####################
-class DefaultCursor(Enum):
+class DefaultCursor:
     STR = 'null'
     INT = -1
