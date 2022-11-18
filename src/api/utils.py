@@ -55,9 +55,10 @@ def parse_trial(path):
 
 def get_document_by_id(collection, _id: str):
     if (result := collection.find_one({'_id': _id})) is None:
+        name = collection.name
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Trial ID does not exist: {_id}"
+            detail=f"ID does not exist in collection '{name}': {_id}"
         )
     return result
 

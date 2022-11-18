@@ -57,6 +57,15 @@ async def update_session(rq: Request, session_id: str, body: Session):
     return rq.app.db['sessions'].find_one({'_id': session_id})
 
 
+@router.get(
+    '/{session_id}',
+    description='Retrieves information about the session',
+    response_model=Session
+)
+async def get_session(rq: Request, session_id: str):
+    return get_document_by_id(rq.app.db['sessions'], session_id)
+
+
 #############################
 #       Query Sessions      #
 #############################

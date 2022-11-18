@@ -47,6 +47,15 @@ async def update_trial(rq: Request, trial_id: str, body: Trial):
     return rq.app.db['trials'].find_one({'_id': trial_id})
 
 
+@router.get(
+    '/{trial_id}',
+    description='Retrieves information about the trial',
+    response_model=Trial
+)
+async def get_trial(rq: Request, trial_id: str):
+    return get_document_by_id(rq.app.db['trials'], trial_id)
+
+
 #############################
 #       Query Trials        #
 #############################
