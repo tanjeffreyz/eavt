@@ -4,7 +4,7 @@ from fastapi.encoders import jsonable_encoder
 from src.common import config
 from src.database.schema import Trial, Session
 from .models import CreateTrialRq
-from src.api.interfaces import QueryRq, PageRs
+from src.api.interfaces import PageRs, DefaultCursor
 from src.api.utils import get_document_by_id, get_documents_by_ids
 
 
@@ -19,8 +19,7 @@ router = APIRouter(
 #############################
 @router.post(
     '/{session_id}/trials',
-    status_code=status.HTTP_200_OK,
-    response_description='Create a new trial within existing session',
+    description='Create a new trial within existing session',
     response_model=Trial
 )
 async def create_new_trial_within_session(rq: Request, session_id: str, body: CreateTrialRq):
@@ -68,11 +67,10 @@ async def create_new_trial_within_session(rq: Request, session_id: str, body: Cr
 #############################
 @router.get(
     '/{session_id}/trials',
-    status_code=status.HTTP_200_OK,
-    response_description='List all trials within the session',
+    description='List all trials within the session',
     response_model=PageRs[Trial]
 )
-async def list_trials_within_session(rq: Request, session_id: str, cursor: int = -1, limit: int = 100):
+async def list_trials_within_session(rq: Request, session_id: str, cursor: int = DefaultCursor.INT, limit: int = 100):
     if cursor < -1:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

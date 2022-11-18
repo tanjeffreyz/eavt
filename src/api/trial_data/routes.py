@@ -1,10 +1,11 @@
 import tarfile
+from base64 import b64encode
 from src.common import utils
 from fastapi import APIRouter, Request, HTTPException, status
-from fastapi.encoders import jsonable_encoder
-from src.api.utils import get_document_by_id, parse_trial, update_model, get_query_page
-from src.api.interfaces import QueryRq, PageRs
+from src.api.utils import get_document_by_id
+from src.api.interfaces import PageRs, DefaultCursor
 from src.database.schema import Trial
+from .models import Strip
 
 
 router = APIRouter(
@@ -18,20 +19,27 @@ router = APIRouter(
 #############################
 @router.get(
     '/{trial_id}/raw/strip-raw',
-    description='Retrieves raw strip data from the trial'
+    description='Retrieves raw strip data from the trial',
+    response_model=PageRs[Strip]
 )
-async def get_strip_raw(rq: Request, trial_id: str, cursor: str = 'null', limit: int = 100):
+async def get_strip_raw(rq: Request, trial_id: str, cursor: str = DefaultCursor.STR, limit: int = 100):
     trial = Trial(**get_document_by_id(rq.app.db['trials'], trial_id))
     if (tars := trial.raw.stripRaw) is None or len(tars) == 0:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"No raw strip data associated with trial: {trial.path}"
         )
+    return get_tar_page(tars, cursor, limit)
 
+
+#############################
+#       Helper Methods      #
+#############################
+def get_tar_page(tars, cursor, limit):
     # Retrieve last state from cursor
-    if cursor == 'null':
-        t = 0       # Which .tar to start from
-        f = -1      # Which file in the .tar to start from
+    if cursor == DefaultCursor.STR:
+        t = 0  # Which .tar to start from
+        f = -1  # Which file in the .tar to start from
     else:
         vals = cursor.split('|')
         t, f = int(vals[0]), int(vals[1])
@@ -42,7 +50,7 @@ async def get_strip_raw(rq: Request, trial_id: str, cursor: str = 'null', limit:
         with tarfile.open(utils.abs_path(tars[t]), 'r') as file:
             members = file.getmembers()
             start = f + 1
-            frames += members[start:start+remaining]
+            frames += members[start:start + remaining]
             f = start + remaining - 1
             remaining = limit - len(frames)
             if f + 1 >= len(members):
@@ -51,5 +59,19 @@ async def get_strip_raw(rq: Request, trial_id: str, cursor: str = 'null', limit:
     has_next = (t < len(tars))
     next_cursor = f'{t}|{f}' if has_next else None
 
+    documents = []
+    for frame in frames:
+        new_strip = Strip(
+            id=int(frame.name.split('.', 1)[0]),
+            data=b64encode(frame.tobuf())
+        )
+        documents.append(new_strip)
+
     print(len(frames))
     print(t, f)
+
+    return {
+        'documents': documents,
+        'cursor': next_cursor,
+        'hasNext': has_next
+    }
