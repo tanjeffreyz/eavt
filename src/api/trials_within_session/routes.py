@@ -17,7 +17,7 @@ router = APIRouter(
 #############################
 #       Creating Trials     #
 #############################
-@router.post(
+@router.post(       # TODO: create folder as well, or leave that up to Wizard?
     '/{session_id}/trials',
     description='Create a new trial within existing session',
     response_model=Trial
