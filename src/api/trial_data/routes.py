@@ -14,9 +14,9 @@ router = APIRouter(
 )
 
 
-#############################
-#       Get Trial Data      #
-#############################
+#########################
+#       Raw Data        #
+#########################
 @router.get(
     '/{trial_id}/raw/strip-raw',
     description='Retrieves raw strip data from the trial',
