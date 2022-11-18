@@ -88,9 +88,6 @@ def get_tar_page(tars, cursor, limit):
         )
         documents.append(new_strip)
 
-    print(len(frames))
-    print(t, f)
-
     return {
         'documents': documents,
         'cursor': next_cursor,
