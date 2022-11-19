@@ -1,5 +1,6 @@
-import API_ROOT from '../../config.js';
 import { Outlet, Link } from 'react-router-dom';
+import Trials from './Trials'
+import Sessions from './Sessions';
 
 function IndexNav() {
   return (
@@ -16,32 +17,6 @@ function IndexNav() {
       </nav>
 
       <Outlet />
-    </>
-  );
-}
-
-function Sessions() {
-  const test = ['1', '2', '3'];
-  const list = test.map((t) => <li>{t}</li>);
-  return (
-    <>
-      <h1>Sessions</h1>
-      <ol>
-        {list}
-      </ol>
-    </>
-  );
-}
-
-function Trials() {
-  const test = ['1', '2', '3'];
-  const list = test.map((t) => <li>{t}</li>);
-  return (
-    <>
-      <h1>Trials</h1>
-      <ol>
-        {list}
-      </ol>
     </>
   );
 }
