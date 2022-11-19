@@ -2,6 +2,7 @@ import uvicorn
 import logging
 from fastapi import FastAPI
 from fastapi.logger import logger
+from fastapi.middleware.cors import CORSMiddleware
 from pymongo import MongoClient
 from src.common import config
 from src.api import add_routes
@@ -24,6 +25,15 @@ def connect_db():
 
 # Initialize API routes
 add_routes(app)
+
+# Enable CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=['*'],        # TODO: change to deployed frontend origin
+    allow_credentials=True,
+    allow_methods=['*'],
+    allow_headers=['*']
+)
 
 # Set up logging
 uvicorn_logger = logging.getLogger('uvicorn')
