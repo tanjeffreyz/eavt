@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { API_ROOT } from '../../config'
 import { Collapse, Button, Container, Table } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
 
 function Sessions() {
   const [ loading, setLoading ] = useState(true);
@@ -59,25 +60,30 @@ function Sessions() {
 }
 
 function SessionRow(t, i, getState, toggleState) {
-  console.log(t);
   return (
-    <tr>
-      <td>{i+1}</td>
-      <td>
-        <Button
-          onClick={() => toggleState(i)}
-          aria-expanded={getState(i)}
-          size='sm'
-        >
-          {t.path}
-        </Button>
-        <Collapse in={getState(i)}>
-          <div>sparkline or metadata</div>
-        </Collapse>
-      </td>
-      <td>{t.dt}</td>
-      <td>{t.flag}</td>
-    </tr>
+    <LinkContainer to={t._id}>
+      <tr>
+        <td>{i+1}</td>
+        <td>
+          <Button
+            onClick={(e) => {
+              toggleState(i);
+              e.stopPropagation();
+            }}
+            aria-expanded={getState(i)}
+            size='sm'
+            variant='outline-primary'
+          >
+            {t.path}
+          </Button>
+          <Collapse in={getState(i)}>
+            <div>sparkline or metadata</div>
+          </Collapse>
+        </td>
+        <td>{t.dt}</td>
+        <td>{t.flag}</td>
+      </tr>
+    </LinkContainer>
   );
 }
 
