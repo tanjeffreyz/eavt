@@ -1,5 +1,5 @@
-const config = {
-  API_ROOT: 'http://localhost:1939/api'
-};
+const API_ROOT = 'http://localhost:1939/api';
 
-export default config;
+export {
+  API_ROOT
+};
