@@ -12,6 +12,28 @@ router = APIRouter(
 
 
 #############################
+#       Query Trials        #
+#############################
+@router.get(
+    '/query',
+    description='Lists all trials ordered by a single field',
+    response_model=PageRs[Trial]
+)
+async def list_trials_by_single_field(rq: Request, field: str, order: int = -1, cursor: str = DefaultCursor.STR, limit: int = 100):
+    query_requests = [QueryRq(field=field, order=order)]
+    return get_query_page(rq.app.db['trials'], query_requests, cursor, limit)
+
+
+@router.post(
+    '/query',
+    description='Performs a query on multiple fields across all trials',
+    response_model=PageRs[Trial]
+)
+async def query_trials_by_multiple_fields(rq: Request, body: list[QueryRq], cursor: str = DefaultCursor.STR, limit: int = 100):
+    return get_query_page(rq.app.db['trials'], body, cursor, limit)
+
+
+#############################
 #       Update Trials       #
 #############################
 @router.put(
@@ -54,25 +76,3 @@ async def update_trial(rq: Request, trial_id: str, body: Trial):
 )
 async def get_trial(rq: Request, trial_id: str):
     return get_document_by_id(rq.app.db['trials'], trial_id)
-
-
-#############################
-#       Query Trials        #
-#############################
-@router.get(
-    '/query',
-    description='Lists all trials ordered by a single field',
-    response_model=PageRs[Trial]
-)
-async def list_trials_by_single_field(rq: Request, field: str, order: int = -1, cursor: str = DefaultCursor.STR, limit: int = 100):
-    query_requests = [QueryRq(field=field, order=order)]
-    return get_query_page(rq.app.db['trials'], query_requests, cursor, limit)
-
-
-@router.post(
-    '/query',
-    description='Performs a query on multiple fields across all trials',
-    response_model=PageRs[Trial]
-)
-async def query_trials_by_multiple_fields(rq: Request, body: list[QueryRq], cursor: str = DefaultCursor.STR, limit: int = 100):
-    return get_query_page(rq.app.db['trials'], body, cursor, limit)

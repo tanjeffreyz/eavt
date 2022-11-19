@@ -12,6 +12,28 @@ router = APIRouter(
 )
 
 
+#############################
+#       Query Sessions      #
+#############################
+@router.get(
+    '/query',
+    description='Lists all sessions ordered by a single field',
+    response_model=PageRs[Session]
+)
+async def list_sessions_by_single_field(rq: Request, field: str, order: int = -1, cursor: str = DefaultCursor.STR, limit: int = 100):
+    query_requests = [QueryRq(field=field, order=order)]
+    return get_query_page(rq.app.db['sessions'], query_requests, cursor, limit)
+
+
+@router.post(
+    '/query',
+    description='Performs a query on multiple fields across all sessions',
+    response_model=PageRs[Session]
+)
+async def query_sessions_by_multiple_fields(rq: Request, body: list[QueryRq], cursor: str = DefaultCursor.STR, limit: int = 100):
+    return get_query_page(rq.app.db['sessions'], body, cursor, limit)
+
+
 #########################
 #       Sessions        #
 #########################
@@ -64,25 +86,3 @@ async def update_session(rq: Request, session_id: str, body: Session):
 )
 async def get_session(rq: Request, session_id: str):
     return get_document_by_id(rq.app.db['sessions'], session_id)
-
-
-#############################
-#       Query Sessions      #
-#############################
-@router.get(
-    '/query',
-    description='Lists all sessions ordered by a single field',
-    response_model=PageRs[Session]
-)
-async def list_sessions_by_single_field(rq: Request, field: str, order: int = -1, cursor: str = DefaultCursor.STR, limit: int = 100):
-    query_requests = [QueryRq(field=field, order=order)]
-    return get_query_page(rq.app.db['sessions'], query_requests, cursor, limit)
-
-
-@router.post(
-    '/query',
-    description='Performs a query on multiple fields across all sessions',
-    response_model=PageRs[Session]
-)
-async def query_sessions_by_multiple_fields(rq: Request, body: list[QueryRq], cursor: str = DefaultCursor.STR, limit: int = 100):
-    return get_query_page(rq.app.db['sessions'], body, cursor, limit)
