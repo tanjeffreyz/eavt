@@ -70,7 +70,7 @@ async def get_session(rq: Request, session_id: str):
 #       Query Sessions      #
 #############################
 @router.get(
-    '/query/{field}',
+    '/query',
     description='Lists all sessions ordered by a single field',
     response_model=PageRs[Session]
 )

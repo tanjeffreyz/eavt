@@ -60,7 +60,7 @@ async def get_trial(rq: Request, trial_id: str):
 #       Query Trials        #
 #############################
 @router.get(
-    '/query/{field}',
+    '/query',
     description='Lists all trials ordered by a single field',
     response_model=PageRs[Trial]
 )
