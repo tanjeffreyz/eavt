@@ -15,22 +15,19 @@ function Sessions() {
       })
       .then(data => { 
         setData(data);
-        console.log(API_ROOT);
-        console.log(API_ROOT + '/sessions/query?' + params);
       })
       .finally(() => {
         setLoading(false);
+        console.log('Retrieved session list');
       });
   }, []);
 
-  // const test = ['1', '2', '3'];
-  // const list = ;
   if (loading) return 'loading...';
   return (
     <>
       <h1>Sessions</h1>
       <ol>
-        {data ? data.documents.map((t) => <li>{t.path}</li>) : ''}
+        {data ? data.documents.map((t) => <li key={t._id}>{t.path}</li>) : ''}
       </ol>
     </>
   );
