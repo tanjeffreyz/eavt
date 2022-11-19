@@ -9,7 +9,7 @@ function IndexNav() {
     <>
       <Navbar bg='light' expand='md'>
         <Container fluid>
-          <Navbar.Brand href='#'>Index</Navbar.Brand>
+          <Navbar.Brand>Index</Navbar.Brand>
           <Navbar.Toggle aria-controls='index-navbar-nav' />
           <Navbar.Collapse id='index-navbar-nav'>
             <Nav className='ms-auto'>
