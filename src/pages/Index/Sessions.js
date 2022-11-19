@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { API_ROOT } from '../../config'
+import { Collapse, Button, Container, Table } from 'react-bootstrap';
 
 function Sessions() {
   const [ loading, setLoading ] = useState(true);
   const [ data, setData ] = useState(null);
+  const [ state, setState ] = useState({});
   
   useEffect(() => {
     const params = new URLSearchParams({field: 'dt'});
@@ -22,14 +24,60 @@ function Sessions() {
       });
   }, []);
 
+  function getState(i) {
+    if (!(i in state)) {
+      state[i] = false;
+    }
+    return state[i];
+  }
+
+  function toggleState(i) {
+    setState((prev) => {
+      return { ...prev, [i]: !getState(i) };
+    });
+  }
+
   if (loading) return 'loading...';
   return (
-    <>
+    <Container fluid align='center'>
       <h1>Sessions</h1>
-      <ol>
-        {data ? data.documents.map((t) => <li key={t._id}>{t.path}</li>) : ''}
-      </ol>
-    </>
+      <Table hover>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Date & Time</th>
+            <th>Flag</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.documents.map((t, i) => SessionRow(t, i, getState, toggleState))}
+        </tbody>
+      </Table>
+    </Container>
+  );
+}
+
+function SessionRow(t, i, getState, toggleState) {
+  console.log(t);
+  return (
+    <tr>
+      <td>{i+1}</td>
+      <td>
+        <Button
+          onClick={() => toggleState(i)}
+          aria-expanded={getState(i)}
+          size='sm'
+        >
+          {t.path}
+        </Button>
+        <Collapse in={getState(i)}>
+          <div>sparkline or metadata</div>
+        </Collapse>
+      </td>
+      <td>{t.dt}</td>
+      <td>{t.flag}</td>
+    </tr>
   );
 }
 
