@@ -1,16 +1,16 @@
 import { API_ROOT } from './config';
+import { useState, useEffect } from 'react';
 
 const sendRequest = async ({
   uri,
   config={},
   params=null,
-  setData=(() => {}),
-  setError=(() => {}),
-  setLoading=(() => {})
+  success=((data) => {}),
+  fail=((error) => {})
 }) => {
   let query = '';
   if (params !== null) {
-    query = '?' + new URLSearchParams({field: 'dt'});
+    query = '?' + (new URLSearchParams(params));
   }
 
   fetch(API_ROOT + uri + query, config)
@@ -21,15 +21,38 @@ const sendRequest = async ({
       throw res;
     })
     .then(
-      data => setData(data),
+      data => success(data),
       error => {
         console.error(error);
-        setError(true);
-        error.json().then((e) => setError(JSON.stringify(e, null, 2)));
+        fail(true);
+        error.json().then((e) => fail(JSON.stringify(e, null, 2)));
       }
-    )
-    .finally(() => setLoading(false));
+    );
 };
+
+const useInfiniteScroll = (callback) => {
+  const SCROLL_TOLERANCE = 25;
+  const [loading, setLoading] = useState(false);
+
+  const handleScroll = () => {
+    const doc = document.documentElement;
+    if (window.innerHeight + doc.scrollTop + SCROLL_TOLERANCE >= doc.offsetHeight) {
+      setLoading(true);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    if (!loading) return;
+    callback();     // Load more items
+  }, [loading]);
+
+  return [loading, setLoading];
+}
 
 const getFlagSymbol = (flag) => {
   let symbol;
@@ -48,5 +71,6 @@ const getFlagSymbol = (flag) => {
 
 export {
   sendRequest,
-  getFlagSymbol
+  getFlagSymbol,
+  useInfiniteScroll
 };
