@@ -18,7 +18,10 @@ function NavigationBar({
     <>
       <Navbar bg='light' expand='md'>
         <Container fluid>
-          <span><Navbar.Brand className='pe-3'>{title}</Navbar.Brand>{subtitle}</span>
+          <span>
+            <Navbar.Brand className='pe-3'>{title}</Navbar.Brand>
+            {subtitle}
+          </span>
           <Navbar.Toggle aria-controls='index-navbar-nav' />
           <Navbar.Collapse id='index-navbar-nav'>
             <Nav className='ms-auto'>
