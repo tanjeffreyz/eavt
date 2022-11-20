@@ -5,7 +5,7 @@ const sendRequest = async ({
   uri,
   config={},
   params=null,
-  success=((data) => {}),
+  pass=((data) => {}),
   fail=((error) => {})
 }) => {
   let query = '';
@@ -21,7 +21,7 @@ const sendRequest = async ({
       throw res;
     })
     .then(
-      data => success(data),
+      data => pass(data),
       error => {
         console.error(error);
         fail(true);
