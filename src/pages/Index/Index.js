@@ -5,7 +5,7 @@ import Sessions from './Sessions';
 function IndexNav() {
   return NavigationBar({
     title: 'Index',
-    routes: [
+    links: [
       {name: 'Sessions', to: '/sessions'},
       {name: 'Trials', to: '/trials'}
     ]
