@@ -18,7 +18,7 @@ function TrialRow(trial, i, getDropdownState, toggleDropdownState) {
   const sessionName = paths[0];
   const trialName = paths[paths.length-1];
   return (
-    <LinkContainer key={trial._id} to={trial._id}>
+    <LinkContainer key={i} to={trial._id}>
       <tr>
         <td>{i+1}</td>
         <td>

@@ -64,11 +64,11 @@ function DocumentList({
       <Table hover className='table-clamped-width'>
         <thead>
           <tr>
-            {headers.map(h => <th>{h}</th>)}
+            {headers.map((h, i) => <th key={i}>{h}</th>)}
           </tr>
         </thead>
         <tbody>
-          {documents.map((t, i) => rowElement(t, i, getDropdownState, toggleDropdownState))}
+          {documents.map((d, i) => rowElement(d, i, getDropdownState, toggleDropdownState))}
         </tbody>
       </Table>
       {loading && <Loader />}
