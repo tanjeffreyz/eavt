@@ -1,7 +1,7 @@
 import './Index.css';
 import { useState, useEffect } from 'react';
 import { sendRequest, getFlagSymbol } from '../../utils';
-import Loader from '../../components/Loader/Loader';
+import LoadingScreen from '../../components/LoadingScreen/LoadingScreen';
 import { Collapse, Button, Container, Table } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
@@ -35,7 +35,7 @@ function Trials() {
   }
 
   // Render
-  if (loading) return <Loader />;
+  if (loading) return <LoadingScreen />;
   if (error) return error;
   return (
     <Container fluid align='center'>

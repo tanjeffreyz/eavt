@@ -1,12 +1,13 @@
 import './Index.css';
 import { useState, useEffect } from 'react';
 import { sendRequest, getFlagSymbol } from '../../utils';
+import LoadingScreen from '../../components/LoadingScreen/LoadingScreen';
 import Loader from '../../components/Loader/Loader';
 import { Collapse, Button, Container, Table } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
 function Sessions() {
-  const [ data, setData ] = useState(null);
+  const [ sessions, setSessions ] = useState(null);
   const [ error, setError ] = useState(null);
   const [ loading, setLoading ] = useState(true);
   const [ state, setState ] = useState({});
@@ -15,7 +16,7 @@ function Sessions() {
     sendRequest({
       uri: '/sessions/query',
       params: {field: 'dt'},
-      setData,
+      setData: setSessions,
       setError,
       setLoading
     })
@@ -35,7 +36,7 @@ function Sessions() {
   };
 
   // Render
-  if (loading) return <Loader />;
+  if (loading) return <LoadingScreen />;
   if (error) return error;
   return (
     <Container fluid align='center'>
@@ -50,9 +51,10 @@ function Sessions() {
           </tr>
         </thead>
         <tbody>
-          {data.documents.map((t, i) => SessionRow(t, i, getState, toggleState))}
+          {sessions.documents.map((t, i) => SessionRow(t, i, getState, toggleState))}
         </tbody>
       </Table>
+      <Loader />
     </Container>
   );
 }
@@ -78,7 +80,7 @@ function SessionRow(session, i, getState, toggleState) {
             <div>sparkline or metadata</div>
           </Collapse>
         </td>
-        <td>{session.dt}</td>
+        <td>{session.dt}<br></br>a<br></br>a<br></br>a<br></br>a<br></br>a<br></br>a<br></br>a<br></br>a<br></br>a</td>
         <td>{getFlagSymbol(session.flag)}</td>
       </tr>
     </LinkContainer>
