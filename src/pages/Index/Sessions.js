@@ -1,3 +1,4 @@
+import './Index.css';
 import { useState, useEffect } from 'react';
 import { API_ROOT } from '../../config'
 import Loader from '../../components/Loader/Loader';
@@ -43,7 +44,7 @@ function Sessions() {
   return (
     <Container fluid align='center'>
       <h1>Sessions</h1>
-      <Table hover>
+      <Table hover className='table-clamped-width'>
         <thead>
           <tr>
             <th>#</th>
