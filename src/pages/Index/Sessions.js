@@ -1,6 +1,6 @@
 import './Index.css';
 import { useState, useEffect } from 'react';
-import { sendRequest } from '../../utils';
+import { sendRequest, getFlagSymbol } from '../../utils';
 import Loader from '../../components/Loader/Loader';
 import { Collapse, Button, Container, Table } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
@@ -79,7 +79,7 @@ function SessionRow(t, i, getState, toggleState) {
           </Collapse>
         </td>
         <td>{t.dt}</td>
-        <td>{t.flag}</td>
+        <td>{getFlagSymbol(t.flag)}</td>
       </tr>
     </LinkContainer>
   );

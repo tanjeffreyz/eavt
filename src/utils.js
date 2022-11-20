@@ -31,6 +31,22 @@ const sendRequest = async ({
     .finally(() => setLoading(false));
 };
 
+const getFlagSymbol = (flag) => {
+  let symbol;
+  switch(flag) {
+    case 'star':
+      symbol = '⭐';
+      break;
+    case 'error':
+      symbol = '❌';
+      break;
+    default:
+      symbol = flag;
+  }
+  return <div title={flag}>{symbol}</div>;
+}
+
 export {
-  sendRequest
+  sendRequest,
+  getFlagSymbol
 };
