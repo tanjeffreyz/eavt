@@ -58,12 +58,12 @@ function Trials() {
   );
 }
 
-function TrialRow(t, i, getState, toggleState) {
-  const paths = t.path.split('/');
+function TrialRow(trial, i, getState, toggleState) {
+  const paths = trial.path.split('/');
   const sessionName = paths[0];
   const trialName = paths[paths.length-1];
   return (
-    <LinkContainer key={t._id} to={t._id}>
+    <LinkContainer key={trial._id} to={trial._id}>
       <tr>
         <td>{i+1}</td>
         <td>
@@ -83,8 +83,8 @@ function TrialRow(t, i, getState, toggleState) {
           </Collapse>
         </td>
         <td>{sessionName}</td>
-        <td>{t.dt}</td>
-        <td>{getFlagSymbol(t.flag)}</td>
+        <td>{trial.dt}</td>
+        <td>{getFlagSymbol(trial.flag)}</td>
       </tr>
     </LinkContainer>
   );

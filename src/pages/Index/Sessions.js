@@ -57,9 +57,9 @@ function Sessions() {
   );
 }
 
-function SessionRow(t, i, getState, toggleState) {
+function SessionRow(session, i, getState, toggleState) {
   return (
-    <LinkContainer key={t._id} to={t._id}>
+    <LinkContainer key={session._id} to={session._id}>
       <tr>
         <td>{i+1}</td>
         <td>
@@ -72,14 +72,14 @@ function SessionRow(t, i, getState, toggleState) {
             size='sm'
             variant='outline-primary'
           >
-            {t.path}
+            {session.path}
           </Button>
           <Collapse in={getState(i)}>
             <div>sparkline or metadata</div>
           </Collapse>
         </td>
-        <td>{t.dt}</td>
-        <td>{getFlagSymbol(t.flag)}</td>
+        <td>{session.dt}</td>
+        <td>{getFlagSymbol(session.flag)}</td>
       </tr>
     </LinkContainer>
   );
