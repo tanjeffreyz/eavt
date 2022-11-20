@@ -1,46 +1,42 @@
 import './Index.css';
 import { useState, useEffect } from 'react';
-import { API_ROOT } from '../../config'
+import { sendRequest } from '../../utils';
 import Loader from '../../components/Loader/Loader';
 import { Collapse, Button, Container, Table } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
 function Sessions() {
-  const [ loading, setLoading ] = useState(true);
   const [ data, setData ] = useState(null);
+  const [ error, setError ] = useState(null);
+  const [ loading, setLoading ] = useState(true);
   const [ state, setState ] = useState({});
-  
+
   useEffect(() => {
-    const params = new URLSearchParams({field: 'dt'});
-    fetch(API_ROOT + '/sessions/query?' + params)
-      .then(res => {
-        if (res.ok) {
-          return res.json();
-        }
-      })
-      .then(data => { 
-        setData(data);
-      })
-      .finally(() => {
-        setLoading(false);
-        console.log('Retrieved session list');
-      });
+    sendRequest({
+      uri: '/sessions/query',
+      params: {field: 'dt'},
+      setData,
+      setError,
+      setLoading
+    })
   }, []);
 
-  function getState(i) {
+  const getState = (i) => {
     if (!(i in state)) {
       state[i] = false;
     }
     return state[i];
-  }
+  };
 
-  function toggleState(i) {
+  const toggleState = (i) => {
     setState((prev) => {
       return { ...prev, [i]: !getState(i) };
     });
-  }
+  };
 
+  // Render
   if (loading) return <Loader />;
+  if (error) return error;
   return (
     <Container fluid align='center'>
       <h1>Sessions</h1>
@@ -63,7 +59,7 @@ function Sessions() {
 
 function SessionRow(t, i, getState, toggleState) {
   return (
-    <LinkContainer to={t._id}>
+    <LinkContainer key={t._id} to={t._id}>
       <tr>
         <td>{i+1}</td>
         <td>
