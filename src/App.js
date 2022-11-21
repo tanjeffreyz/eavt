@@ -18,11 +18,7 @@ function App() {
           <Route index element={<Session />} />
         </Route>
         <Route path='/trials/:id' element={<TrialNav />}>
-          <Route element={<Trial />}>
-            <Route index element={<span>raw</span>} />
-            <Route path='raw' element={<span>raw</span>} />
-            <Route path='processed' element={<span>processed</span>} />
-          </Route>
+          <Route index element={<Trial />} />
         </Route>
       </Routes>
     </BrowserRouter>

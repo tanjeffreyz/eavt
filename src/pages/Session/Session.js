@@ -24,7 +24,9 @@ function SessionNav() {
     title: 'Session',
     subtitle: session.path,
     links: [
-      {name: 'TCA', to: {hash: 'tca'}},
+      {name: 'Visualization', to: {hash: 'visualization'}},
+      {name: 'Data', to: {hash: 'data'}},
+      {name: 'Comments', to: {hash: 'comments'}},
       {name: 'Trials', to: {hash: 'trials'}}
     ],
     back: {

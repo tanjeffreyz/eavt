@@ -31,8 +31,9 @@ function TrialNav() {
     title: 'Trial',
     subtitle,
     links: [
-      {name: 'Raw', to: 'raw'},
-      {name: 'Processed', to: 'processed'}
+      {name: 'Visualization', to: {hash: 'visualization'}},
+      {name: 'Data', to: {hash: 'data'}},
+      {name: 'Comments', to: {hash: 'comments'}}
     ],
     back: {
       icon: Back({}),
@@ -57,7 +58,7 @@ function Trial() {
         <span>{addWordBreaks(trial.path)}</span>
       </Container>
       <Container fluid align='center'>
-        
+
       </Container>
     </>
   );
