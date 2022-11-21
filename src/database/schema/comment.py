@@ -1,7 +1,7 @@
 from src.database.types import ImmutableString
-from src.database.fields import Opt
+from src.database.interfaces import Document
 
 
-class Comment(Opt.DateTime):
+class Comment(Document):
     author: ImmutableString | None
     body: str
