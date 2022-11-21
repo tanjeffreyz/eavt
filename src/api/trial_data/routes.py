@@ -57,7 +57,7 @@ async def get_strip_raw_output(rq: Request, trial_id: str, cursor: str = Cursor.
     description='Adds a new comment to this trial',
     response_model=Trial
 )
-async def add_comment(rq: Request, trial_id: str, body: Comment):
+async def add_comment_to_trial(rq: Request, trial_id: str, body: Comment):
     trial = Trial(**get_document_by_id(rq.app.db['trials'], trial_id))
     rq.app.db['trials'].update_one(
         {'_id': trial.id},
@@ -65,6 +65,19 @@ async def add_comment(rq: Request, trial_id: str, body: Comment):
     )
     return get_document_by_id(rq.app.db['trials'], trial_id)
 
+
+@router.delete(
+    '/{trial_id}/comments/{comment_id}',
+    description='Deletes the comment from this trial',
+    response_model=Trial
+)
+async def delete_comment_from_trial(rq: Request, trial_id: str, comment_id: str):
+    trial = Trial(**get_document_by_id(rq.app.db['trials'], trial_id))
+    rq.app.db['trials'].update_one(
+        {'_id': trial.id},
+        {'$pull': {'comments': {'_id': comment_id}}}
+    )
+    return get_document_by_id(rq.app.db['trials'], trial_id)
 
 #############################
 #       Helper Methods      #
