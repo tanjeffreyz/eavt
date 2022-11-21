@@ -79,6 +79,7 @@ async def delete_comment_from_trial(rq: Request, trial_id: str, comment_id: str)
     )
     return get_document_by_id(rq.app.db['trials'], trial_id)
 
+
 #############################
 #       Helper Methods      #
 #############################
