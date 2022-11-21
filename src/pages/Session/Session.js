@@ -6,6 +6,7 @@ import { sendRequest, addWordBreaks, getFlagSymbol } from '../../utils';
 import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import LoadingScreen from '../../components/LoadingScreen/LoadingScreen';
 import DocumentList from '../../components/DocumentList/DocumentList';
+import { Back } from '../../components/Icons/Icons';
 
 function SessionNav() {
   const params = useParams();
@@ -26,6 +27,10 @@ function SessionNav() {
       {name: 'TCA', to: {hash: 'tca'}},
       {name: 'Trials', to: {hash: 'trials'}}
     ],
+    back: {
+      icon: Back({}),
+      to: '/sessions'
+    },
     context: { session }
   });
 }

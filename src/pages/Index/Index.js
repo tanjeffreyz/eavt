@@ -1,4 +1,5 @@
 import NavigationBar from '../../components/NavigationBar/NavigationBar';
+import { Home } from '../../components/Icons/Icons';
 import Trials from './Trials'
 import Sessions from './Sessions';
 
@@ -10,7 +11,7 @@ function IndexNav() {
       {name: 'Trials', to: '/trials'}
     ],
     back: {
-      element: 'asdf',
+      icon: Home({}),
       to: {hash: ''}
     }
   });

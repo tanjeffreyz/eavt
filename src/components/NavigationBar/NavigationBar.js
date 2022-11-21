@@ -19,7 +19,7 @@ function NavigationBar({
 
   const backLink = back && (
     <LinkContainer to={back.to} className='pe-3'>
-      <span>{back.element}</span>
+      <span>{back.icon}</span>
     </LinkContainer>
   );
 
