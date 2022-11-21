@@ -1,13 +1,13 @@
 import { API_ROOT } from './config';
 import { useState, useEffect } from 'react';
 
-const sendRequest = async ({
+async function sendRequest({
   uri,
   config={},
   params=null,
   pass=((data) => {}),
   fail=((error) => {})
-}) => {
+}) {
   let query = '';
   if (params !== null) {
     query = '?' + (new URLSearchParams(params));
@@ -30,7 +30,7 @@ const sendRequest = async ({
     );
 };
 
-const useInfiniteScroll = (callback) => {
+function useInfiniteScroll(callback) {
   const SCROLL_TOLERANCE = 25;
   const [loading, setLoading] = useState(false);
 
@@ -54,7 +54,7 @@ const useInfiniteScroll = (callback) => {
   return [loading, setLoading];
 }
 
-const getFlagSymbol = (flag) => {
+function getFlagSymbol(flag) {
   let symbol;
   switch(flag) {
     case 'star':
@@ -69,8 +69,18 @@ const getFlagSymbol = (flag) => {
   return <div title={flag}>{symbol}</div>;
 }
 
+function addWordBreaks(text) {
+  const segments = text.split(/_/g);
+  let result = segments[segments.length-1];
+  for (let i = segments.length - 2; i >= 0; i--) {
+    result = <>{segments[i] + '_'}<wbr />{result}</>;
+  }
+  return result;
+}
+
 export {
   sendRequest,
   getFlagSymbol,
-  useInfiniteScroll
+  useInfiniteScroll,
+  addWordBreaks
 };
