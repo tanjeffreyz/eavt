@@ -2,7 +2,7 @@
 
 from pydantic import BaseModel, Field
 from datetime import datetime
-from src.database.types import Rank, Flag, ImmutableString, ImmutableList
+from src.database.types import Rank, Flag, ImmutableString
 
 
 #############################
@@ -33,6 +33,3 @@ class Opt:
         """User-set flag to mark interesting/unusual documents"""
 
         flag: Flag | None
-
-    class Comments(BaseModel):
-        comments: ImmutableList[str] = Field(default_factory=ImmutableList)
