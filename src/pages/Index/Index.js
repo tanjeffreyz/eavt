@@ -8,7 +8,11 @@ function IndexNav() {
     links: [
       {name: 'Sessions', to: '/sessions'},
       {name: 'Trials', to: '/trials'}
-    ]
+    ],
+    back: {
+      element: 'asdf',
+      to: {hash: ''}
+    }
   });
 }
 

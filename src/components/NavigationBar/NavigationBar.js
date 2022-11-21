@@ -6,6 +6,7 @@ function NavigationBar({
   title,
   subtitle,
   links,
+  back=null,
   context=[]
 }) {
   const linkElements = links.map((r, i) => {
@@ -15,11 +16,19 @@ function NavigationBar({
       </LinkContainer>
     );
   });
+
+  const backLink = back && (
+    <LinkContainer to={back.to} className='pe-3'>
+      <span>{back.element}</span>
+    </LinkContainer>
+  );
+
   return (
     <>
       <Navbar bg='light' expand='md'>
         <Container fluid>
           <span>
+            {backLink}
             <Navbar.Brand className='pe-3'>{title}</Navbar.Brand>
             {subtitle}
           </span>

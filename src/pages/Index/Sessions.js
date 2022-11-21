@@ -20,6 +20,7 @@ function Sessions() {
 }
 
 function SessionRow(session, i, getDropdownState, toggleDropdownState) {
+  const sessionName = addWordBreaks(session.path);
   return (
     <LinkContainer key={i} to={session._id}>
       <tr>
@@ -34,7 +35,7 @@ function SessionRow(session, i, getDropdownState, toggleDropdownState) {
             size='sm'
             variant='outline-primary'
           >
-            {addWordBreaks(session.path)}
+            {sessionName}
           </Button>
           <Collapse in={getDropdownState(i)}>
             <div>sparkline or metadata</div>
