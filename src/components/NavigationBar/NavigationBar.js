@@ -26,7 +26,7 @@ function NavigationBar({
 
   return (
     <>
-      <Navbar bg='light' expand='md'>
+      <Navbar bg='light' expand='md' fixed='top'>
         <Container fluid>
           <span>
             {backLink}
@@ -42,7 +42,8 @@ function NavigationBar({
         </Container>
       </Navbar>
 
-      <Outlet context={context}/>
+      <Container fluid className='my-4 py-2' />
+      <Outlet context={context} />
     </>
   );
 }
