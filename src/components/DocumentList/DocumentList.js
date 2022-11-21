@@ -2,7 +2,7 @@ import './DocumentList.css';
 import { useState, useEffect } from 'react';
 import { sendRequest, useInfiniteScroll } from '../../utils';
 import Loader from '../../components/Loader/Loader';
-import { Container, Table } from 'react-bootstrap';
+import { Table } from 'react-bootstrap';
 
 function DocumentList({
   headers,

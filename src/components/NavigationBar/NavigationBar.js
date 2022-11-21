@@ -1,3 +1,4 @@
+import './NavigationBar.css';
 import { Outlet } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Container, Nav, Navbar } from 'react-bootstrap';
@@ -19,7 +20,7 @@ function NavigationBar({
 
   const backLink = back && (
     <LinkContainer to={back.to} className='pe-3'>
-      <span>{back.icon}</span>
+      <span className='icon'>{back.icon}</span>
     </LinkContainer>
   );
 

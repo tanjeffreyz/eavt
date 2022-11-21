@@ -6,7 +6,7 @@ function getIcon(src) {
     width='20px', 
     height='20px' 
   }) {
-    return <img src={src} width={width} height={height} className='icon' />;
+    return <img src={src} width={width} height={height} alt={src} />;
   }
   return Icon;
 }
