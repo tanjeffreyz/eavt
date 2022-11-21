@@ -5,7 +5,8 @@ import { Container, Nav, Navbar } from 'react-bootstrap';
 function NavigationBar({
   title,
   subtitle,
-  links
+  links,
+  context=[]
 }) {
   const linkElements = links.map((r, i) => {
     return (
@@ -31,7 +32,7 @@ function NavigationBar({
         </Container>
       </Navbar>
 
-      <Outlet />
+      <Outlet context={context}/>
     </>
   );
 }
