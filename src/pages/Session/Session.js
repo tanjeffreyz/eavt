@@ -17,7 +17,7 @@ function SessionNav() {
       uri: `/sessions/${params.id}`,
       pass: (data) => setSession(data)
     })
-  }, []);
+  }, [params.id]);
 
   if (!session) return <LoadingScreen />;
   return NavigationBar({
@@ -54,7 +54,7 @@ function TrialRow(trial, i, getDropdownState, toggleDropdownState) {
   const paths = trial.path.split('/');
   const trialName = addWordBreaks(paths[paths.length-1]);
   return (
-    <LinkContainer key={i} to={trial._id}>
+    <LinkContainer key={i} to={`/trials/${trial._id}`}>
       <tr>
         <td>{i+1}</td>
         <td>

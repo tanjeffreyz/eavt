@@ -49,7 +49,7 @@ function useInfiniteScroll(callback) {
   useEffect(() => {
     if (!loading) return;
     callback();     // Load more items
-  }, [loading]);
+  }, [loading, callback]);
 
   return [loading, setLoading];
 }

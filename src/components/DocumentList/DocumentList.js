@@ -16,6 +16,7 @@ function DocumentList({
   const [loading, setLoading] = useInfiniteScroll(fetchNextPage);
   const [pageState, setPageState] = useState({cursor: null, hasNext: true});
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => fetchNextPage(10), []);
 
   function fetchNextPage(limit=1) {
