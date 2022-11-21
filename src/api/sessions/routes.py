@@ -60,7 +60,7 @@ async def create_new_session(rq: Request, body: CreateSessionRq):
     db_session = rq.app.db['sessions'].insert_one(new_document)
 
     # Return document as response
-    return rq.app.db['sessions'].find_one({'_id': db_session.inserted_id})
+    return get_document_by_id(rq.app.db['sessions'], db_session.inserted_id)
 
 
 @router.patch(
@@ -76,7 +76,7 @@ async def update_session(rq: Request, session_id: str, body: Session):
         jsonable_encoder(new_session)
     )
 
-    return rq.app.db['sessions'].find_one({'_id': session_id})
+    return get_document_by_id(rq.app.db['sessions'], session_id)
 
 
 @router.get(
