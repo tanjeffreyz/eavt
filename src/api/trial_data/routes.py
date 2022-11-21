@@ -2,6 +2,7 @@ import tarfile
 from base64 import b64encode
 from src.common import utils
 from fastapi import APIRouter, Request, HTTPException, status
+from fastapi.encoders import jsonable_encoder
 from src.api.utils import get_document_by_id
 from src.api.interfaces import PageRs, Cursor
 from src.database.schema import Trial, Comment
@@ -52,15 +53,17 @@ async def get_strip_raw_output(rq: Request, trial_id: str, cursor: str = Cursor.
 #########################
 @router.post(
     '/{trial_id}/comments',
+    status_code=status.HTTP_201_CREATED,
     description='Adds a new comment to this trial',
     response_model=Trial
 )
 async def add_comment(rq: Request, trial_id: str, body: Comment):
     trial = Trial(**get_document_by_id(rq.app.db['trials'], trial_id))
-    trial.comments.append(body)
-    return trial.dict()
-    # print(trial.comments)
-    # print(body)
+    rq.app.db['trials'].update_one(
+        {'_id': trial.id},
+        {'$push': {'comments': jsonable_encoder(body)}}
+    )
+    return get_document_by_id(rq.app.db['trials'], trial_id)
 
 
 #############################
