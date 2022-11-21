@@ -2,7 +2,7 @@
 
 from pydantic import BaseModel, Field
 from datetime import datetime
-from src.database.types import Rank, Flag, ImmutableString
+from src.database.types import Rank, Flag, ImmutableString, ImmutableList
 
 
 #############################
@@ -35,4 +35,4 @@ class Opt:
         flag: Flag | None
 
     class Comments(BaseModel):
-        comments: list[str] = Field(default=[])
+        comments: ImmutableList[str] = Field(default_factory=ImmutableList)

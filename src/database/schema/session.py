@@ -10,4 +10,4 @@ class Session(Document,     # TODO: validate folder length/depth = 1
               Opt.Rank, Opt.Comments,
               Val.FolderExists):
     # List of trial IDs in this session
-    trials: ImmutableList = Field(default_factory=ImmutableList)
+    trials: ImmutableList[str] = Field(default_factory=ImmutableList)

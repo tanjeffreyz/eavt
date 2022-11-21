@@ -12,8 +12,8 @@ class NewBaseModel(pydantic.BaseModel):
             return None
         try:
             # Cast Immutable types
-            if issubclass(field.type_, Immutable):
-                return field.type_(v)
+            if issubclass(field.outer_type_, Immutable):
+                return field.outer_type_(v)
         except:
             pass
         return v
