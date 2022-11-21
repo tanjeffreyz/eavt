@@ -1,16 +1,22 @@
-import { getFlagSymbol } from '../../utils';
+import { getFlagSymbol, addWordBreaks } from '../../utils';
 import DocumentList from '../../components/DocumentList/DocumentList';
-import { Collapse, Button } from 'react-bootstrap';
+import { Collapse, Button, Container } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
 function Sessions() {
-  return DocumentList({
-    title: 'Sessions',
+  const list = DocumentList({
     headers: ['#', 'Name', 'Date & Time', 'Flag'],
     uri: '/sessions/query',
     field: 'dt',
     rowElement: SessionRow
   });
+
+  return (
+    <Container fluid align='center'>
+      <h1>Sessions</h1>
+      {list}
+    </Container>
+  );
 }
 
 function SessionRow(session, i, getDropdownState, toggleDropdownState) {
@@ -28,7 +34,7 @@ function SessionRow(session, i, getDropdownState, toggleDropdownState) {
             size='sm'
             variant='outline-primary'
           >
-            {session.path}
+            {addWordBreaks(session.path)}
           </Button>
           <Collapse in={getDropdownState(i)}>
             <div>sparkline or metadata</div>

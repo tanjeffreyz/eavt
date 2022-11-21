@@ -23,13 +23,12 @@ function SessionNav() {
       {name: 'TCA', to: {hash: 'tca'}},
       {name: 'Trials', to: {hash: 'trials'}}
     ],
-    context: [session]
+    context: { session }
   });
 }
 
 function Session() {
-  const params = useParams();
-  const [session] = useOutletContext();
+  const { session } = useOutletContext();
   return (
     <div>{session._id}</div>
   );

@@ -1,16 +1,22 @@
 import { getFlagSymbol, addWordBreaks } from '../../utils';
 import DocumentList from '../../components/DocumentList/DocumentList';
-import { Collapse, Button } from 'react-bootstrap';
+import { Collapse, Button, Container } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
 function Trials() {
-  return DocumentList({
-    title: 'Trials',
+  const list = DocumentList({
     headers: ['#', 'Name', 'Session', 'Date & Time', 'Flag'],
     uri: '/trials/query',
     field: 'dt',
     rowElement: TrialRow
   });
+
+  return (
+    <Container fluid align='center'>
+      <h1>Trials</h1>
+      {list}
+    </Container>
+  );
 }
 
 function TrialRow(trial, i, getDropdownState, toggleDropdownState) {

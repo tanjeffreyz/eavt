@@ -5,7 +5,6 @@ import Loader from '../../components/Loader/Loader';
 import { Container, Table } from 'react-bootstrap';
 
 function DocumentList({
-  title,
   headers,
   uri, 
   field, 
@@ -59,8 +58,7 @@ function DocumentList({
   // Render
   if (error) return error;
   return (
-    <Container fluid align='center'>
-      <h1>{title}</h1>
+    <>
       <Table hover className='table-clamped-width'>
         <thead>
           <tr>
@@ -72,7 +70,7 @@ function DocumentList({
         </tbody>
       </Table>
       {loading && <Loader />}
-    </Container>
+    </>
   );
 }
 
