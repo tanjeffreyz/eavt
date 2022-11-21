@@ -49,8 +49,15 @@ function Trial() {
       <Outlet />
 
       <Container fluid align='center'>
-        
+        <h1>Data</h1>
+        <div align='left'>
+          <p>LMS: (0, 1, 0)</p>
+          <p>Jitter: 21.6589</p>
+        </div>
         <span>{addWordBreaks(trial.path)}</span>
+      </Container>
+      <Container fluid align='center'>
+        
       </Container>
     </>
   );
