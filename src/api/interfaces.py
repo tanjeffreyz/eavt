@@ -24,6 +24,5 @@ class PageRs(GenericModel, Generic[T]):
     hasNext: bool
 
 
-class DefaultCursor:
-    STR = 'null'
-    INT = -1
+class Cursor:
+    NULL = 'null'

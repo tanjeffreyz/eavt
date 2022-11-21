@@ -3,7 +3,7 @@ from base64 import b64encode
 from src.common import utils
 from fastapi import APIRouter, Request, HTTPException, status
 from src.api.utils import get_document_by_id
-from src.api.interfaces import PageRs, DefaultCursor
+from src.api.interfaces import PageRs, Cursor
 from src.database.schema import Trial
 from .models import Strip
 
@@ -22,7 +22,7 @@ router = APIRouter(
     description='Retrieves raw strip data from the trial',
     response_model=PageRs[Strip]
 )
-async def get_strip_raw(rq: Request, trial_id: str, cursor: str = DefaultCursor.STR, limit: int = 100):
+async def get_strip_raw(rq: Request, trial_id: str, cursor: str = Cursor.NULL, limit: int = 100):
     trial = Trial(**get_document_by_id(rq.app.db['trials'], trial_id))
     if (tars := trial.raw.stripRaw) is None or len(tars) == 0:
         raise HTTPException(
@@ -37,7 +37,7 @@ async def get_strip_raw(rq: Request, trial_id: str, cursor: str = DefaultCursor.
     description='Retrieves raw strip output data from the trial',
     response_model=PageRs[Strip]
 )
-async def get_strip_raw_output(rq: Request, trial_id: str, cursor: str = DefaultCursor.STR, limit: int = 100):
+async def get_strip_raw_output(rq: Request, trial_id: str, cursor: str = Cursor.NULL, limit: int = 100):
     trial = Trial(**get_document_by_id(rq.app.db['trials'], trial_id))
     if (tars := trial.raw.stripRawOutput) is None or len(tars) == 0:
         raise HTTPException(
@@ -52,7 +52,7 @@ async def get_strip_raw_output(rq: Request, trial_id: str, cursor: str = Default
 #############################
 def get_tar_page(tars, cursor, limit):
     # Retrieve last state from cursor, making sure it is a valid cursor
-    if cursor == DefaultCursor.STR:
+    if cursor == Cursor.NULL:
         t = 0       # Which .tar to start from
         f = -1      # Which file in the .tar to start from
     else:

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request
 from fastapi.encoders import jsonable_encoder
 from src.api.utils import get_document_by_id, parse_trial, update_model, get_query_page
-from src.api.interfaces import QueryRq, PageRs, DefaultCursor
+from src.api.interfaces import QueryRq, PageRs, Cursor
 from src.database.schema import Trial
 
 
@@ -19,7 +19,7 @@ router = APIRouter(
     description='Lists all trials ordered by a single field',
     response_model=PageRs[Trial]
 )
-async def list_trials_by_single_field(rq: Request, field: str, order: int = -1, cursor: str = DefaultCursor.STR, limit: int = 100):
+async def list_trials_by_single_field(rq: Request, field: str, order: int = -1, cursor: str = Cursor.NULL, limit: int = 100):
     query_requests = [QueryRq(field=field, order=order)]
     return get_query_page(rq.app.db['trials'], query_requests, cursor, limit)
 
@@ -29,7 +29,7 @@ async def list_trials_by_single_field(rq: Request, field: str, order: int = -1, 
     description='Performs a query on multiple fields across all trials',
     response_model=PageRs[Trial]
 )
-async def query_trials_by_multiple_fields(rq: Request, body: list[QueryRq], cursor: str = DefaultCursor.STR, limit: int = 100):
+async def query_trials_by_multiple_fields(rq: Request, body: list[QueryRq], cursor: str = Cursor.NULL, limit: int = 100):
     return get_query_page(rq.app.db['trials'], body, cursor, limit)
 
 

@@ -4,7 +4,7 @@ from fastapi.encoders import jsonable_encoder
 from src.common import config
 from src.database.schema import Trial, Session
 from .models import CreateTrialRq
-from src.api.interfaces import PageRs, DefaultCursor
+from src.api.interfaces import PageRs, Cursor
 from src.api.utils import get_document_by_id, get_documents_by_ids
 
 
@@ -70,7 +70,14 @@ async def create_new_trial_within_session(rq: Request, session_id: str, body: Cr
     description='List all trials within the session',
     response_model=PageRs[Trial]
 )
-async def list_trials_within_session(rq: Request, session_id: str, cursor: int = DefaultCursor.INT, limit: int = 100):
+async def list_trials_within_session(rq: Request, session_id: str, cursor: int | str = Cursor.NULL, limit: int = 100):
+    if cursor == Cursor.NULL:
+        cursor = -1
+    elif type(cursor) != int:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Cursor must either be '{Cursor.NULL}' or an integer >= -1"
+        )
     if cursor < -1:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

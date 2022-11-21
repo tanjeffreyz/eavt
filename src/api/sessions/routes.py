@@ -3,7 +3,7 @@ from fastapi.encoders import jsonable_encoder
 from src.common import utils
 from src.database.schema import Session
 from .models import CreateSessionRq
-from src.api.interfaces import QueryRq, PageRs, DefaultCursor
+from src.api.interfaces import QueryRq, PageRs, Cursor
 from src.api.utils import get_document_by_id, get_query_page, update_model
 
 router = APIRouter(
@@ -20,7 +20,7 @@ router = APIRouter(
     description='Lists all sessions ordered by a single field',
     response_model=PageRs[Session]
 )
-async def list_sessions_by_single_field(rq: Request, field: str, order: int = -1, cursor: str = DefaultCursor.STR, limit: int = 100):
+async def list_sessions_by_single_field(rq: Request, field: str, order: int = -1, cursor: str = Cursor.NULL, limit: int = 100):
     query_requests = [QueryRq(field=field, order=order)]
     return get_query_page(rq.app.db['sessions'], query_requests, cursor, limit)
 
@@ -30,7 +30,7 @@ async def list_sessions_by_single_field(rq: Request, field: str, order: int = -1
     description='Performs a query on multiple fields across all sessions',
     response_model=PageRs[Session]
 )
-async def query_sessions_by_multiple_fields(rq: Request, body: list[QueryRq], cursor: str = DefaultCursor.STR, limit: int = 100):
+async def query_sessions_by_multiple_fields(rq: Request, body: list[QueryRq], cursor: str = Cursor.NULL, limit: int = 100):
     return get_query_page(rq.app.db['sessions'], body, cursor, limit)
 
 
