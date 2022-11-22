@@ -49,12 +49,12 @@ function Trial() {
   const { trial } = useOutletContext();
   return (
     <>
-      <Section fluid align='center' className='mb-5' id='visualization'>
+      <Section fluid align='center' id='visualization'>
         <h1>Visualization</h1>
         {[...Array(100).keys()].map(i => <><br key={i}></br>a</>)}
       </Section>
 
-      <Section fluid align='center' className='mb-5' id='data'>
+      <Section fluid align='center' id='data'>
         <h1>Data</h1>
         <div align='left'>
           <p>LMS: (0, 1, 0)</p>
@@ -63,7 +63,7 @@ function Trial() {
         <span>{addWordBreaks(trial.path)}</span>
       </Section>
 
-      <Section fluid align='center' className='mb-5' id='comments'>
+      <Section fluid align='center' id='comments'>
         <h1>Comments</h1>
         {[...Array(100).keys()].map(i => <><br key={i}></br>a</>)}
       </Section>
