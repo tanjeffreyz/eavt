@@ -10,7 +10,6 @@ function App() {
   const { pathname, hash, key } = useLocation();
 
   useEffect(() => {
-    console.log(pathname, hash, key);
     if (hash === '') {
       window.scrollTo(0, 0);
     } else {
