@@ -10,7 +10,7 @@ function TrialRaw() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    requestAllPages({
+    getAllPages({
       uri: `/trials/${trial._id}/raw/strip-raw`,
       setData: setStripRaw,
       callback: () => setLoading(false)
@@ -27,7 +27,7 @@ function TrialRaw() {
   );
 }
 
-function requestAllPages({
+function getAllPages({
   uri,
   setData=((data) => {}),
   callback=(() => {})
