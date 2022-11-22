@@ -1,11 +1,12 @@
 import { getFlagSymbol, addWordBreaks } from '../../utils';
 import DocumentList from '../../components/DocumentList/DocumentList';
-import { Collapse, Button, Container } from 'react-bootstrap';
+import { Collapse, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
+import Section from '../../components/Section/Section';
 
 function Trials() {
   return (
-    <Container fluid align='center'>
+    <Section fluid align='center'>
       <h1>Trials</h1>
       <DocumentList 
         headers={['#', 'Name', 'Session', 'Date & Time', 'Flag']}
@@ -13,7 +14,7 @@ function Trials() {
         params={{ field: 'dt' }}
         rowElement={TrialRow}
       />
-    </Container>
+    </Section>
   );
 }
 

@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useParams, useOutletContext } from 'react-router-dom';
-import { Collapse, Button, Container } from 'react-bootstrap';
+import { Collapse, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { sendRequest, addWordBreaks, getFlagSymbol } from '../../utils';
 import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import LoadingScreen from '../../components/LoadingScreen/LoadingScreen';
 import DocumentList from '../../components/DocumentList/DocumentList';
 import { Back } from '../../components/Icons/Icons';
+import Section from '../../components/Section/Section';
 
 function SessionNav() {
   const params = useParams();
@@ -42,7 +43,7 @@ function SessionNav() {
 function Session() {
   const { session } = useOutletContext();
   return (
-    <Container fluid align='center'>
+    <Section fluid align='center'>
       <h1 id='trials'>Trials</h1>
       <DocumentList 
         headers={['#', 'Name', 'Date & Time', 'Flag']}
@@ -50,7 +51,7 @@ function Session() {
         params={{ field: 'dt' }}
         rowElement={TrialRow}
       />
-    </Container>
+    </Section>
   );
 }
 
