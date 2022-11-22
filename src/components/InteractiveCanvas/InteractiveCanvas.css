@@ -1,0 +1,5 @@
+.canvas-rounded-corners {
+  display: inline-block;
+  overflow: hidden;
+  border-radius: 10px;
+}

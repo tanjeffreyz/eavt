@@ -6,6 +6,7 @@ import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import LoadingScreen from '../../components/LoadingScreen/LoadingScreen';
 import { Back } from '../../components/Icons/Icons';
 import Section from '../../components/Section/Section';
+import TrialRaw from './TrialRaw';
 
 function TrialNav() {
   const params = useParams();
@@ -19,6 +20,7 @@ function TrialNav() {
   }, [params.id]);
 
   if (!trial) return <LoadingScreen />;
+
   const paths = trial.path.split('/');
   const sessionName = paths[0];
   const trialName = paths[paths.length-1];
@@ -27,6 +29,7 @@ function TrialNav() {
       {trialName}
     </span>
   );
+  
   return (
     <NavigationBar
       title='Trial'
@@ -51,7 +54,7 @@ function Trial() {
     <>
       <Section fluid align='center' id='visualization'>
         <h1>Visualization</h1>
-        {[...Array(100).keys()].map(i => <><br key={i}></br>a</>)}
+        <TrialRaw />
       </Section>
 
       <Section fluid align='center' id='data'>
