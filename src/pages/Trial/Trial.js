@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import { useParams, useOutletContext, Outlet } from 'react-router-dom';
-import { Collapse, Button, Container } from 'react-bootstrap';
+import { useParams, useOutletContext } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import { sendRequest, addWordBreaks, getFlagSymbol } from '../../utils';
 import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import LoadingScreen from '../../components/LoadingScreen/LoadingScreen';
 import { Back } from '../../components/Icons/Icons';
+import Section from '../../components/Section/Section';
 
 function TrialNav() {
   const params = useParams();
@@ -49,19 +49,24 @@ function Trial() {
   const { trial } = useOutletContext();
   return (
     <>
-      <Outlet />
+      <Section fluid align='center' className='mb-5' id='visualization'>
+        <h1>Visualization</h1>
+        {[...Array(100).keys()].map(i => <><br key={i}></br>a</>)}
+      </Section>
 
-      <Container fluid align='center'>
+      <Section fluid align='center' className='mb-5' id='data'>
         <h1>Data</h1>
         <div align='left'>
           <p>LMS: (0, 1, 0)</p>
           <p>Jitter: 21.6589</p>
         </div>
         <span>{addWordBreaks(trial.path)}</span>
-      </Container>
-      <Container fluid align='center'>
+      </Section>
 
-      </Container>
+      <Section fluid align='center' className='mb-5' id='comments'>
+        <h1>Comments</h1>
+        {[...Array(100).keys()].map(i => <><br key={i}></br>a</>)}
+      </Section>
     </>
   );
 }
