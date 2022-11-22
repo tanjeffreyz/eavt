@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { getFlagSymbol, addWordBreaks } from '../../utils';
 import DocumentList from '../../components/DocumentList/DocumentList';
 import { Collapse, Button } from 'react-bootstrap';
@@ -12,36 +13,39 @@ function Sessions() {
         headers={['#', 'Name', 'Date & Time', 'Flag']}
         uri='/sessions/query'
         params={{ field: 'dt' }}
-        rowElement={SessionRow}
+        Row={SessionRow}
       />
     </Section>
   );
 }
 
-function SessionRow(session, i, getDropdownState, toggleDropdownState) {
-  const sessionName = addWordBreaks(session.path);
+function SessionRow({
+  document, index
+}) {
+  const [dropdownState, setDropdownState] = useState(false);
+  const sessionName = addWordBreaks(document.path);
   return (
-    <LinkContainer key={i} to={session._id}>
+    <LinkContainer key={index} to={document._id}>
       <tr>
-        <td>{i+1}</td>
+        <td>{index+1}</td>
         <td>
           <Button
             onClick={(e) => {
-              toggleDropdownState(i);
+              setDropdownState((prev) => !prev);
               e.stopPropagation();
             }}
-            aria-expanded={getDropdownState(i)}
+            aria-expanded={dropdownState}
             size='sm'
             variant='outline-primary'
           >
             {sessionName}
           </Button>
-          <Collapse in={getDropdownState(i)}>
+          <Collapse in={dropdownState}>
             <div>sparkline or metadata</div>
           </Collapse>
         </td>
-        <td>{session.dt}</td>
-        <td>{getFlagSymbol(session.flag)}</td>
+        <td>{document.dt}</td>
+        <td>{getFlagSymbol(document.flag)}</td>
       </tr>
     </LinkContainer>
   );

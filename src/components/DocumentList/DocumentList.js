@@ -8,11 +8,10 @@ function DocumentList({
   headers,
   uri, 
   params, 
-  rowElement
+  Row
 }) {
   const [documents, setDocuments] = useState([]);
   const [error, setError] = useState(null);
-  const [state, setState] = useState({});
   const [loading, setLoading] = useInfiniteScroll(fetchNextPage);
   const [pageState, setPageState] = useState({cursor: null, hasNext: true});
 
@@ -43,19 +42,6 @@ function DocumentList({
     });
   };
 
-  function getDropdownState(i) {
-    if (!(i in state)) {
-      state[i] = false;
-    }
-    return state[i];
-  };
-
-  function toggleDropdownState(i) {
-    setState((prev) => {
-      return { ...prev, [i]: !getDropdownState(i) };
-    });
-  };
-
   // Render
   if (error) return error;
   return (
@@ -67,7 +53,7 @@ function DocumentList({
           </tr>
         </thead>
         <tbody>
-          {documents.map((d, i) => rowElement(d, i, getDropdownState, toggleDropdownState))}
+          {documents.map((d, i) => <Row index={i} document={d} />)}
         </tbody>
       </Table>
       {loading && <Loader />}

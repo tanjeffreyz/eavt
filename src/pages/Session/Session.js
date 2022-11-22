@@ -49,38 +49,41 @@ function Session() {
         headers={['#', 'Name', 'Date & Time', 'Flag']}
         uri={`/sessions/${session._id}/trials`}
         params={{ field: 'dt' }}
-        rowElement={TrialRow}
+        Row={TrialRow}
       />
       {[...Array(100).keys()].map(i => <><br key={i}></br>a</>)}
     </Section>
   );
 }
 
-function TrialRow(trial, i, getDropdownState, toggleDropdownState) {
-  const paths = trial.path.split('/');
+function TrialRow({
+  document, index
+}) {
+  const [dropdownState, setDropdownState] = useState(false);
+  const paths = document.path.split('/');
   const trialName = addWordBreaks(paths[paths.length-1]);
   return (
-    <LinkContainer key={i} to={`/trials/${trial._id}`}>
+    <LinkContainer key={index} to={`/trials/${document._id}`}>
       <tr>
-        <td>{i+1}</td>
+        <td>{index+1}</td>
         <td>
           <Button
             onClick={(e) => {
-              toggleDropdownState(i);
+              setDropdownState((prev) => !prev);
               e.stopPropagation();
             }}
-            aria-expanded={getDropdownState(i)}
+            aria-expanded={dropdownState}
             size='sm'
             variant='outline-primary'
           >
             {trialName}
           </Button>
-          <Collapse in={getDropdownState(i)}>
+          <Collapse in={dropdownState}>
             <div>sparkline or metadata</div>
           </Collapse>
         </td>
-        <td>{trial.dt}</td>
-        <td>{getFlagSymbol(trial.flag)}</td>
+        <td>{document.dt}</td>
+        <td>{getFlagSymbol(document.flag)}</td>
       </tr>
     </LinkContainer>
   );
