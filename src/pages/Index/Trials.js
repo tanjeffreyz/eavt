@@ -7,7 +7,7 @@ function Trials() {
   const list = DocumentList({
     headers: ['#', 'Name', 'Session', 'Date & Time', 'Flag'],
     uri: '/trials/query',
-    field: 'dt',
+    params: { field: 'dt' },
     rowElement: TrialRow
   });
 

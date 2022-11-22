@@ -7,7 +7,7 @@ function Sessions() {
   const list = DocumentList({
     headers: ['#', 'Name', 'Date & Time', 'Flag'],
     uri: '/sessions/query',
-    field: 'dt',
+    params: { field: 'dt' },
     rowElement: SessionRow
   });
 

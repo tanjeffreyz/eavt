@@ -7,7 +7,7 @@ import { Table } from 'react-bootstrap';
 function DocumentList({
   headers,
   uri, 
-  field, 
+  params, 
   rowElement
 }) {
   const [documents, setDocuments] = useState([]);
@@ -27,7 +27,7 @@ function DocumentList({
     sendRequest({
       uri,
       params: {
-        field, 
+        ...params,
         limit: 100,
         cursor: pageState.cursor
       },
