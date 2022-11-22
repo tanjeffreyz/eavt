@@ -50,7 +50,7 @@ async def reindex_trial(rq: Request, trial_id: str):
         jsonable_encoder(new_trial)
     )
 
-    return rq.app.db['trials'].find_one({'_id': trial_id})
+    return get_document_by_id(rq.app.db['trials'], trial_id)
 
 
 @router.patch(
@@ -66,7 +66,7 @@ async def update_trial(rq: Request, trial_id: str, body: Trial):
         jsonable_encoder(new_trial)
     )
 
-    return rq.app.db['trials'].find_one({'_id': trial_id})
+    return get_document_by_id(rq.app.db['trials'], trial_id)
 
 
 @router.get(

@@ -59,7 +59,7 @@ async def create_new_trial_within_session(rq: Request, session_id: str, body: Cr
     )
 
     # Return document as response
-    return rq.app.db['trials'].find_one({'_id': db_trial.inserted_id})
+    return get_document_by_id(rq.app.db['trials'], db_trial.inserted_id)
 
 
 #############################

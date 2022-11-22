@@ -2,9 +2,10 @@ import tarfile
 from base64 import b64encode
 from src.common import utils
 from fastapi import APIRouter, Request, HTTPException, status
+from fastapi.encoders import jsonable_encoder
 from src.api.utils import get_document_by_id
 from src.api.interfaces import PageRs, Cursor
-from src.database.schema import Trial
+from src.database.schema import Trial, Comment
 from .models import Strip
 
 
@@ -45,6 +46,38 @@ async def get_strip_raw_output(rq: Request, trial_id: str, cursor: str = Cursor.
             detail=f"No raw strip output data associated with trial: {trial.path}"
         )
     return get_tar_page(tars, cursor, limit)
+
+
+#########################
+#       Comments        #
+#########################
+@router.post(
+    '/{trial_id}/comments',
+    status_code=status.HTTP_201_CREATED,
+    description='Adds a new comment to this trial',
+    response_model=Trial
+)
+async def add_comment_to_trial(rq: Request, trial_id: str, body: Comment):
+    trial = Trial(**get_document_by_id(rq.app.db['trials'], trial_id))
+    rq.app.db['trials'].update_one(
+        {'_id': trial.id},
+        {'$push': {'comments': jsonable_encoder(body)}}
+    )
+    return get_document_by_id(rq.app.db['trials'], trial_id)
+
+
+@router.delete(
+    '/{trial_id}/comments/{comment_id}',
+    description='Deletes the comment from this trial',
+    response_model=Trial
+)
+async def delete_comment_from_trial(rq: Request, trial_id: str, comment_id: str):
+    trial = Trial(**get_document_by_id(rq.app.db['trials'], trial_id))
+    rq.app.db['trials'].update_one(
+        {'_id': trial.id},
+        {'$pull': {'comments': {'_id': comment_id}}}
+    )
+    return get_document_by_id(rq.app.db['trials'], trial_id)
 
 
 #############################
