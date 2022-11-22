@@ -18,7 +18,6 @@ function TrialRaw() {
   }, []);
 
   if (loading) return <Loader />;
-  console.log(stripRaw);
   return (
     <>
       <InteractiveCanvas width={900} height={600} />
