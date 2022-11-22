@@ -20,34 +20,36 @@ function SessionNav() {
   }, [params.id]);
 
   if (!session) return <LoadingScreen />;
-  return NavigationBar({
-    title: 'Session',
-    subtitle: session.path,
-    links: [
-      {name: 'Visualization', to: {hash: 'visualization'}},
-      {name: 'Data', to: {hash: 'data'}},
-      {name: 'Comments', to: {hash: 'comments'}},
-      {name: 'Trials', to: {hash: 'trials'}}
-    ],
-    back: {
-      icon: Back({}),
-      to: '/sessions'
-    },
-    context: { session }
-  });
+  return (
+    <NavigationBar
+      title='Session'
+      subtitle={session.path}
+      links={[
+        {name: 'Visualization', to: {hash: 'visualization'}},
+        {name: 'Data', to: {hash: 'data'}},
+        {name: 'Comments', to: {hash: 'comments'}},
+        {name: 'Trials', to: {hash: 'trials'}}
+      ]}
+      back={{
+        icon: <Back />,
+        to: '/sessions'
+      }}
+      context={{session}}
+    />
+  );
 }
 
 function Session() {
   const { session } = useOutletContext();
-  const list = DocumentList({
-    headers: ['#', 'Name', 'Date & Time', 'Flag'],
-    uri: `/sessions/${session._id}/trials`,
-    rowElement: TrialRow
-  });
   return (
     <Container fluid align='center'>
       <h1 id='trials'>Trials</h1>
-      {list}
+      <DocumentList 
+        headers={['#', 'Name', 'Date & Time', 'Flag']}
+        uri={`/sessions/${session._id}/trials`}
+        params={{ field: 'dt' }}
+        rowElement={TrialRow}
+      />
     </Container>
   );
 }

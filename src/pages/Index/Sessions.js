@@ -4,17 +4,15 @@ import { Collapse, Button, Container } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
 function Sessions() {
-  const list = DocumentList({
-    headers: ['#', 'Name', 'Date & Time', 'Flag'],
-    uri: '/sessions/query',
-    params: { field: 'dt' },
-    rowElement: SessionRow
-  });
-
   return (
     <Container fluid align='center'>
       <h1>Sessions</h1>
-      {list}
+      <DocumentList 
+        headers={['#', 'Name', 'Date & Time', 'Flag']}
+        uri='/sessions/query'
+        params={{ field: 'dt' }}
+        rowElement={SessionRow}
+      />
     </Container>
   );
 }

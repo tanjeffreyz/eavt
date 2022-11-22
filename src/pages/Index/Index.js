@@ -4,17 +4,19 @@ import Trials from './Trials'
 import Sessions from './Sessions';
 
 function IndexNav() {
-  return NavigationBar({
-    title: 'Index',
-    links: [
-      {name: 'Sessions', to: '/sessions'},
-      {name: 'Trials', to: '/trials'}
-    ],
-    back: {
-      icon: Home({}),
-      to: {hash: ''}
-    }
-  });
+  return (
+    <NavigationBar
+      title='Index'
+      links={[
+        {name: 'Sessions', to: '/sessions'},
+        {name: 'Trials', to: '/trials'}
+      ]}
+      back={{
+        icon: <Home />,
+        to: {hash: ''}
+      }}
+    />
+  );
 }
 
 export {
