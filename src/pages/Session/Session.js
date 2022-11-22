@@ -46,7 +46,7 @@ function Session() {
   });
   return (
     <Container fluid align='center'>
-      <h1>Trials</h1>
+      <h1 id='trials'>Trials</h1>
       {list}
     </Container>
   );
