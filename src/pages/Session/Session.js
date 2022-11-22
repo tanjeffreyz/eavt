@@ -43,16 +43,31 @@ function SessionNav() {
 function Session() {
   const { session } = useOutletContext();
   return (
-    <Section fluid align='center' id='trials'>
-      <h1>Trials</h1>
-      <DocumentList 
-        headers={['#', 'Name', 'Date & Time', 'Flag']}
-        uri={`/sessions/${session._id}/trials`}
-        params={{ field: 'dt' }}
-        Row={TrialRow}
-      />
-      {[...Array(100).keys()].map(i => <><br key={i}></br>a</>)}
-    </Section>
+    <>
+      <Section fluid align='center' id='visualization'>
+        <h1>Visualization</h1>
+      </Section>
+      
+      <Section fluid align='center' id='data'>
+        <h1>Data</h1>
+      </Section>
+
+      <Section fluid align='center' id='comments'>
+        <h1>Comments</h1>
+      </Section>
+
+      <Section fluid align='center' id='trials'>
+        <h1>Trials</h1>
+        <DocumentList 
+          headers={['#', 'Name', 'Date & Time', 'Flag']}
+          uri={`/sessions/${session._id}/trials`}
+          params={{ field: 'dt' }}
+          Row={TrialRow}
+        />
+        {[...Array(100).keys()].map(i => <><br key={i}></br>a</>)}
+      </Section>
+    </>
+    
   );
 }
 
