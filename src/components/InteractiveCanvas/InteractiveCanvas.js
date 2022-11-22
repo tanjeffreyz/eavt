@@ -10,12 +10,10 @@ function InteractiveCanvas({
   const canvasRef = useRef();
 
   useEffect(() => {
-    console.log('drawn');
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
     context.fillStyle = 'black';
     context.fillRect(0, 0, canvas.width, canvas.height);
-    console.log(context);
   }, [index]);
 
   return (

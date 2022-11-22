@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useParams, useOutletContext } from 'react-router-dom';
-import { LinkContainer } from 'react-router-bootstrap';
 import { sendRequest, addWordBreaks, getFlagSymbol } from '../../utils';
 import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import LoadingScreen from '../../components/LoadingScreen/LoadingScreen';
@@ -29,7 +28,7 @@ function TrialNav() {
       {trialName}
     </span>
   );
-  
+
   return (
     <NavigationBar
       title='Trial'
