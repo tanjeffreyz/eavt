@@ -83,7 +83,7 @@ async def delete_comment_from_trial(rq: Request, trial_id: str, comment_id: str)
 #############################
 #       Helper Methods      #
 #############################
-def get_tar_page(tars, cursor, limit):
+def get_tar_page(tars, cursor, limit):      # TODO: generalize to all image types
     # Retrieve last state from cursor, making sure it is a valid cursor
     if cursor == Cursor.NULL:
         t = 0       # Which .tar to start from
@@ -99,27 +99,28 @@ def get_tar_page(tars, cursor, limit):
             )
 
     remaining = limit
-    frames = []
+    documents = []
     while remaining > 0 and t < len(tars):
-        with tarfile.open(utils.abs_path(tars[t]), 'r') as file:
-            members = file.getmembers()
+        with tarfile.open(utils.abs_path(tars[t]), 'r') as tar:
+            members = tar.getmembers()
             start = f + 1
-            frames += members[start:start + remaining]
+
+            # Add file contents to documents
+            for m in members[start:start + remaining]:
+                new_strip = Strip(
+                    id=int(m.name.split('.', 1)[0]),
+                    data=b64encode(tar.extractfile(m).read())
+                )
+                documents.append(new_strip)
+
+            # Continue pagination
             f = start + remaining - 1
-            remaining = limit - len(frames)
+            remaining = limit - len(documents)
             if f + 1 >= len(members):
                 t += 1
                 f = -1
     has_next = (t < len(tars))
     next_cursor = f'{t},{f}' if has_next else None
-
-    documents = []
-    for frame in frames:
-        new_strip = Strip(
-            id=int(frame.name.split('.', 1)[0]),
-            data=b64encode(frame.tobuf())
-        )
-        documents.append(new_strip)
 
     return {
         'documents': documents,
