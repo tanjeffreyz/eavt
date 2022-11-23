@@ -6,6 +6,7 @@ import LoadingScreen from '../../components/LoadingScreen/LoadingScreen';
 import { Back } from '../../components/Icons/Icons';
 import Section from '../../components/Section/Section';
 import TrialRaw from './TrialRaw';
+import { Button } from 'react-bootstrap';
 
 function TrialNav() {
   const params = useParams();
@@ -49,11 +50,13 @@ function TrialNav() {
 
 function Trial() {
   const { trial } = useOutletContext();
+  const [ test, setTest ] = useState(true);
   return (
     <>
       <Section fluid align='center' id='visualization'>
         <h1>Visualization</h1>
-        <TrialRaw />
+        <Button onClick={() => setTest((prev) => !prev)}>Toggle</Button>
+        {test ? <TrialRaw /> : <span>heheh</span>}
       </Section>
 
       <Section fluid align='center' id='data'>

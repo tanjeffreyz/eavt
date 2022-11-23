@@ -28,18 +28,6 @@ function TrialRaw() {
 
   /** Loads raw strip data into sprites */
   function init(scene) {
-    const material2 = new THREE.LineBasicMaterial( { color: 0xff0000 } );
-    const points2 = [];
-    points2.push( new THREE.Vector3(-256, -256, 0) );
-    points2.push( new THREE.Vector3(-256, 256, 0) );
-    points2.push( new THREE.Vector3(256, 256, 0) );
-    points2.push( new THREE.Vector3(256, -256, 0) );
-    points2.push( new THREE.Vector3(-256, -256, 0) );
-  
-    const geometry2 = new THREE.BufferGeometry().setFromPoints(points2);
-    const line2 = new THREE.Line(geometry2, material2);
-    scene.add(line2);
-    
     const minIndex = Math.floor(stripRaw[0].n / 32);
     const frames = [];
     stripRaw.forEach((frame) => {
@@ -76,12 +64,15 @@ function TrialRaw() {
     }
   }
 
-  // Render the component
+  // Stall while loading
   if (numLoaded < datasets.length) return <Loader />;
 
+  // Accommodate longest sequence of frames
   const numFrames = Math.max(
     stripRaw.length,
   );
+
+  // Render component
   return (
     <>
       <InteractiveCanvas 
