@@ -22,7 +22,7 @@ function TrialRaw() {
   }, []);
 
   function defaultDraw(scene) {
-    console.log(stripRaw);
+    // console.log(stripRaw);
     const material = new THREE.LineBasicMaterial( { color: 0x0000ff } );
     const points = [];
     points.push( new THREE.Vector3(-20, 0, 0) );
@@ -47,7 +47,7 @@ function TrialRaw() {
     const line2 = new THREE.Line(geometry2, material2);
     scene.add(line2);
 
-    console.log(stripRaw[0].data);
+    // console.log(stripRaw[0].data);
     // const manager = new THREE.LoadingManager();
 
     const strip = new THREE.TextureLoader().load(
@@ -57,7 +57,7 @@ function TrialRaw() {
     const stripMaterial = new THREE.SpriteMaterial( { map: strip } );
     const sprite = new THREE.Sprite( stripMaterial );
     sprite.scale.set(512, 16, 1);
-    console.log(sprite);
+    // console.log(sprite);
     scene.add( sprite );
   }
 

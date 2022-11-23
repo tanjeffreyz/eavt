@@ -14,8 +14,10 @@ const InteractiveCanvas = forwardRef((props, ref) => {
 
   const FOV = 45;     // Vertical FOV in degrees
   const HALF_FOV_RAD = Math.PI / 180 * (FOV / 2);
-  const NEAR = 1;
+  const NEAR = 100;
   const FAR = 2000;
+  const MAX_SCALE = getScaleFromZ(NEAR);
+  const MIN_SCALE = getScaleFromZ(FAR);
 
   const canvasRef = useRef();
   const rendererRef = useRef(null);
@@ -36,6 +38,7 @@ const InteractiveCanvas = forwardRef((props, ref) => {
     canvas.addEventListener('mousedown', onMouseDown);
     canvas.addEventListener('mousemove', onMouseMove);
     canvas.addEventListener('mouseup', onMouseUp);
+    document.body.addEventListener('mouseup', onMouseUp);
 
     const renderer = new THREE.WebGLRenderer({
       canvas,
