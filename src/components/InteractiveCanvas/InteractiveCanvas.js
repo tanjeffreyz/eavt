@@ -31,6 +31,7 @@ const InteractiveCanvas = forwardRef((props, ref) => {
   //    Initialization    //
   //////////////////////////
   useEffect(() => {
+    // Three.js uses standard Cartesian coordinates (up is +y, right is +x)
     const canvas = canvasRef.current;
     canvas.addEventListener('mousedown', onMouseDown);
     canvas.addEventListener('mousemove', onMouseMove);
@@ -44,20 +45,18 @@ const InteractiveCanvas = forwardRef((props, ref) => {
     const camera = new THREE.PerspectiveCamera(
       FOV, displayWidth / displayHeight, NEAR, FAR
     );
+    scene.add(camera);
 
     // Fit content to display
-    const defaultScale = Math.min(
+    defaultScaleRef.current = Math.min(
       displayHeight / contentHeight,
       displayWidth / contentWidth
     );
-    // camera.position.set(0, 0, getZFromScale(defaultScale));
-    scene.add(camera);
 
     // Save references
     rendererRef.current = renderer;
     sceneRef.current = scene;
     cameraRef.current = camera;
-    defaultScaleRef.current = defaultScale;
 
     // Add objects to scene and initial render
     init(scene);
@@ -68,8 +67,16 @@ const InteractiveCanvas = forwardRef((props, ref) => {
   ////////////////////////////
   //    Helper Functions    //
   ////////////////////////////
+  /** Re-renders the scene without updating */
+  function render() {
+    requestAnimationFrame(() => {
+      rendererRef.current.render(sceneRef.current, cameraRef.current);
+    });
+  }
+
+  /** Updates the scene and then re-renders */
   function draw() {
-    requestAnimationFrame((time) => {
+    requestAnimationFrame(() => {
       update(sceneRef.current);
       rendererRef.current.render(sceneRef.current, cameraRef.current);
     });
@@ -85,20 +92,15 @@ const InteractiveCanvas = forwardRef((props, ref) => {
     return Math.round(fov_height / (2 * Math.tan(HALF_FOV_RAD)));
   }
 
-  ////////////////////////////
-  //    Canvas Functions    //
-  ////////////////////////////
   function centerCanvas() {
-    // Three.js uses standard Cartesian coordinates (up is +y, right is +x)
-    const x = contentWidth / 2;
-    const y = contentHeight / 2;
-    console.log(defaultScaleRef.current * contentHeight);
-    cameraRef.current.position.set(x, y, getZFromScale(defaultScaleRef.current));
-    draw();
+    cameraRef.current.position.set(0, 0, getZFromScale(defaultScaleRef.current));
+    render();
   }
 
+  // Expose Canvas functions to parent component
   useImperativeHandle(ref, () => ({
-    centerCanvas  
+    centerCanvas,
+    render
   }));
 
   //////////////////////////
@@ -131,7 +133,7 @@ const InteractiveCanvas = forwardRef((props, ref) => {
         cameraStart.y + deltaY
       );
 
-      draw();
+      render();
     }
   }
 
