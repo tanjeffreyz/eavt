@@ -74,14 +74,6 @@ const InteractiveCanvas = forwardRef((props, ref) => {
     });
   }
 
-  /** Updates the scene and then re-renders */
-  function draw() {
-    requestAnimationFrame(() => {
-      update(sceneRef.current);
-      rendererRef.current.render(sceneRef.current, cameraRef.current);
-    });
-  }
-
   function getScaleFromZ(z) {
     const fov_height = 2 * Math.tan(HALF_FOV_RAD) * z;
     return displayHeight / fov_height;
@@ -140,12 +132,15 @@ const InteractiveCanvas = forwardRef((props, ref) => {
   function onMouseUp(e) {
     draggingRef.current = false;
   }
-
-  console.log('rendered');
   
   ////////////////////////////
   //    Render Component    //
   ////////////////////////////
+  requestAnimationFrame(() => {
+    update(sceneRef.current);
+    render();
+  });
+
   return (
     <div 
       className='interactive-canvas-rounded-corners' 
