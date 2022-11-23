@@ -18,6 +18,11 @@ function TrialRaw() {
   const [stripRawOutput, setStripRawOutput] = useState([]);
   const datasets = [
     {uri: `/trials/${trial._id}/raw/strip-raw`, setData: setStripRaw},
+    {uri: `/trials/${trial._id}/raw/strip-raw`, setData: setStripRaw},
+    {uri: `/trials/${trial._id}/raw/strip-raw`, setData: setStripRaw},
+    {uri: `/trials/${trial._id}/raw/strip-raw`, setData: setStripRaw},
+    {uri: `/trials/${trial._id}/raw/strip-raw`, setData: setStripRaw},
+    {uri: `/trials/${trial._id}/raw/strip-raw`, setData: setStripRaw},
     {uri: `/trials/${trial._id}/raw/strip-raw-output`, setData: setStripRawOutput}
   ]
 
@@ -28,15 +33,14 @@ function TrialRaw() {
     });
   }, []);
 
-  function init(scene) {
+  function init({scene, camera, renderer}) {
     // Free up memory, working with sprites only now
-    setStripRaw(loadStripSprites(stripRaw, scene));
+    setStripRaw(loadStripSprites(stripRaw, scene, renderer));
     // setStripRawOutput(addSprites(stripRawOutput, scene));
   }
 
   /** Shows current frame's data and hides previous frame's data */
-  function update(scene) {
-    console.log(index);
+  function update({scene, camera, renderer}) {
     if (stripRaw && stripRaw.length > 0 && Array.isArray(stripRaw[0])) {
       stripRaw[index.prev].forEach((s) => { s.visible = false; });
       stripRaw[index.curr].forEach((s) => { s.visible = true; });
@@ -85,7 +89,7 @@ function TrialRaw() {
 ////////////////////////////
 //    Helper Functions    //
 ////////////////////////////
-function loadStripSprites(strips, scene) {
+function loadStripSprites(strips, scene, renderer) {
   const minIndex = Math.floor(strips[0].name / 32);
   const frames = [];
   strips.forEach((strip) => {
@@ -95,7 +99,7 @@ function loadStripSprites(strips, scene) {
     // Build image sprite
     const texture = new THREE.TextureLoader().load(
       `data:image/bmp;base64,${strip.data}`,
-      () => {}  // For some reason, adding a callback here causes the image to render after loading...
+      (map) => renderer.initTexture(map)    // Init texture immediately, not on first-render
     );
     const material = new THREE.SpriteMaterial({ map: texture });
     const sprite = new THREE.Sprite(material);

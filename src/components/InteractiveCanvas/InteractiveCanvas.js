@@ -7,8 +7,8 @@ const InteractiveCanvas = forwardRef(({
   displayHeight,
   contentWidth,
   contentHeight,
-  init=((scene) => {}),
-  update=((scene) => {}),
+  init=({scene, camera, renderer}) => {},
+  update=({scene, camera, renderer}) => {},
 }, ref) => {
   const FOV = 45;     // Vertical FOV in degrees
   const HALF_FOV_RAD = Math.PI / 180 * (FOV / 2);
@@ -60,7 +60,7 @@ const InteractiveCanvas = forwardRef(({
     cameraRef.current = camera;
 
     // Add objects to scene and initial render
-    init(scene);
+    init({scene, camera, renderer});
     centerCanvas();
   }, []);
 
@@ -135,7 +135,11 @@ const InteractiveCanvas = forwardRef(({
   ////////////////////////////
   //    Render Component    //
   ////////////////////////////
-  update(sceneRef.current);   // This should never be skipped, can't use animation frame!
+  update({    // This should never be skipped, can't use animation frame here!
+    scene: sceneRef.current,
+    camera: cameraRef.current,
+    renderer: rendererRef.current
+  });
   render();
   
   return (
