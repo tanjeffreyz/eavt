@@ -25,7 +25,7 @@ function SessionRow({
   const [dropdownState, setDropdownState] = useState(false);
   const sessionName = addWordBreaks(document.path);
   return (
-    <LinkContainer key={index} to={document._id}>
+    <LinkContainer key={index} to={`/sessions/${document._id}`}>
       <tr>
         <td>{index+1}</td>
         <td>

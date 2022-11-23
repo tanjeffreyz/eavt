@@ -139,11 +139,9 @@ const InteractiveCanvas = forwardRef((props, ref) => {
   ////////////////////////////
   //    Render Component    //
   ////////////////////////////
-  requestAnimationFrame(() => {
-    update(sceneRef.current);
-    render();
-  });
-
+  update(sceneRef.current);   // This should never be skipped, can't use animation frame!
+  render();
+  
   return (
     <div 
       className='interactive-canvas-rounded-corners' 

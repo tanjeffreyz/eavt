@@ -27,7 +27,7 @@ function TrialRow({
   const sessionName = addWordBreaks(paths[0]);
   const trialName = addWordBreaks(paths[paths.length-1]);
   return (
-    <LinkContainer key={index} to={document._id}>
+    <LinkContainer key={index} to={`/trials/${document._id}`}>
       <tr>
         <td>{index+1}</td>
         <td>
