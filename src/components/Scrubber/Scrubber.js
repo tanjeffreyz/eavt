@@ -37,7 +37,7 @@ function Scrubber({
 
   // Seek functions
   function togglePlaying() {
-    setPlaying((prev) => !prev);
+    if (max > 0) setPlaying((prev) => !prev);
   }
 
   function play() {
@@ -50,13 +50,21 @@ function Scrubber({
     }
   }
 
+  function seekLeft() {
+    if (max > 0) setIndex((prev) => Math.max(prev - 1, 0));
+  }
+
+  function seekRight() {
+    if (max > 0) setIndex((prev) => Math.min(prev + 1, max - 1));
+  }
+
   return (
     <Container fluid {...props} style={{width}}>
       <Row className='align-items-center'>
         <Col md='auto'>
           <ChevronLeft 
             className='me-2' 
-            onClick={() => setIndex((prev) => Math.max(prev - 1, 0))} 
+            onClick={seekLeft} 
           />
           <span>
             {playing ? 
@@ -66,7 +74,7 @@ function Scrubber({
           
           <ChevronRight 
             className='ms-2' 
-            onClick={() => setIndex((prev) => Math.min(prev + 1, max - 1))} 
+            onClick={seekRight} 
           />
         </Col>
         <Col>

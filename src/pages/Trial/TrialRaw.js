@@ -16,6 +16,10 @@ function TrialRaw() {
   // Load data
   const [stripRaw, setStripRaw] = useState([]);
   const [stripRawOutput, setStripRawOutput] = useState([]);
+
+  const [stripRawSprites, setStripRawSprites] = useState([]);
+  const [stripRawOutputSprites, setStripRawOutputSprites] = useState([]);
+  
   const datasets = [
     {uri: `/trials/${trial._id}/raw/strip-raw`, setData: setStripRaw},
     {uri: `/trials/${trial._id}/raw/strip-raw`, setData: setStripRaw},
@@ -41,16 +45,17 @@ function TrialRaw() {
 
   function init({scene, camera, renderer}) {
     // Free up memory, working with sprites only now
-    setStripRaw(loadStripSprites(stripRaw, scene, renderer));
-    // setStripRawOutput(addSprites(stripRawOutput, scene));
+    setStripRawSprites(loadStripSprites(stripRaw, scene, renderer));
+    setStripRaw([]);
+    // setStripRawOutputSprites(loadStripSprites(stripRaw, scene, renderer));
+    // setStripRawOutput([]);
   }
 
   /** Shows current frame's data and hides previous frame's data */
   function update({scene, camera, renderer}) {
-    console.log(index, numFrames);
-    if (stripRaw && stripRaw.length > 0 && Array.isArray(stripRaw[0])) {
-      stripRaw[index.prev].forEach((s) => { s.visible = false; });
-      stripRaw[index.curr].forEach((s) => { s.visible = true; });
+    if (stripRawSprites && stripRawSprites.length > 0 && Array.isArray(stripRawSprites[0])) {
+      stripRawSprites[index.prev].forEach((s) => { s.visible = false; });
+      stripRawSprites[index.curr].forEach((s) => { s.visible = true; });
     }
     // if (stripRawOutput && stripRawOutput.length > 0 && Array.isArray(stripRawOutput[0])) {
     //   stripRawOutput[prevIndexRef.current].forEach((s) => { s.visible = false; });
@@ -63,8 +68,8 @@ function TrialRaw() {
 
   // Accommodate longest sequence of frames
   const numFrames = Math.min(
-    stripRaw.length,
-    stripRawOutput.length
+    stripRawSprites.length,
+    // stripRawOutputSprites.length
   );
   console.log('rendered');
 
