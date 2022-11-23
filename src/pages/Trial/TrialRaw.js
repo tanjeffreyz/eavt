@@ -72,6 +72,7 @@ function TrialRaw() {
         setIndex={setIndex}
         width={900}
         max={numFrames}
+        className='mt-2'
       />
 
       <Button onClick={() => canvasRef.current.centerCanvas()}>

@@ -51,7 +51,7 @@ function Scrubber({
   }
 
   return (
-    <Container fluid style={{width}}>
+    <Container fluid {...props} style={{width}}>
       <Row className='align-items-center'>
         <Col md='auto'>
           <ChevronLeft 
