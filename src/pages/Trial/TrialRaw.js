@@ -1,32 +1,17 @@
 import { useEffect, useState, useRef } from 'react';
-import { Button, Col, Container, Form, Row } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import { useOutletContext } from 'react-router-dom';
 import * as THREE from 'three';
 import InteractiveCanvas from '../../components/InteractiveCanvas/InteractiveCanvas';
 import Loader from '../../components/Loader/Loader';
-import Scrubber from '../../components/Scrubber/Scrubber';
-import { ChevronLeft, ChevronRight, Pause, Play } from '../../components/Icons/Icons';
+import { Scrubber, useScrubberState } from '../../components/Scrubber/Scrubber';
 import { sendRequest } from '../../utils';
 
 function TrialRaw() {
-  const FPS = 60;
-  const FPS_INTERVAL = 1000.0 / FPS;
-
   const { trial } = useOutletContext();
   const [numLoaded, setNumLoaded] = useState(0);    // Tracks number of datasets loaded
   const canvasRef = useRef(null);
-  const [index, _setIndex] = useState(0);
-  const prevIndexRef = useRef(0);
-  const [playing, setPlaying] = useState(false);
-  const animationFrameRef = useRef('initialReference');
-  const startTimeRef = useRef(0);
-
-  function setIndex(callback) {
-    _setIndex((prev) => {
-      prevIndexRef.current = prev;
-      return callback(prev);
-    });
-  }
+  const [index, setIndex] = useScrubberState();
 
   // Load data
   const [stripRaw, setStripRaw] = useState([]);
@@ -51,24 +36,16 @@ function TrialRaw() {
 
   /** Shows current frame's data and hides previous frame's data */
   function update(scene) {
+    console.log(index);
     if (stripRaw && stripRaw.length > 0 && Array.isArray(stripRaw[0])) {
-      stripRaw[prevIndexRef.current].forEach((s) => { s.visible = false; });
-      stripRaw[index].forEach((s) => { s.visible = true; });
+      stripRaw[index.prev].forEach((s) => { s.visible = false; });
+      stripRaw[index.curr].forEach((s) => { s.visible = true; });
     }
     // if (stripRawOutput && stripRawOutput.length > 0 && Array.isArray(stripRawOutput[0])) {
     //   stripRawOutput[prevIndexRef.current].forEach((s) => { s.visible = false; });
     //   stripRawOutput[index].forEach((s) => { s.visible = true; });
     // }
   }
-
-  useEffect(() => {
-    if (!animationFrameRef.current) {
-      animationFrameRef.current = requestAnimationFrame(play);
-    } else {
-      cancelAnimationFrame(animationFrameRef.current);
-      animationFrameRef.current = null;
-    }
-  }, [playing]);
 
   // Stall while loading
   if (numLoaded < datasets.length) return <Loader />;
@@ -78,21 +55,6 @@ function TrialRaw() {
     stripRaw.length,
     stripRawOutput.length
   );
-
-  // Seek functions
-  function togglePlaying() {
-    setPlaying((prev) => !prev);
-  }
-
-  function play() {
-    animationFrameRef.current = requestAnimationFrame(play);
-    const now = Date.now();
-    const diff = now - startTimeRef.current;
-    if (diff > FPS_INTERVAL) {
-      startTimeRef.current = now - (diff % FPS_INTERVAL);
-      setIndex((prev) => (prev + 1) % numFrames);
-    }
-  }
 
   // Render component
   return (
@@ -105,39 +67,12 @@ function TrialRaw() {
         update={update}
       />
 
-      <Scrubber index='asdf'/>
-
-      <Container fluid style={{width: 900}}>
-        <Row className='align-items-center'>
-          <Col md='auto'>
-            <ChevronLeft 
-              className='me-2' 
-              onClick={() => setIndex((prev) => Math.max(prev - 1, 0))} 
-            />
-            <span>
-              {playing ? 
-              <Pause width={30} height={30} onClick={togglePlaying} /> :
-              <Play width={30} height={30} onClick={togglePlaying} />}
-            </span>
-            
-            <ChevronRight 
-              className='ms-2' 
-              onClick={() => setIndex((prev) => Math.min(prev + 1, numFrames - 1))} 
-            />
-          </Col>
-          <Col>
-            <Form.Range 
-              min={0}
-              max={numFrames - 1}
-              value={index}
-              onChange={(e) => setIndex(() => parseInt(e.target.value))}
-            />
-          </Col>
-          <Col md='auto'>
-            <span>{`${numFrames ? index + 1 : 0} / ${numFrames}`}</span>
-          </Col>
-        </Row>
-      </Container>
+      <Scrubber 
+        index={index}
+        setIndex={setIndex}
+        width={900}
+        max={numFrames}
+      />
 
       <Button onClick={() => canvasRef.current.centerCanvas()}>
         Center
