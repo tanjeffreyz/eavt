@@ -2,5 +2,5 @@ from pydantic import BaseModel
 
 
 class Strip(BaseModel):
-    n: int
+    name: int
     data: str

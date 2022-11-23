@@ -20,7 +20,6 @@ class PageRs(GenericModel, Generic[T]):
     """One page of data from an endpoint that supports pagination."""
 
     documents: list[T]
-    info: dict = Field(default={})
     cursor: float | int | str | None
     hasNext: bool
 
