@@ -1,16 +1,21 @@
 import './InteractiveCanvas.css';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import * as THREE from 'three';
 
-function InteractiveCanvas({
-  width,
-  height,
-  init=((scene) => {}),
-  update=((scene) => {})
-}) {
-  const FOV = 45;   // Vertical FOV in degrees
+const InteractiveCanvas = forwardRef((props, ref) => {
+  let {
+    displayWidth,
+    displayHeight,
+    contentWidth,
+    contentHeight,
+    init=((scene) => {}),
+    update=((scene) => {})
+  } = props;
+
+  const FOV = 45;     // Vertical FOV in degrees
+  const HALF_FOV_RAD = Math.PI / 180 * (FOV / 2);
   const NEAR = 1;
-  const FAR = 100;
+  const FAR = 2000;
 
   const canvasRef = useRef();
   const rendererRef = useRef(null);
@@ -20,7 +25,7 @@ function InteractiveCanvas({
   const mouseStartRef = useRef({ x: 0, y: 0 });
   const cameraStartRef = useRef({ x: 0, y: 0 });
   const draggingRef = useRef(false);
-  const imageSizeRef = useRef({ width: 1, height: 1 });
+  const defaultScaleRef = useRef(1.0);
 
   //////////////////////////
   //    Initialization    //
@@ -37,44 +42,64 @@ function InteractiveCanvas({
     });
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
-      FOV, width / height, NEAR, FAR
+      FOV, displayWidth / displayHeight, NEAR, FAR
     );
-    camera.position.set(0, 0, FAR);
+
+    // Fit content to display
+    const defaultScale = Math.min(
+      displayHeight / contentHeight,
+      displayWidth / contentWidth
+    );
+    // camera.position.set(0, 0, getZFromScale(defaultScale));
     scene.add(camera);
 
-    init(scene);
-    draw();
-
+    // Save references
     rendererRef.current = renderer;
     sceneRef.current = scene;
     cameraRef.current = camera;
+    defaultScaleRef.current = defaultScale;
+
+    // Add objects to scene and initial render
+    init(scene);
+    centerCanvas();
+    console.log('mounted');
   }, []);
 
-  //////////////////////////
-  //    Draw Function     //
-  //////////////////////////
+  ////////////////////////////
+  //    Helper Functions    //
+  ////////////////////////////
   function draw() {
     requestAnimationFrame((time) => {
-      // drawFunction(sceneRef.current);
       update(sceneRef.current);
       rendererRef.current.render(sceneRef.current, cameraRef.current);
     });
   }
 
-  ////////////////////////////
-  //    Helper Functions    //
-  ////////////////////////////
-  const HALF_FOV_RAD = Math.PI / 180 * (FOV / 2);
-
   function getScaleFromZ(z) {
     const fov_height = 2 * Math.tan(HALF_FOV_RAD) * z;
-    return height / fov_height;
+    return displayHeight / fov_height;
   }
 
   function getZFromScale(scale) {
-    const fov_height = height / scale;
-    return fov_height / (2 * Math.tan(HALF_FOV_RAD));
+    const fov_height = displayHeight / scale;
+    return Math.round(fov_height / (2 * Math.tan(HALF_FOV_RAD)));
   }
+
+  ////////////////////////////
+  //    Canvas Functions    //
+  ////////////////////////////
+  function centerCanvas() {
+    // Three.js uses standard Cartesian coordinates (up is +y, right is +x)
+    const x = contentWidth / 2;
+    const y = contentHeight / 2;
+    console.log(defaultScaleRef.current * contentHeight);
+    cameraRef.current.position.set(x, y, getZFromScale(defaultScaleRef.current));
+    draw();
+  }
+
+  useImperativeHandle(ref, () => ({
+    centerCanvas  
+  }));
 
   //////////////////////////
   //    Event Listeners   //
@@ -89,7 +114,6 @@ function InteractiveCanvas({
       x: camera.position.x,
       y: camera.position.y
     }
-    console.log(mouseStartRef.current);
     draggingRef.current = true;
   }
 
@@ -117,20 +141,22 @@ function InteractiveCanvas({
 
   console.log('rendered');
   
-  // Render component
+  ////////////////////////////
+  //    Render Component    //
+  ////////////////////////////
   return (
     <div 
       className='interactive-canvas-rounded-corners' 
-      style={{width, height}}
+      style={{width: displayWidth, height: displayHeight}}
     >
       <canvas 
         ref={canvasRef} 
-        width={width} 
-        height={height}
+        width={displayWidth} 
+        height={displayHeight}
         className='interactive-canvas'
       />
     </div>
   );
-}
+});
 
 export default InteractiveCanvas;
