@@ -64,13 +64,11 @@ const InteractiveCanvas = forwardRef((props, ref) => {
     // Add objects to scene and initial render
     init(scene);
     centerCanvas();
-    console.log('mounted');
   }, []);
 
   ////////////////////////////
   //    Helper Functions    //
   ////////////////////////////
-  /** Re-renders the scene without updating */
   function render() {
     requestAnimationFrame(() => {
       rendererRef.current.render(sceneRef.current, cameraRef.current);
