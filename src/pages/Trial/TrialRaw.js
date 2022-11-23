@@ -27,7 +27,7 @@ function TrialRaw() {
       <InteractiveCanvas 
         ref={canvasRef}
         displayWidth={900} displayHeight={600}
-        contentWidth={40} contentHeight={20}
+        contentWidth={512} contentHeight={512}
         init={defaultDraw}
       />
       <Button onClick={() => canvasRef.current.centerCanvas()}>
@@ -72,6 +72,18 @@ function defaultDraw(scene) {
   const geometry = new THREE.BufferGeometry().setFromPoints(points);
   const line = new THREE.Line(geometry, material);
   scene.add(line);
+
+  const material2 = new THREE.LineBasicMaterial( { color: 0xff0000 } );
+  const points2 = [];
+  points2.push( new THREE.Vector3(0, 0, 0) );
+  points2.push( new THREE.Vector3(0, 512, 0) );
+  points2.push( new THREE.Vector3(512, 512, 0) );
+  points2.push( new THREE.Vector3(512, 0, 0) );
+  points2.push( new THREE.Vector3(0, 0, 0) );
+
+  const geometry2 = new THREE.BufferGeometry().setFromPoints(points2);
+  const line2 = new THREE.Line(geometry2, material2);
+  scene.add(line2);
 }
 
 export default TrialRaw;
