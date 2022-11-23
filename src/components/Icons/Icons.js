@@ -6,11 +6,11 @@ import play from './play.svg';
 import pause from './pause.svg';
 
 function getIcon(src) {
-  function Icon(props) {
-    let { 
-      width=20, 
-      height=20
-    } = props;
+  function Icon({ 
+    width=20, 
+    height=20,
+    ...props
+  }) {
     return <img src={src} width={width} height={height} alt={src} {...props} />;
   }
   return Icon;

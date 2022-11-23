@@ -2,16 +2,14 @@ import './InteractiveCanvas.css';
 import { useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import * as THREE from 'three';
 
-const InteractiveCanvas = forwardRef((props, ref) => {
-  let {
-    displayWidth,
-    displayHeight,
-    contentWidth,
-    contentHeight,
-    init=((scene) => {}),
-    update=((scene) => {})
-  } = props;
-
+const InteractiveCanvas = forwardRef(({
+  displayWidth,
+  displayHeight,
+  contentWidth,
+  contentHeight,
+  init=((scene) => {}),
+  update=((scene) => {}),
+}, ref) => {
   const FOV = 45;     // Vertical FOV in degrees
   const HALF_FOV_RAD = Math.PI / 180 * (FOV / 2);
   const NEAR = 100;

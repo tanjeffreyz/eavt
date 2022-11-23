@@ -4,6 +4,7 @@ import { useOutletContext } from 'react-router-dom';
 import * as THREE from 'three';
 import InteractiveCanvas from '../../components/InteractiveCanvas/InteractiveCanvas';
 import Loader from '../../components/Loader/Loader';
+import Scrubber from '../../components/Scrubber/Scrubber';
 import { ChevronLeft, ChevronRight, Pause, Play } from '../../components/Icons/Icons';
 import { sendRequest } from '../../utils';
 
@@ -103,6 +104,8 @@ function TrialRaw() {
         init={init}
         update={update}
       />
+
+      <Scrubber index='asdf'/>
 
       <Container fluid style={{width: 900}}>
         <Row className='align-items-center'>
