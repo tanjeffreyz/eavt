@@ -108,7 +108,7 @@ def get_tar_page(tars, cursor, limit):      # TODO: generalize to all image type
             # Add file contents to documents
             for m in members[start:start + remaining]:
                 new_strip = Strip(
-                    id=int(m.name.split('.', 1)[0]),
+                    n=int(m.name.split('.', 1)[0]),
                     data=b64encode(tar.extractfile(m).read())
                 )
                 documents.append(new_strip)

@@ -1,6 +1,6 @@
 """Common request/response templates used across various endpoints"""
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from pydantic.generics import GenericModel
 from typing import TypeVar, Generic
 
@@ -20,6 +20,7 @@ class PageRs(GenericModel, Generic[T]):
     """One page of data from an endpoint that supports pagination."""
 
     documents: list[T]
+    info: dict = Field(default={})
     cursor: float | int | str | None
     hasNext: bool
 
