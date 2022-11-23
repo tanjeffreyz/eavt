@@ -4,15 +4,28 @@ import { useOutletContext } from 'react-router-dom';
 import * as THREE from 'three';
 import InteractiveCanvas from '../../components/InteractiveCanvas/InteractiveCanvas';
 import Loader from '../../components/Loader/Loader';
-import { ChevronLeft, ChevronRight, Play } from '../../components/Icons/Icons';
+import { ChevronLeft, ChevronRight, Pause, Play } from '../../components/Icons/Icons';
 import { sendRequest } from '../../utils';
 
 function TrialRaw() {
+  const FPS = 60;
+  const FPS_INTERVAL = 1000.0 / FPS;
+
   const { trial } = useOutletContext();
   const [numLoaded, setNumLoaded] = useState(0);    // Tracks number of datasets loaded
-  const [index, setIndex] = useState(0);
-  const prevIndexRef = useRef(0);
   const canvasRef = useRef(null);
+  const [index, _setIndex] = useState(0);
+  const prevIndexRef = useRef(0);
+  const [playing, setPlaying] = useState(false);
+  const animationFrameRef = useRef('initialReference');
+  const startTimeRef = useRef(0);
+
+  function setIndex(callback) {
+    _setIndex((prev) => {
+      prevIndexRef.current = prev;
+      return callback(prev);
+    });
+  }
 
   // Load data
   const [stripRaw, setStripRaw] = useState([]);
@@ -47,6 +60,15 @@ function TrialRaw() {
     // }
   }
 
+  useEffect(() => {
+    if (!animationFrameRef.current) {
+      animationFrameRef.current = requestAnimationFrame(play);
+    } else {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
+    }
+  }, [playing]);
+
   // Stall while loading
   if (numLoaded < datasets.length) return <Loader />;
 
@@ -55,6 +77,21 @@ function TrialRaw() {
     stripRaw.length,
     stripRawOutput.length
   );
+
+  // Seek functions
+  function togglePlaying() {
+    setPlaying((prev) => !prev);
+  }
+
+  function play() {
+    animationFrameRef.current = requestAnimationFrame(play);
+    const now = Date.now();
+    const diff = now - startTimeRef.current;
+    if (diff > FPS_INTERVAL) {
+      startTimeRef.current = now - (diff % FPS_INTERVAL);
+      setIndex((prev) => (prev + 1) % numFrames);
+    }
+  }
 
   // Render component
   return (
@@ -70,21 +107,27 @@ function TrialRaw() {
       <Container fluid style={{width: 900}}>
         <Row className='align-items-center'>
           <Col md='auto'>
-            <ChevronLeft onClick={() => console.log('asdf')} />
-            <Play width={30} onClick={() => console.log('asdf')} />
-            <ChevronRight onClick={() => console.log('asdf')} />
+            <ChevronLeft 
+              className='me-2' 
+              onClick={() => setIndex((prev) => Math.max(prev - 1, 0))} 
+            />
+            <span>
+              {playing ? 
+              <Pause width={30} height={30} onClick={togglePlaying} /> :
+              <Play width={30} height={30} onClick={togglePlaying} />}
+            </span>
+            
+            <ChevronRight 
+              className='ms-2' 
+              onClick={() => setIndex((prev) => Math.min(prev + 1, numFrames - 1))} 
+            />
           </Col>
           <Col>
             <Form.Range 
               min={0}
               max={numFrames - 1}
               value={index}
-              onChange={(e) => {
-                setIndex((prev) => {
-                  prevIndexRef.current = prev;
-                  return parseInt(e.target.value);
-                });
-              }}
+              onChange={(e) => setIndex(() => parseInt(e.target.value))}
             />
           </Col>
           <Col md='auto'>
