@@ -23,6 +23,12 @@ function TrialRaw() {
     {uri: `/trials/${trial._id}/raw/strip-raw`, setData: setStripRaw},
     {uri: `/trials/${trial._id}/raw/strip-raw`, setData: setStripRaw},
     {uri: `/trials/${trial._id}/raw/strip-raw`, setData: setStripRaw},
+    {uri: `/trials/${trial._id}/raw/strip-raw`, setData: setStripRaw},
+    {uri: `/trials/${trial._id}/raw/strip-raw`, setData: setStripRaw},
+    {uri: `/trials/${trial._id}/raw/strip-raw`, setData: setStripRaw},
+    {uri: `/trials/${trial._id}/raw/strip-raw`, setData: setStripRaw},
+    {uri: `/trials/${trial._id}/raw/strip-raw`, setData: setStripRaw},
+    {uri: `/trials/${trial._id}/raw/strip-raw`, setData: setStripRaw},
     {uri: `/trials/${trial._id}/raw/strip-raw-output`, setData: setStripRawOutput}
   ]
 
@@ -41,6 +47,7 @@ function TrialRaw() {
 
   /** Shows current frame's data and hides previous frame's data */
   function update({scene, camera, renderer}) {
+    console.log(index, numFrames);
     if (stripRaw && stripRaw.length > 0 && Array.isArray(stripRaw[0])) {
       stripRaw[index.prev].forEach((s) => { s.visible = false; });
       stripRaw[index.curr].forEach((s) => { s.visible = true; });
@@ -59,6 +66,7 @@ function TrialRaw() {
     stripRaw.length,
     stripRawOutput.length
   );
+  console.log('rendered');
 
   // Render component
   return (

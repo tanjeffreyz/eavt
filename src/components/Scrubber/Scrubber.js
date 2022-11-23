@@ -17,10 +17,10 @@ function Scrubber({
   const startTimeRef = useRef(0);
 
   function setIndex(callback) {
-    _setIndex((prev) => {
+    _setIndex((prevIndex) => {
       return {
-        prev: prev.curr,
-        curr: callback(prev.curr)
+        prev: prevIndex.curr,
+        curr: callback(prevIndex.curr)
       };
     });
   }
