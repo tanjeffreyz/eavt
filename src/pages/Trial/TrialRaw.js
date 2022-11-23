@@ -1,9 +1,10 @@
 import { useEffect, useState, useRef } from 'react';
-import { Button, Form } from 'react-bootstrap';
+import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import { useOutletContext } from 'react-router-dom';
 import * as THREE from 'three';
 import InteractiveCanvas from '../../components/InteractiveCanvas/InteractiveCanvas';
 import Loader from '../../components/Loader/Loader';
+import { ChevronLeft, ChevronRight, Play } from '../../components/Icons/Icons';
 import { sendRequest } from '../../utils';
 
 function TrialRaw() {
@@ -65,17 +66,33 @@ function TrialRaw() {
         init={init}
         update={update}
       />
-      <Form.Range 
-        min={0}
-        max={numFrames - 1}
-        value={index}
-        onChange={(e) => {
-          setIndex((prev) => {
-            prevIndexRef.current = prev;
-            return e.target.value;
-          });
-        }}
-      />
+
+      <Container fluid style={{width: 900}}>
+        <Row className='align-items-center'>
+          <Col md='auto'>
+            <ChevronLeft onClick={() => console.log('asdf')} />
+            <Play width={30} onClick={() => console.log('asdf')} />
+            <ChevronRight onClick={() => console.log('asdf')} />
+          </Col>
+          <Col>
+            <Form.Range 
+              min={0}
+              max={numFrames - 1}
+              value={index}
+              onChange={(e) => {
+                setIndex((prev) => {
+                  prevIndexRef.current = prev;
+                  return parseInt(e.target.value);
+                });
+              }}
+            />
+          </Col>
+          <Col md='auto'>
+            <span>{`${numFrames ? index + 1 : 0} / ${numFrames}`}</span>
+          </Col>
+        </Row>
+      </Container>
+
       <Button onClick={() => canvasRef.current.centerCanvas()}>
         Center
       </Button>
