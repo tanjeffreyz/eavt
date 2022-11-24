@@ -3,12 +3,20 @@ import { useState } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import { sendRequest } from '../../utils';
 import { TrashCan } from '../Icons/Icons';
+import { Form } from 'react-bootstrap';
 
 function CommentList({
   document,
   loadDocument,
   uri
 }) {
+  const [show, setShow] = useState(false);
+  const [subject, setSubject] = useState('');
+  const [body, setBody] = useState('');
+
+  const showModal = () => setShow(true);
+  const hideModal = () => setShow(false);
+
   const comments = document.comments;
   if (!comments || comments.length == 0) {
     return <span>No comments found</span>;
@@ -25,9 +33,63 @@ function CommentList({
     );
   }
 
+  function onPass() {
+    setSubject('');
+    setBody('');
+    loadDocument();
+    hideModal();
+  }
+
+  function createNewComment() {
+    console.log(JSON.stringify({subject, body}));
+    if (body.length > 0) {
+      sendRequest({
+        uri,
+        config: { 
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({subject, body})
+        },
+        pass: onPass
+      });
+    }
+  }
+
   return (
     <>
+      <div 
+        align='left' 
+        className='comment create-comment mb-2 px-2 py-2' 
+        onClick={showModal}
+        style={{cursor: 'pointer'}}
+      >
+        + New Comment
+      </div>
+
       {comments.slice(0).reverse().map(getComment)}
+
+      <Modal show={show} onHide={hideModal} backdrop='static' centered>
+        <Modal.Header closeButton>Create New Comment</Modal.Header>
+        <Modal.Body>
+          <Form.Control 
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
+            placeholder='Subject' 
+            className='mb-2'
+          />
+          <Form.Control 
+            value={body}
+            onChange={(e) => setBody(e.target.value)}
+            as='textarea' 
+            placeholder='Body'
+            rows={3}
+          />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant='secondary' onClick={hideModal}>Cancel</Button>
+          <Button variant='primary' onClick={createNewComment}>Submit</Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }
@@ -55,7 +117,7 @@ function Comment({
   return (
     <>
       <div align='left' className='comment mb-2 px-2 py-2'>
-        <span>Author: {data.author ? data.author : 'Anonymous'}</span>
+        <span>Subject: {data.subject ? data.subject : 'N/A'}</span>
         <p>{date.toLocaleString()}</p>
         <span>{data.body}</span>
         <TrashCan 
@@ -68,10 +130,8 @@ function Comment({
         />
       </div>
 
-      <Modal show={show} onHide={hideModal}>
-        <Modal.Header closeButton>
-          {/* <Modal.Title>Delete comment</Modal.Title> */}
-        </Modal.Header>
+      <Modal show={show} onHide={hideModal} centered>
+        <Modal.Header closeButton>Delete Comment</Modal.Header>
         <Modal.Body>Are you sure you want to delete this comment?</Modal.Body>
         <Modal.Footer>
           <Button variant='secondary' onClick={hideModal}>Cancel</Button>

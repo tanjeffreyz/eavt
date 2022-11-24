@@ -3,7 +3,7 @@
   border-radius: 10px;
   border-width: 1px;
   border-style: solid;
-  border-color: black;
+  border-color: #656565;
 
   width: 75%;
   max-width: 750px;
@@ -11,17 +11,31 @@
 
 .comment-button {
   position: absolute;
-  display: none;
   opacity: 0;
+  transition: all 0.25s ease-out;
 }
 
 .comment:hover .comment-button {
   display: block;
-  animation: comment-button-fadein 0.25s forwards;
+  opacity: 1;
+  transition: all 0.25s ease-in;
 }
 
 @keyframes comment-button-fadein {
   100% {
     opacity: 1;
   }
+}
+
+.create-comment {
+  border-color: #0d6efd;
+  color: #0d6efd;
+  transition: all 0.25s ease-out;
+}
+
+.create-comment:hover {
+  /* transition: create-comment-onhover 0.25s ease-in-out; */
+  background-color: #0d6efd;
+  color: #ffffff;
+  transition: all 0.25s ease-in;
 }
