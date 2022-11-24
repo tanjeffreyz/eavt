@@ -15,8 +15,8 @@ function TrialRaw() {
   const [stripRaw, setStripRaw] = useState([]);
   const [stripRawOutput, setStripRawOutput] = useState([]);
 
-  const [stripRawSprites, setStripRawSprites] = useState([]);
-  const [stripRawOutputSprites, setStripRawOutputSprites] = useState([]);
+  const [stripRawFrames, setStripRawFrames] = useState([]);
+  const [stripRawOutputFrames, setStripRawOutputFrames] = useState([]);
   
   const datasets = [
     {uri: `/trials/${trial._id}/raw/strip-raw`, setData: setStripRaw},
@@ -42,7 +42,7 @@ function TrialRaw() {
       strips: stripRaw, 
       scene, 
       renderer, 
-      setData: setStripRawSprites
+      setData: setStripRawFrames
     });
     setStripRaw([]);    // Free up memory, working with only sprites now
     
@@ -50,16 +50,16 @@ function TrialRaw() {
       strips: stripRawOutput, 
       scene, 
       renderer, 
-      setData: setStripRawOutputSprites
+      setData: setStripRawOutputFrames
     });
     setStripRawOutput([]);
   }
 
   /** Shows current frame's data and hides previous frame's data */
   function update({scene, camera, renderer}) {
-    if (stripRawSprites && stripRawSprites.length > 0 && Array.isArray(stripRawSprites[0])) {
-      stripRawSprites[index.prev].forEach((s) => { s.visible = false; });
-      stripRawSprites[index.curr].forEach((s) => { s.visible = true; });
+    if (numFrames > 0) {
+      stripRawFrames[index.prev].visible = false;
+      stripRawFrames[index.curr].visible = true;
     }
     // if (stripRawOutput && stripRawOutput.length > 0 && Array.isArray(stripRawOutput[0])) {
     //   stripRawOutput[prevIndexRef.current].forEach((s) => { s.visible = false; });
@@ -72,7 +72,7 @@ function TrialRaw() {
 
   // Accommodate longest sequence of frames
   const numFrames = Math.min(
-    stripRawSprites.length,
+    stripRawFrames.length,
     // stripRawOutputSprites.length
   );
   console.log('rendered');
@@ -125,15 +125,17 @@ function loadStripSprites({
     const sprite = new THREE.Sprite(material);
     sprite.scale.set(512, 16, 1);
     sprite.position.set(0, 256 - 8 - 16 * offset, 0);
-    sprite.visible = (index === 0);   // Make first frame visible
-    scene.add(sprite);
     
-    // Add to appropriate sprite frame bucket
+    // Add sprite to appropriate group
     if (index >= frames.length) {
-      frames.push([]);
+      const group = new THREE.Group();
+      group.visible = (index === 0);   // Make first frame visible by default
+      scene.add(group);
+      frames.push(group);
     }
-    frames[index].push(sprite);
+    frames[index].add(sprite);
   };
+
   asyncFor({
     arr: strips,
     f, 
