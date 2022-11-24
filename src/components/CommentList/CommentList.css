@@ -11,6 +11,17 @@
 
 .comment-button {
   position: absolute;
-  top: 0px;
-  right: 0px;
+  display: none;
+  opacity: 0;
+}
+
+.comment:hover .comment-button {
+  display: block;
+  animation: comment-button-fadein 0.5s forwards;
+}
+
+@keyframes comment-button-fadein {
+  100% {
+    opacity: 0.75;
+  }
 }

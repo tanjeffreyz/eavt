@@ -1,8 +1,8 @@
-.interactive-canvas {
+.interactive-canvas canvas {
   background-color: black;
 }
 
-.interactive-canvas-rounded-corners {
+.interactive-canvas {
   overflow: hidden;
   border-radius: 10px;
   position: relative;
@@ -14,7 +14,7 @@
   opacity: 0;
 }
 
-.interactive-canvas-rounded-corners:hover .canvas-button {
+.interactive-canvas:hover .canvas-button {
   display: block;
   animation: canvas-button-fadein 0.5s forwards;
 }

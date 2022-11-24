@@ -182,14 +182,13 @@ function InteractiveCanvas({
   
   return (
     <div 
-      className='interactive-canvas-rounded-corners' 
+      className='interactive-canvas'
       style={{width: displayWidth, height: displayHeight}}
     >
       <canvas 
         ref={canvasRef} 
         width={displayWidth} 
         height={displayHeight}
-        className='interactive-canvas'
       />
       <Crosshair 
         width={30} 
