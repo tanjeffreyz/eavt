@@ -99,9 +99,8 @@ function Scrubber({
             onClick={seekRight} 
           />
         </Col>
-        <Col>
+        <Col ref={rangeRef}>
           <Form.Range 
-            ref={rangeRef}
             min={0}
             max={max - 1}
             value={index.curr}
