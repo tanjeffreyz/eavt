@@ -54,7 +54,7 @@ function Trial() {
       <Section fluid align='center' id='visualization'>
         <h1>Visualization</h1>
         {/* setTest((prev) => !prev); */}
-        <Button onClick={() => { loadTrial()}}>Test</Button>
+        {/* <Button onClick={() => { loadTrial()}}>Test</Button> */}
         {test ? <TrialRaw /> : <span>heheh</span>}
       </Section>
 
