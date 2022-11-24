@@ -197,6 +197,7 @@ function InteractiveCanvas({
         onClick={centerCanvas}
         fill='white'
         className='canvas-button'
+        style={{top: '5px', right: '5px'}}
       />
     </div>
   );

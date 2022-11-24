@@ -8,6 +8,7 @@ import LoadingScreen from '../../components/LoadingScreen/LoadingScreen';
 import { Back } from '../../components/Icons/Icons';
 import Section from '../../components/Section/Section';
 import TrialRaw from './TrialRaw';
+import CommentList from '../../components/CommentList/CommentList';
 
 function TrialNav() {
   const params = useParams();
@@ -52,7 +53,8 @@ function Trial() {
     <>
       <Section fluid align='center' id='visualization'>
         <h1>Visualization</h1>
-        <Button onClick={() => {setTest((prev) => !prev); loadTrial()}}>Toggle</Button>
+        {/* setTest((prev) => !prev); */}
+        <Button onClick={() => { loadTrial()}}>Test</Button>
         {test ? <TrialRaw /> : <span>heheh</span>}
       </Section>
 
@@ -67,7 +69,11 @@ function Trial() {
 
       <Section fluid align='center' id='comments'>
         <h1>Comments</h1>
-        {[...Array(100).keys()].map(i => <><br key={i}></br>a</>)}
+        <CommentList 
+          document={trial}
+          loadDocument={loadTrial}
+          uri={`/trials/${trial._id}/comments`}
+        />
       </Section>
     </>
   );

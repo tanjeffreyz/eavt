@@ -10,8 +10,6 @@
 
 .canvas-button {
   position: absolute;
-  top: 5px;
-  right: 5px;
   display: none;
   opacity: 0;
 }

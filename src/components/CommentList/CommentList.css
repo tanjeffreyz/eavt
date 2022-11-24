@@ -1,0 +1,16 @@
+.comment {
+  position: relative;
+  border-radius: 10px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: black;
+
+  width: 75%;
+  max-width: 750px;
+}
+
+.comment-button {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+}
