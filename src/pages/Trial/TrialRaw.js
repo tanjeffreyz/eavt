@@ -29,10 +29,6 @@ function TrialRaw() {
     {uri: `/trials/${trial._id}/raw/strip-raw`, setData: setStripRaw},
     {uri: `/trials/${trial._id}/raw/strip-raw`, setData: setStripRaw},
     {uri: `/trials/${trial._id}/raw/strip-raw`, setData: setStripRaw},
-    {uri: `/trials/${trial._id}/raw/strip-raw`, setData: setStripRaw},
-    {uri: `/trials/${trial._id}/raw/strip-raw`, setData: setStripRaw},
-    {uri: `/trials/${trial._id}/raw/strip-raw`, setData: setStripRaw},
-    {uri: `/trials/${trial._id}/raw/strip-raw`, setData: setStripRaw},
     {uri: `/trials/${trial._id}/raw/strip-raw-output`, setData: setStripRawOutput}
   ]
 
@@ -44,16 +40,21 @@ function TrialRaw() {
   }, []);
 
   function init({scene, camera, renderer}) {
-    // Free up memory, working with sprites only now
     loadStripSprites({
       strips: stripRaw, 
       scene, 
       renderer, 
       setData: setStripRawSprites
     });
-    setStripRaw([]);
-    // setStripRawOutputSprites(loadStripSprites(stripRaw, scene, renderer));
-    // setStripRawOutput([]);
+    setStripRaw([]);    // Free up memory, working with only sprites now
+    
+    loadStripSprites({
+      strips: stripRawOutput, 
+      scene, 
+      renderer, 
+      setData: setStripRawOutputSprites
+    });
+    setStripRawOutput([]);
   }
 
   /** Shows current frame's data and hides previous frame's data */
