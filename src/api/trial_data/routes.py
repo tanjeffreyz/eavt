@@ -27,7 +27,7 @@ async def get_strip_raw(rq: Request, trial_id: str, cursor: str = Cursor.NULL, l
     trial = Trial(**get_document_by_id(rq.app.db['trials'], trial_id))
     if (tars := trial.raw.stripRaw) is None or len(tars) == 0:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail=f"No raw strip data associated with trial: {trial.path}"
         )
     return get_tar_page(tars, cursor, limit)
@@ -42,7 +42,7 @@ async def get_strip_raw_output(rq: Request, trial_id: str, cursor: str = Cursor.
     trial = Trial(**get_document_by_id(rq.app.db['trials'], trial_id))
     if (tars := trial.raw.stripRawOutput) is None or len(tars) == 0:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail=f"No raw strip output data associated with trial: {trial.path}"
         )
     return get_tar_page(tars, cursor, limit)
