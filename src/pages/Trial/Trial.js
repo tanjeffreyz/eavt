@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useParams, useOutletContext } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
-import { sendRequest, addWordBreaks } from '../../utils';
+import { addWordBreaks } from '../../utils';
+import { useLoadDocument } from '../../hooks';
 import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import LoadingScreen from '../../components/LoadingScreen/LoadingScreen';
 import { Back } from '../../components/Icons/Icons';
@@ -10,14 +11,9 @@ import TrialRaw from './TrialRaw';
 
 function TrialNav() {
   const params = useParams();
-  const [trial, setTrial] = useState(null);
+  const [trial, loadTrial] = useLoadDocument(`/trials/${params.id}`);
 
-  useEffect(() => {
-    sendRequest({
-      uri: `/trials/${params.id}`,
-      pass: (data) => setTrial(data)
-    })
-  }, [params.id]);
+  console.log('rendered trial nav');
 
   if (!trial) return <LoadingScreen />;
 
@@ -43,19 +39,20 @@ function TrialNav() {
         icon: <Back />,
         to: `/sessions/${trial.parent_id}`
       }}
-      context={{trial}}
+      context={{trial, loadTrial}}
     />
   );
 }
 
 function Trial() {
-  const { trial } = useOutletContext();
+  const { trial, loadTrial } = useOutletContext();
   const [ test, setTest ] = useState(true);
+  console.log('rendered trial body');
   return (
     <>
       <Section fluid align='center' id='visualization'>
         <h1>Visualization</h1>
-        <Button onClick={() => setTest((prev) => !prev)}>Toggle</Button>
+        <Button onClick={() => {setTest((prev) => !prev); loadTrial()}}>Toggle</Button>
         {test ? <TrialRaw /> : <span>heheh</span>}
       </Section>
 
