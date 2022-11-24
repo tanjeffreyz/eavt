@@ -29,7 +29,6 @@ function useLoadDocument(uri) {
   const [document, setDocument] = useState(null);
 
   const loadDocument = useCallback(() => {
-    console.log('loaded document');
     sendRequest({
       uri,
       pass: (data) => setDocument(data)
