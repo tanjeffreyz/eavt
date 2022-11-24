@@ -16,7 +16,7 @@
 
 .interactive-canvas:hover .canvas-button {
   display: block;
-  animation: canvas-button-fadein 0.5s forwards;
+  animation: canvas-button-fadein 0.25s forwards;
 }
 
 @keyframes canvas-button-fadein {

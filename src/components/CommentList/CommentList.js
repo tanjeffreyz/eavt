@@ -1,3 +1,4 @@
+import { Crosshair } from '../Icons/Icons';
 import './CommentList.css';
 
 function CommentList({
@@ -39,6 +40,12 @@ function Comment({
       <span>Author: {data.author ? data.author : 'Anonymous'}</span>
       <p>{date.toLocaleString()}</p>
       <span>{data.body}</span>
+      <Crosshair 
+        width={30} 
+        height={30} 
+        className='comment-button'
+        style={{top: '5px', right: '5px'}}
+      />
     </div>
   );
 }

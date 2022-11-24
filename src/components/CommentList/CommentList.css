@@ -17,7 +17,7 @@
 
 .comment:hover .comment-button {
   display: block;
-  animation: comment-button-fadein 0.5s forwards;
+  animation: comment-button-fadein 0.25s forwards;
 }
 
 @keyframes comment-button-fadein {
