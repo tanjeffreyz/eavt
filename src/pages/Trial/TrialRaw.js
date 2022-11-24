@@ -10,7 +10,6 @@ import { sendRequest, asyncFor } from '../../utils';
 function TrialRaw() {
   const { trial } = useOutletContext();
   const [numLoaded, setNumLoaded] = useState(0);    // Tracks number of datasets loaded
-  const canvasRef = useRef(null);
   const [index, setIndex] = useScrubberState();
 
   // Load data
@@ -83,7 +82,6 @@ function TrialRaw() {
   return (
     <>
       <InteractiveCanvas 
-        ref={canvasRef}
         displayWidth={900} displayHeight={600}
         contentWidth={512} contentHeight={512}
         init={init}

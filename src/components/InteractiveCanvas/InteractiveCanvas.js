@@ -63,6 +63,15 @@ function InteractiveCanvas({
     // Add objects to scene and initial render
     init({scene, camera, renderer});
     centerCanvas();
+
+    // Clean up event listeners
+    return () => {
+      canvas.removeEventListener('mousedown', onMouseDown);
+      canvas.removeEventListener('mousemove', onMouseMove);
+      canvas.removeEventListener('mouseup', onMouseUp);
+      canvas.removeEventListener('mousewheel', onMouseWheel);
+      document.body.removeEventListener('mouseup', onMouseUp);
+    };
   }, []);
 
   ////////////////////////////

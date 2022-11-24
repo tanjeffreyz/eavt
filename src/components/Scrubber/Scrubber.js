@@ -15,6 +15,7 @@ function Scrubber({
   const [playing, setPlaying] = useState(false);
   const animationFrameRef = useRef('initialReference');
   const startTimeRef = useRef(0);
+  const rangeRef = useRef(null);
 
   function setIndex(callback) {
     _setIndex((prevIndex) => {
@@ -58,6 +59,24 @@ function Scrubber({
     if (max > 0) setIndex((prev) => Math.min(prev + 1, max - 1));
   }
 
+  //////////////////////////
+  //    Event Listeners   //
+  //////////////////////////
+  function onMouseWheel(e) {
+    if (e.deltaY > 0) {
+      seekLeft();
+    } else {
+      seekRight();
+    }
+    e.preventDefault();
+  }
+
+  useEffect(() => {
+    rangeRef.current.addEventListener('mousewheel', onMouseWheel);
+    return () => rangeRef.current.removeEventListener('mousewheel', onMouseWheel);
+  }, [max]);
+
+  // Render
   return (
     <Container fluid {...props} style={{width}}>
       <Row className='align-items-center'>
@@ -71,7 +90,6 @@ function Scrubber({
             <Pause width={30} height={30} onClick={togglePlaying} /> :
             <Play width={30} height={30} onClick={togglePlaying} />}
           </span>
-          
           <ChevronRight 
             className='ms-2' 
             onClick={seekRight} 
@@ -79,6 +97,7 @@ function Scrubber({
         </Col>
         <Col>
           <Form.Range 
+            ref={rangeRef}
             min={0}
             max={max - 1}
             value={index.curr}
