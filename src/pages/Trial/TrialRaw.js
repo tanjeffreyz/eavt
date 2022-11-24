@@ -97,10 +97,6 @@ function TrialRaw() {
         max={numFrames}
         className='mt-2'
       />
-
-      <Button onClick={() => canvasRef.current.centerCanvas()}>
-        Center
-      </Button>
     </>
   );
 }

@@ -1,9 +1,9 @@
 import './InteractiveCanvas.css';
-import { useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
+import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { Crosshair } from '../Icons/Icons';
 
-const InteractiveCanvas = forwardRef(({
+function InteractiveCanvas({
   displayWidth,
   displayHeight,
   contentWidth,
@@ -11,7 +11,7 @@ const InteractiveCanvas = forwardRef(({
   scrollSensitivity=0.05,
   init=({scene, camera, renderer}) => {},
   update=({scene, camera, renderer}) => {},
-}, ref) => {
+}) {
   const FOV = 45;     // Vertical FOV in degrees
   const HALF_FOV_RAD = Math.PI / 180 * (FOV / 2);
   const NEAR = 100;
@@ -90,12 +90,6 @@ const InteractiveCanvas = forwardRef(({
     cameraRef.current.position.set(0, 0, getZFromScale(initialScaleRef.current));
     render();
   }
-
-  // Expose Canvas functions to parent component
-  useImperativeHandle(ref, () => ({
-    centerCanvas,
-    render
-  }));
 
   //////////////////////////
   //    Event Listeners   //
@@ -188,13 +182,14 @@ const InteractiveCanvas = forwardRef(({
         className='interactive-canvas'
       />
       <Crosshair 
-        width={40} 
-        height={40} 
+        width={30} 
+        height={30} 
+        onClick={centerCanvas}
         fill='white'
         className='center-canvas-button'
       />
     </div>
   );
-});
+}
 
 export default InteractiveCanvas;
