@@ -42,7 +42,6 @@ function NavigationBar({
         </Container>
       </Navbar>
 
-      <Container fluid className='my-4 py-2' />
       <Outlet context={context} />
     </>
   );

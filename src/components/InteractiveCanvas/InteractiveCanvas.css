@@ -1,0 +1,8 @@
+.interactive-canvas {
+  background-color: black;
+}
+
+.interactive-canvas-rounded-corners {
+  overflow: hidden;
+  border-radius: 10px;
+}

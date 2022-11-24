@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useParams, useOutletContext } from 'react-router-dom';
-import { Collapse, Button, Container } from 'react-bootstrap';
+import { Collapse, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { sendRequest, addWordBreaks, getFlagSymbol } from '../../utils';
 import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import LoadingScreen from '../../components/LoadingScreen/LoadingScreen';
 import DocumentList from '../../components/DocumentList/DocumentList';
 import { Back } from '../../components/Icons/Icons';
+import Section from '../../components/Section/Section';
 
 function SessionNav() {
   const params = useParams();
@@ -20,61 +21,84 @@ function SessionNav() {
   }, [params.id]);
 
   if (!session) return <LoadingScreen />;
-  return NavigationBar({
-    title: 'Session',
-    subtitle: session.path,
-    links: [
-      {name: 'TCA', to: {hash: 'tca'}},
-      {name: 'Trials', to: {hash: 'trials'}}
-    ],
-    back: {
-      icon: Back({}),
-      to: '/sessions'
-    },
-    context: { session }
-  });
+  return (
+    <NavigationBar
+      title='Session'
+      subtitle={session.path}
+      links={[
+        {name: 'Visualization', to: {hash: 'visualization'}},
+        {name: 'Data', to: {hash: 'data'}},
+        {name: 'Comments', to: {hash: 'comments'}},
+        {name: 'Trials', to: {hash: 'trials'}}
+      ]}
+      back={{
+        icon: <Back />,
+        to: '/sessions'
+      }}
+      context={{session}}
+    />
+  );
 }
 
 function Session() {
   const { session } = useOutletContext();
-  const list = DocumentList({
-    headers: ['#', 'Name', 'Date & Time', 'Flag'],
-    uri: `/sessions/${session._id}/trials`,
-    rowElement: TrialRow
-  });
   return (
-    <Container fluid align='center'>
-      <h1>Trials</h1>
-      {list}
-    </Container>
+    <>
+      <Section fluid align='center' id='visualization'>
+        <h1>Visualization</h1>
+      </Section>
+      
+      <Section fluid align='center' id='data'>
+        <h1>Data</h1>
+      </Section>
+
+      <Section fluid align='center' id='comments'>
+        <h1>Comments</h1>
+      </Section>
+
+      <Section fluid align='center' id='trials'>
+        <h1>Trials</h1>
+        <DocumentList 
+          headers={['#', 'Name', 'Date & Time', 'Flag']}
+          uri={`/sessions/${session._id}/trials`}
+          params={{ field: 'dt' }}
+          Row={TrialRow}
+        />
+        {[...Array(100).keys()].map(i => <><br key={i}></br>a</>)}
+      </Section>
+    </>
+    
   );
 }
 
-function TrialRow(trial, i, getDropdownState, toggleDropdownState) {
-  const paths = trial.path.split('/');
+function TrialRow({
+  document, index
+}) {
+  const [dropdownState, setDropdownState] = useState(false);
+  const paths = document.path.split('/');
   const trialName = addWordBreaks(paths[paths.length-1]);
   return (
-    <LinkContainer key={i} to={`/trials/${trial._id}`}>
+    <LinkContainer key={index} to={`/trials/${document._id}`}>
       <tr>
-        <td>{i+1}</td>
+        <td>{index+1}</td>
         <td>
           <Button
             onClick={(e) => {
-              toggleDropdownState(i);
+              setDropdownState((prev) => !prev);
               e.stopPropagation();
             }}
-            aria-expanded={getDropdownState(i)}
+            aria-expanded={dropdownState}
             size='sm'
             variant='outline-primary'
           >
             {trialName}
           </Button>
-          <Collapse in={getDropdownState(i)}>
+          <Collapse in={dropdownState}>
             <div>sparkline or metadata</div>
           </Collapse>
         </td>
-        <td>{trial.dt}</td>
-        <td>{getFlagSymbol(trial.flag)}</td>
+        <td>{document.dt}</td>
+        <td>{getFlagSymbol(document.flag)}</td>
       </tr>
     </LinkContainer>
   );

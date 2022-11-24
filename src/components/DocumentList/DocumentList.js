@@ -7,19 +7,18 @@ import { Table } from 'react-bootstrap';
 function DocumentList({
   headers,
   uri, 
-  field, 
-  rowElement
+  params, 
+  Row
 }) {
   const [documents, setDocuments] = useState([]);
   const [error, setError] = useState(null);
-  const [state, setState] = useState({});
   const [loading, setLoading] = useInfiniteScroll(fetchNextPage);
   const [pageState, setPageState] = useState({cursor: null, hasNext: true});
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => fetchNextPage(10), []);
+  useEffect(() => fetchNextPage(), []);
 
-  function fetchNextPage(limit=1) {
+  function fetchNextPage() {
     if (!pageState.hasNext) {
       setLoading(false);
       return;
@@ -27,8 +26,8 @@ function DocumentList({
     sendRequest({
       uri,
       params: {
-        field, 
-        limit,
+        ...params,
+        limit: 100,
         cursor: pageState.cursor
       },
       pass: (data) => {
@@ -43,19 +42,6 @@ function DocumentList({
     });
   };
 
-  function getDropdownState(i) {
-    if (!(i in state)) {
-      state[i] = false;
-    }
-    return state[i];
-  };
-
-  function toggleDropdownState(i) {
-    setState((prev) => {
-      return { ...prev, [i]: !getDropdownState(i) };
-    });
-  };
-
   // Render
   if (error) return error;
   return (
@@ -67,7 +53,7 @@ function DocumentList({
           </tr>
         </thead>
         <tbody>
-          {documents.map((d, i) => rowElement(d, i, getDropdownState, toggleDropdownState))}
+          {documents.map((d, i) => <Row index={i} document={d} />)}
         </tbody>
       </Table>
       {loading && <Loader />}
