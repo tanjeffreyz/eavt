@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useParams, useOutletContext } from 'react-router-dom';
-import { sendRequest, addWordBreaks, getFlagSymbol } from '../../utils';
+import { Button } from 'react-bootstrap';
+import { sendRequest, addWordBreaks } from '../../utils';
 import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import LoadingScreen from '../../components/LoadingScreen/LoadingScreen';
 import { Back } from '../../components/Icons/Icons';
 import Section from '../../components/Section/Section';
 import TrialRaw from './TrialRaw';
-import { Button } from 'react-bootstrap';
 
 function TrialNav() {
   const params = useParams();
