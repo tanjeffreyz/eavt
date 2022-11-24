@@ -16,7 +16,6 @@
 }
 
 .comment:hover .comment-button {
-  display: block;
   opacity: 1;
   transition: all 0.25s ease-in;
 }
@@ -34,7 +33,6 @@
 }
 
 .create-comment:hover {
-  /* transition: create-comment-onhover 0.25s ease-in-out; */
   background-color: #0d6efd;
   color: #ffffff;
   transition: all 0.25s ease-in;

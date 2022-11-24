@@ -10,17 +10,11 @@
 
 .canvas-button {
   position: absolute;
-  display: none;
   opacity: 0;
+  transition: all 0.25s ease-out;
 }
 
 .interactive-canvas:hover .canvas-button {
-  display: block;
-  animation: canvas-button-fadein 0.25s forwards;
-}
-
-@keyframes canvas-button-fadein {
-  100% {
-    opacity: 0.75;
-  }
+  opacity: 0.75;
+  transition: all 0.25s ease-in;
 }
