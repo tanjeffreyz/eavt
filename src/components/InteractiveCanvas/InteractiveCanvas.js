@@ -7,15 +7,14 @@ const InteractiveCanvas = forwardRef(({
   displayHeight,
   contentWidth,
   contentHeight,
+  scrollSensitivity=0.05,
   init=({scene, camera, renderer}) => {},
   update=({scene, camera, renderer}) => {},
 }, ref) => {
   const FOV = 45;     // Vertical FOV in degrees
   const HALF_FOV_RAD = Math.PI / 180 * (FOV / 2);
   const NEAR = 100;
-  const FAR = 2000;
-  const MAX_SCALE = getScaleFromZ(NEAR);
-  const MIN_SCALE = getScaleFromZ(FAR);
+  const FAR = 1000;
 
   const canvasRef = useRef();
   const rendererRef = useRef(null);
@@ -25,7 +24,7 @@ const InteractiveCanvas = forwardRef(({
   const mouseStartRef = useRef({ x: 0, y: 0 });
   const cameraStartRef = useRef({ x: 0, y: 0 });
   const draggingRef = useRef(false);
-  const defaultScaleRef = useRef(1.0);
+  const initialScaleRef = useRef(1.0);
 
   //////////////////////////
   //    Initialization    //
@@ -36,6 +35,7 @@ const InteractiveCanvas = forwardRef(({
     canvas.addEventListener('mousedown', onMouseDown);
     canvas.addEventListener('mousemove', onMouseMove);
     canvas.addEventListener('mouseup', onMouseUp);
+    canvas.addEventListener('mousewheel', onMouseWheel);
     document.body.addEventListener('mouseup', onMouseUp);
 
     const renderer = new THREE.WebGLRenderer({
@@ -49,7 +49,7 @@ const InteractiveCanvas = forwardRef(({
     scene.add(camera);
 
     // Fit content to display
-    defaultScaleRef.current = Math.min(
+    initialScaleRef.current = Math.min(
       displayHeight / contentHeight,
       displayWidth / contentWidth
     );
@@ -84,7 +84,7 @@ const InteractiveCanvas = forwardRef(({
   }
 
   function centerCanvas() {
-    cameraRef.current.position.set(0, 0, getZFromScale(defaultScaleRef.current));
+    cameraRef.current.position.set(0, 0, getZFromScale(initialScaleRef.current));
     render();
   }
 
@@ -130,6 +130,37 @@ const InteractiveCanvas = forwardRef(({
 
   function onMouseUp(e) {
     draggingRef.current = false;
+  }
+
+  function onMouseWheel(e) {
+    const camera = cameraRef.current;
+    const frustrumDepth = FAR - NEAR;
+
+    // Mouse position in camera's normalized device coordinates
+    const mouseX = (e.offsetX / displayWidth) * 2 - 1;
+    const mouseY = -(e.offsetY / displayHeight) * 2 + 1;
+    const mouseZ = (camera.position.z - NEAR) / frustrumDepth * 2 - 1;
+    const vector = new THREE.Vector3(mouseX, mouseY, mouseZ);
+    vector.unproject(camera);
+    vector.sub(camera.position);    // Vector from camera to mouse in world-space
+    
+    // Move camera along vector towards mouse
+    const delta = frustrumDepth / Math.cos(HALF_FOV_RAD) * scrollSensitivity;
+    vector.setLength(delta);
+    const newCameraPos = new THREE.Vector3();
+    if (e.deltaY < 0) {
+      newCameraPos.addVectors(camera.position, vector);
+    } else {
+      newCameraPos.subVectors(camera.position, vector);
+    }
+
+    // Make sure the plane is still within the frustrum
+    if (newCameraPos.z >= NEAR && newCameraPos.z <= FAR) {
+      camera.position.copy(newCameraPos);
+    }
+
+    render();
+    e.preventDefault();
   }
   
   ////////////////////////////

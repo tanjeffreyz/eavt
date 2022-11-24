@@ -86,7 +86,6 @@ function asyncFor({
   callback=(() => {})
 }) {
   const recur = (i) => {
-    console.log(i);
     if (i >= arr.length) {
       callback();
     } else {
