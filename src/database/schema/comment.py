@@ -4,5 +4,5 @@ from src.database.interfaces import Document
 
 class Comment(Document):
     author: ImmutableString | None
-    subject: str
+    subject: str | None
     body: str
