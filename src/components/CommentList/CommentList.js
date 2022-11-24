@@ -10,6 +10,8 @@ function CommentList({
   loadDocument,
   uri
 }) {
+  uri = `${uri}/comments`;
+
   const [show, setShow] = useState(false);
   const [subject, setSubject] = useState('');
   const [body, setBody] = useState('');
@@ -41,7 +43,6 @@ function CommentList({
   }
 
   function createNewComment() {
-    console.log(JSON.stringify({subject, body}));
     if (body.length > 0) {
       sendRequest({
         uri,

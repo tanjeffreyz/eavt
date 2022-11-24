@@ -12,7 +12,8 @@ import CommentList from '../../components/CommentList/CommentList';
 
 function TrialNav() {
   const params = useParams();
-  const [trial, loadTrial] = useLoadDocument(`/trials/${params.id}`);
+  const uri = `/trials/${params.id}`;
+  const [trial, loadTrial] = useLoadDocument(uri);
 
   console.log('rendered trial nav');
 
@@ -40,13 +41,13 @@ function TrialNav() {
         icon: <Back />,
         to: `/sessions/${trial.parent_id}`
       }}
-      context={{trial, loadTrial}}
+      context={{trial, loadTrial, uri}}
     />
   );
 }
 
 function Trial() {
-  const { trial, loadTrial } = useOutletContext();
+  const { trial, loadTrial, uri } = useOutletContext();
   const [ test, setTest ] = useState(true);
   console.log('rendered trial body');
   return (
@@ -72,7 +73,7 @@ function Trial() {
         <CommentList 
           document={trial}
           loadDocument={loadTrial}
-          uri={`/trials/${trial._id}/comments`}
+          uri={uri}
         />
       </Section>
     </>
