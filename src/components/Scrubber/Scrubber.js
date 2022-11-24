@@ -34,6 +34,7 @@ function Scrubber({
       cancelAnimationFrame(animationFrameRef.current);
       animationFrameRef.current = null;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playing]);
 
   // Seek functions
@@ -76,6 +77,7 @@ function Scrubber({
     const range = rangeRef.current;
     range.addEventListener('mousewheel', onMouseWheel);
     return () => range.removeEventListener('mousewheel', onMouseWheel);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [max]);
 
   // Render

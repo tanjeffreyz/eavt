@@ -72,6 +72,7 @@ function InteractiveCanvas({
       canvas.removeEventListener('mousewheel', onMouseWheel);
       document.body.removeEventListener('mouseup', onMouseUp);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   ////////////////////////////
