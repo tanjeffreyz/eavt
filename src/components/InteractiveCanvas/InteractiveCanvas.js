@@ -11,6 +11,7 @@ function InteractiveCanvas({
   scrollSensitivity=0.05,
   init=({scene, camera, renderer}) => {},
   update=({scene, camera, renderer}) => {},
+  ...props
 }) {
   const FOV = 45;     // Vertical FOV in degrees
   const HALF_FOV_RAD = Math.PI / 180 * (FOV / 2);
@@ -198,6 +199,7 @@ function InteractiveCanvas({
         className='canvas-button'
         style={{top: '5px', right: '5px'}}
       />
+      {props.children}
     </div>
   );
 }

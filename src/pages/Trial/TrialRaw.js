@@ -1,5 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
-import { Button } from 'react-bootstrap';
+import { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import * as THREE from 'three';
 import InteractiveCanvas from '../../components/InteractiveCanvas/InteractiveCanvas';
@@ -86,7 +85,9 @@ function TrialRaw() {
         contentWidth={512} contentHeight={512}
         init={init}
         update={update}
-      />
+      >
+        {/* TODO: more controls here */}
+      </InteractiveCanvas>
 
       <Scrubber 
         index={index}
