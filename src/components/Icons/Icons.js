@@ -5,6 +5,7 @@ import { ReactComponent as chevronRight } from './chevron-right.svg';
 import { ReactComponent as play } from './play.svg';
 import { ReactComponent as pause } from './pause.svg';
 import { ReactComponent as crosshair } from './crosshair.svg';
+import { ReactComponent as trashCan } from './trash-can.svg';
 
 function getIcon(Source) {
   function Icon({ 
@@ -36,6 +37,7 @@ const ChevronRight = getIcon(chevronRight);
 const Play = getIcon(play);
 const Pause = getIcon(pause);
 const Crosshair = getIcon(crosshair);
+const TrashCan = getIcon(trashCan);
 
 export {
   Home,
@@ -44,5 +46,6 @@ export {
   ChevronRight,
   Play,
   Pause,
-  Crosshair
+  Crosshair,
+  TrashCan
 };

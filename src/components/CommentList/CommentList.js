@@ -1,4 +1,5 @@
-import { Crosshair } from '../Icons/Icons';
+import { sendRequest } from '../../utils';
+import { TrashCan } from '../Icons/Icons';
 import './CommentList.css';
 
 function CommentList({
@@ -34,17 +35,27 @@ function Comment({
   loadDocument,
   uri
 }) {
+  function deleteComment() {
+    sendRequest({
+      uri: `${uri}/${data._id}`,
+      config: { method: 'DELETE' },
+      pass: loadDocument
+    })
+  }
+
   const date = new Date(data.dt);
   return (
     <div align='left' className='comment mb-2 px-2 py-2'>
       <span>Author: {data.author ? data.author : 'Anonymous'}</span>
       <p>{date.toLocaleString()}</p>
       <span>{data.body}</span>
-      <Crosshair 
-        width={30} 
-        height={30} 
+      <TrashCan 
+        width={25} 
+        height={25} 
         className='comment-button'
-        style={{top: '5px', right: '5px'}}
+        style={{fill: 'red', top: '5px', right: '5px'}}
+        title='Delete comment'
+        onClick={deleteComment}
       />
     </div>
   );
