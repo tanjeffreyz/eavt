@@ -72,8 +72,10 @@ function Scrubber({
   }
 
   useEffect(() => {
-    rangeRef.current.addEventListener('mousewheel', onMouseWheel);
-    return () => rangeRef.current.removeEventListener('mousewheel', onMouseWheel);
+    // Keep a static reference, as rangeRef.current becomes null after unmount
+    const range = rangeRef.current;
+    range.addEventListener('mousewheel', onMouseWheel);
+    return () => range.removeEventListener('mousewheel', onMouseWheel);
   }, [max]);
 
   // Render
