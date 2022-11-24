@@ -1,6 +1,7 @@
 import './InteractiveCanvas.css';
 import { useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import * as THREE from 'three';
+import { Crosshair } from '../Icons/Icons';
 
 const InteractiveCanvas = forwardRef(({
   displayWidth,
@@ -69,7 +70,9 @@ const InteractiveCanvas = forwardRef(({
   ////////////////////////////
   function render() {
     requestAnimationFrame(() => {
-      rendererRef.current.render(sceneRef.current, cameraRef.current);
+      if (rendererRef.current) {
+        rendererRef.current.render(sceneRef.current, cameraRef.current);
+      }
     });
   }
 
@@ -183,6 +186,12 @@ const InteractiveCanvas = forwardRef(({
         width={displayWidth} 
         height={displayHeight}
         className='interactive-canvas'
+      />
+      <Crosshair 
+        width={40} 
+        height={40} 
+        fill='white'
+        className='center-canvas-button'
       />
     </div>
   );

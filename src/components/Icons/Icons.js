@@ -1,17 +1,29 @@
-import home from './home.svg';
-import backChevron from './back-chevron.svg';
-import chevronLeft from './chevron-left.svg';
-import chevronRight from './chevron-right.svg';
-import play from './play.svg';
-import pause from './pause.svg';
+import { ReactComponent as home } from './home.svg';
+import { ReactComponent as backChevron } from './back-chevron.svg';
+import { ReactComponent as chevronLeft } from './chevron-left.svg';
+import { ReactComponent as chevronRight } from './chevron-right.svg';
+import { ReactComponent as play } from './play.svg';
+import { ReactComponent as pause } from './pause.svg';
+import { ReactComponent as crosshair } from './crosshair.svg';
 
-function getIcon(src) {
+function getIcon(Source) {
   function Icon({ 
     width=20, 
     height=20,
+    onClick,
     ...props
   }) {
-    return <img src={src} width={width} height={height} alt={src} {...props} />;
+    return (
+      <div
+        width={width} 
+        height={height}
+        onClick={onClick}
+        {...props} 
+        style={{...props.style, cursor: 'pointer', display: 'inline-block'}}
+      >
+        <Source width={width} height={height} {...props} />
+      </div>
+    );
   }
   return Icon;
 }
@@ -23,6 +35,7 @@ const ChevronLeft = getIcon(chevronLeft);
 const ChevronRight = getIcon(chevronRight);
 const Play = getIcon(play);
 const Pause = getIcon(pause);
+const Crosshair = getIcon(crosshair);
 
 export {
   Home,
@@ -30,5 +43,6 @@ export {
   ChevronLeft,
   ChevronRight,
   Play,
-  Pause
+  Pause,
+  Crosshair
 };

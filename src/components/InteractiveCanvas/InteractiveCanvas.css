@@ -5,4 +5,24 @@
 .interactive-canvas-rounded-corners {
   overflow: hidden;
   border-radius: 10px;
+  position: relative;
+}
+
+.center-canvas-button {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  display: none;
+  opacity: 0;
+}
+
+.interactive-canvas-rounded-corners:hover .center-canvas-button {
+  display: block;
+  animation: center-canvas-button-fadein 0.5s ease-in-out forwards;
+}
+
+@keyframes center-canvas-button-fadein {
+  100% {
+    opacity: 1;
+  }
 }
