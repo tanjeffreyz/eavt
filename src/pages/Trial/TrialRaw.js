@@ -5,7 +5,7 @@ import * as THREE from 'three';
 import InteractiveCanvas from '../../components/InteractiveCanvas/InteractiveCanvas';
 import Loader from '../../components/Loader/Loader';
 import { Scrubber, useScrubberState } from '../../components/Scrubber/Scrubber';
-import { sendRequest } from '../../utils';
+import { sendRequest, asyncFor, asyncMap } from '../../utils';
 
 function TrialRaw() {
   const { trial } = useOutletContext();
@@ -45,7 +45,7 @@ function TrialRaw() {
 
   function init({scene, camera, renderer}) {
     // Free up memory, working with sprites only now
-    setStripRawSprites(loadStripSprites(stripRaw, scene, renderer));
+    loadStripSprites(stripRaw, scene, renderer, setStripRawSprites);
     setStripRaw([]);
     // setStripRawOutputSprites(loadStripSprites(stripRaw, scene, renderer));
     // setStripRawOutput([]);
@@ -102,10 +102,11 @@ function TrialRaw() {
 ////////////////////////////
 //    Helper Functions    //
 ////////////////////////////
-function loadStripSprites(strips, scene, renderer) {
+function loadStripSprites(strips, scene, renderer, setData) {
   const minIndex = Math.floor(strips[0].name / 32);
   const frames = [];
-  strips.forEach((strip) => {
+
+  const f = (strip) => {
     const offset = strip.name % 32;
     const index = Math.floor(strip.name / 32) - minIndex;
 
@@ -126,8 +127,12 @@ function loadStripSprites(strips, scene, renderer) {
       frames.push([]);
     }
     frames[index].push(sprite);
+  };
+  asyncMap({
+    arr: strips,
+    f, 
+    callback: () => setData(frames)
   });
-  return frames;
 }
 
 /** Gets all pages of data from multiple endpoints */

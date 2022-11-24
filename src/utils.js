@@ -78,9 +78,50 @@ function addWordBreaks(text) {
   return result;
 }
 
+/** Asynchronous batched for-loop that applies the function `f` to `arr` */
+function asyncFor({
+  arr, 
+  f, 
+  batchSize=32, 
+  callback=(() => {})
+}) {
+  const recur = (i) => {
+    console.log(i);
+    if (i >= arr.length) {
+      callback();
+    } else {
+      arr.slice(i, i + batchSize).forEach(f);
+      setTimeout(() => recur(i + batchSize));
+    }
+  };
+  recur(0);
+}
+
+/** Asynchronous batched map operation that maps the function `f` onto `arr` */
+function asyncMap({
+  arr,
+  f,
+  batchSize=32,
+  callback=((data) => {})
+}) {
+  const result = [];
+  const recur = (i) => {
+    if (i >= arr.length) {
+      callback(result);
+    } else {
+      const batch = arr.slice(i, i + batchSize);
+      result.push(...batch.map(f));
+      setTimeout(() => recur(i + batchSize));
+    }
+  };
+  recur(0);
+}
+
 export {
   sendRequest,
   getFlagSymbol,
   useInfiniteScroll,
-  addWordBreaks
+  addWordBreaks,
+  asyncFor,
+  asyncMap
 };
