@@ -8,7 +8,7 @@
   position: relative;
 }
 
-.center-canvas-button {
+.canvas-button {
   position: absolute;
   top: 5px;
   right: 5px;
@@ -16,12 +16,12 @@
   opacity: 0;
 }
 
-.interactive-canvas-rounded-corners:hover .center-canvas-button {
+.interactive-canvas-rounded-corners:hover .canvas-button {
   display: block;
-  animation: center-canvas-button-fadein 0.5s forwards;
+  animation: canvas-button-fadein 0.5s forwards;
 }
 
-@keyframes center-canvas-button-fadein {
+@keyframes canvas-button-fadein {
   100% {
     opacity: 0.75;
   }

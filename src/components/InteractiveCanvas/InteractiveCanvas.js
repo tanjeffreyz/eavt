@@ -196,7 +196,7 @@ function InteractiveCanvas({
         height={30} 
         onClick={centerCanvas}
         fill='white'
-        className='center-canvas-button'
+        className='canvas-button'
       />
     </div>
   );
