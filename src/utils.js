@@ -1,5 +1,4 @@
 import { API_ROOT } from './config';
-import { useState, useEffect } from 'react';
 
 async function sendRequest({
   uri,
@@ -29,30 +28,6 @@ async function sendRequest({
       }
     );
 };
-
-function useInfiniteScroll(callback) {
-  const SCROLL_TOLERANCE = 25;
-  const [loading, setLoading] = useState(false);
-
-  const handleScroll = () => {
-    const doc = document.documentElement;
-    if (window.innerHeight + doc.scrollTop + SCROLL_TOLERANCE >= doc.offsetHeight) {
-      setLoading(true);
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-    if (!loading) return;
-    callback();     // Load more items
-  }, [loading, callback]);
-
-  return [loading, setLoading];
-}
 
 function getFlagSymbol(flag) {
   let symbol;
@@ -118,9 +93,8 @@ function asyncMap({
 
 export {
   sendRequest,
-  getFlagSymbol,
-  useInfiniteScroll,
-  addWordBreaks,
   asyncFor,
-  asyncMap
+  asyncMap,
+  getFlagSymbol,
+  addWordBreaks
 };

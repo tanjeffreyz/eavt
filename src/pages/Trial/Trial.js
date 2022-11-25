@@ -1,23 +1,21 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useParams, useOutletContext } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
-import { sendRequest, addWordBreaks } from '../../utils';
+import { addWordBreaks } from '../../utils';
+import { useLoadDocument } from '../../hooks';
 import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import LoadingScreen from '../../components/LoadingScreen/LoadingScreen';
 import { Back } from '../../components/Icons/Icons';
 import Section from '../../components/Section/Section';
 import TrialRaw from './TrialRaw';
+import CommentList from '../../components/CommentList/CommentList';
 
 function TrialNav() {
   const params = useParams();
-  const [trial, setTrial] = useState(null);
+  const uri = `/trials/${params.id}`;
+  const [trial, loadTrial] = useLoadDocument(uri);
 
-  useEffect(() => {
-    sendRequest({
-      uri: `/trials/${params.id}`,
-      pass: (data) => setTrial(data)
-    })
-  }, [params.id]);
+  console.log('rendered trial nav');
 
   if (!trial) return <LoadingScreen />;
 
@@ -43,19 +41,21 @@ function TrialNav() {
         icon: <Back />,
         to: `/sessions/${trial.parent_id}`
       }}
-      context={{trial}}
+      context={{trial, loadTrial, uri}}
     />
   );
 }
 
 function Trial() {
-  const { trial } = useOutletContext();
+  const { trial, loadTrial, uri } = useOutletContext();
   const [ test, setTest ] = useState(true);
+  console.log('rendered trial body');
   return (
     <>
       <Section fluid align='center' id='visualization'>
         <h1>Visualization</h1>
-        <Button onClick={() => setTest((prev) => !prev)}>Toggle</Button>
+        {/* setTest((prev) => !prev); */}
+        {/* <Button onClick={() => { loadTrial()}}>Test</Button> */}
         {test ? <TrialRaw /> : <span>heheh</span>}
       </Section>
 
@@ -70,7 +70,11 @@ function Trial() {
 
       <Section fluid align='center' id='comments'>
         <h1>Comments</h1>
-        {[...Array(100).keys()].map(i => <><br key={i}></br>a</>)}
+        <CommentList 
+          document={trial}
+          loadDocument={loadTrial}
+          uri={uri}
+        />
       </Section>
     </>
   );

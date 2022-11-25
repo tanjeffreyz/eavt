@@ -1,6 +1,7 @@
 import './DocumentList.css';
 import { useState, useEffect } from 'react';
-import { sendRequest, useInfiniteScroll } from '../../utils';
+import { sendRequest } from '../../utils';
+import { useInfiniteScroll } from '../../hooks';
 import Loader from '../../components/Loader/Loader';
 import { Table } from 'react-bootstrap';
 
