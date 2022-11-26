@@ -66,6 +66,23 @@ async def add_comment_to_trial(rq: Request, trial_id: str, body: Comment):
     return get_document_by_id(rq.app.db['trials'], trial_id)
 
 
+@router.patch(
+    '/{trial_id}/comments/{comment_id}',
+    description='Updates a comment within this trial',
+    response_model=Trial
+)
+async def update_trial_comment(rq: Request, trial_id: str, comment_id: str, body: Comment):
+    trial = Trial(**get_document_by_id(rq.app.db['trials'], trial_id))
+    rq.app.db['trials'].update_one(
+        {'_id': trial.id, 'comments._id': comment_id},
+        {'$set': {
+            'comments.$.subject': body.subject,
+            'comments.$.body': body.body
+        }}
+    )
+    return get_document_by_id(rq.app.db['trials'], trial_id)
+
+
 @router.delete(
     '/{trial_id}/comments/{comment_id}',
     description='Deletes the comment from this trial',
