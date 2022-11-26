@@ -12,6 +12,7 @@ class MediaType(str, Enum):
 class Flag(str, Enum):
     """States to mark and highlight specific documents."""
 
+    NONE = 'none'
     STAR = 'star'
     ERROR = 'error'
 

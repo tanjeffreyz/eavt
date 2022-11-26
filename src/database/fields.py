@@ -32,4 +32,4 @@ class Opt:
     class Flag(BaseModel):
         """User-set flag to mark interesting/unusual documents"""
 
-        flag: Flag | None
+        flag: Flag = Field(default=Flag.NONE)
