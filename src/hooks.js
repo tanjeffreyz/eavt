@@ -33,7 +33,7 @@ function useLoadDocument(uri) {
       uri,
       pass: (data) => setDocument(data)
     })
-  }, []);
+  }, [uri]);
 
   useEffect(loadDocument, [loadDocument]);
 

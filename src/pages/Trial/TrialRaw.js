@@ -35,6 +35,7 @@ function TrialRaw() {
       datasets,
       callback: () => setNumLoaded((prev) => prev + 1)
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function init({scene, camera, renderer}) {
