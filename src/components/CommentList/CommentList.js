@@ -78,7 +78,7 @@ function CommentList({
             onChange={(e) => setBody(e.target.value)}
             as='textarea' 
             placeholder='Body'
-            rows={3}
+            rows={10}
           />
         </Modal.Body>
         <Modal.Footer>
