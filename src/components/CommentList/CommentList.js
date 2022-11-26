@@ -15,8 +15,12 @@ function CommentList({
   const [show, setShow] = useState(false);
   const [subject, setSubject] = useState('');
   const [body, setBody] = useState('');
+  const [validBody, setValidBody] = useState(true);
 
-  const showModal = () => setShow(true);
+  const showModal = () => {
+    setShow(true);
+    setValidBody(true);
+  };
   const hideModal = () => setShow(false);
 
   function getComment(c, i) {
@@ -38,7 +42,9 @@ function CommentList({
   }
 
   function createNewComment() {
-    if (body.length > 0) {
+    if (body.length === 0) {
+      setValidBody(false);
+    } else {
       sendRequest({
         uri,
         config: { 
@@ -75,11 +81,18 @@ function CommentList({
           />
           <Form.Control 
             value={body}
-            onChange={(e) => setBody(e.target.value)}
+            onChange={(e) => {
+              setBody(e.target.value);
+              setValidBody(e.target.value.length > 0);
+            }}
             as='textarea' 
             placeholder='Body'
             rows={10}
+            isInvalid={!validBody}
           />
+          <Form.Control.Feedback type='invalid'>
+            Comment body must be non-empty
+          </Form.Control.Feedback>
         </Modal.Body>
         <Modal.Footer>
           <Button variant='secondary' onClick={hideModal}>Cancel</Button>
