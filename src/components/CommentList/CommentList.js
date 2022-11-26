@@ -2,7 +2,7 @@ import './CommentList.css';
 import { useState } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import { sendRequest } from '../../utils';
-import { TrashCan } from '../Icons/Icons';
+import { Plus, TrashCan } from '../Icons/Icons';
 import { Form } from 'react-bootstrap';
 
 function CommentList({
@@ -15,14 +15,13 @@ function CommentList({
   const [show, setShow] = useState(false);
   const [subject, setSubject] = useState('');
   const [body, setBody] = useState('');
+  const [validBody, setValidBody] = useState(true);
 
-  const showModal = () => setShow(true);
+  const showModal = () => {
+    setShow(true);
+    setValidBody(true);
+  };
   const hideModal = () => setShow(false);
-
-  const comments = document.comments;
-  if (!comments || comments.length == 0) {
-    return <span>No comments found</span>;
-  }
 
   function getComment(c, i) {
     return (
@@ -43,7 +42,9 @@ function CommentList({
   }
 
   function createNewComment() {
-    if (body.length > 0) {
+    if (body.length === 0) {
+      setValidBody(false);
+    } else {
       sendRequest({
         uri,
         config: { 
@@ -64,10 +65,10 @@ function CommentList({
         onClick={showModal}
         style={{cursor: 'pointer'}}
       >
-        + New Comment
+        <Plus style={{position:'relative', top: '-1px'}}/> New Comment
       </div>
 
-      {comments.slice(0).reverse().map(getComment)}
+      {document.comments.slice(0).reverse().map(getComment)}
 
       <Modal show={show} onHide={hideModal} backdrop='static' centered>
         <Modal.Header closeButton>Create New Comment</Modal.Header>
@@ -80,11 +81,18 @@ function CommentList({
           />
           <Form.Control 
             value={body}
-            onChange={(e) => setBody(e.target.value)}
+            onChange={(e) => {
+              setBody(e.target.value);
+              setValidBody(e.target.value.length > 0);
+            }}
             as='textarea' 
             placeholder='Body'
-            rows={3}
+            rows={10}
+            isInvalid={!validBody}
           />
+          <Form.Control.Feedback type='invalid'>
+            Comment body must be non-empty
+          </Form.Control.Feedback>
         </Modal.Body>
         <Modal.Footer>
           <Button variant='secondary' onClick={hideModal}>Cancel</Button>
@@ -118,8 +126,8 @@ function Comment({
   return (
     <>
       <div align='left' className='comment mb-2 px-2 py-2'>
-        <span>Subject: {data.subject ? data.subject : 'N/A'}</span>
-        <p>{date.toLocaleString()}</p>
+        {data.subject ? <span><b>{data.subject}</b></span> : null}
+        <p style={{color: 'gray'}}>{date.toLocaleString()}</p>
         <span>{data.body}</span>
         <TrashCan 
           width={20} 

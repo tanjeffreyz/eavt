@@ -7,6 +7,8 @@
 
   width: 75%;
   max-width: 750px;
+
+  overflow-wrap: break-word;
 }
 
 .comment-button {
