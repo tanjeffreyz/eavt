@@ -26,7 +26,7 @@ function NavigationBar({
 
   return (
     <>
-      <Navbar bg='light' expand='md' fixed='top'>
+      <Navbar bg='light' expand='lg' fixed='top'>
         <Container fluid>
           <span>
             {backLink}
