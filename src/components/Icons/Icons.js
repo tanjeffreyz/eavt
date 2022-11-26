@@ -8,6 +8,7 @@ import { ReactComponent as crosshair } from './crosshair.svg';
 import { ReactComponent as trashCan } from './trash-can.svg';
 import { ReactComponent as plus } from './plus.svg';
 import { ReactComponent as flag } from './flag.svg';
+import { ReactComponent as edit } from './edit.svg';
 
 function getIcon(Source) {
   function Icon({ 
@@ -42,6 +43,7 @@ const Crosshair = getIcon(crosshair);
 const TrashCan = getIcon(trashCan);
 const Plus = getIcon(plus);
 const Flag = getIcon(flag);
+const Edit = getIcon(edit);
 
 export {
   Home,
@@ -53,5 +55,6 @@ export {
   Crosshair,
   TrashCan,
   Plus,
-  Flag
+  Flag,
+  Edit
 };
