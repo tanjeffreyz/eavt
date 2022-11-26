@@ -9,6 +9,7 @@ import { Back } from '../../components/Icons/Icons';
 import Section from '../../components/Section/Section';
 import TrialRaw from './TrialRaw';
 import CommentList from '../../components/CommentList/CommentList';
+import { FlagSelector } from '../../components/Flag/Flag';
 
 function TrialNav() {
   const params = useParams();
@@ -43,6 +44,12 @@ function TrialNav() {
       context={{trial, loadTrial, uri}}
     >
       {subtitle}
+      <FlagSelector 
+        value={trial.flag} 
+        uri={uri} 
+        className='ms-3'
+        loadDocument={loadTrial}
+      />
     </NavigationBar>
   );
 }
