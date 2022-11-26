@@ -17,9 +17,9 @@ function DocumentList({
   const [pageState, setPageState] = useState({cursor: null, hasNext: true});
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => fetchNextPage(), []);
+  useEffect(() => fetchNextPage(true), []);
 
-  function fetchNextPage() {
+  function fetchNextPage(reset=false) {
     if (!pageState.hasNext) {
       setLoading(false);
       return;
@@ -32,7 +32,9 @@ function DocumentList({
         cursor: pageState.cursor
       },
       pass: (data) => {
-        setDocuments(prev => ([...prev, ...data.documents]));
+        setDocuments(prev => {
+          return (reset ? data.documents : [...prev, ...data.documents]);
+        });
         setPageState({
           cursor: data.cursor,
           hasNext: data.hasNext
