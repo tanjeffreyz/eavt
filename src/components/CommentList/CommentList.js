@@ -19,11 +19,6 @@ function CommentList({
   const showModal = () => setShow(true);
   const hideModal = () => setShow(false);
 
-  const comments = document.comments;
-  if (!comments || comments.length == 0) {
-    return <span>No comments found</span>;
-  }
-
   function getComment(c, i) {
     return (
       <Comment 
@@ -67,7 +62,7 @@ function CommentList({
         + New Comment
       </div>
 
-      {comments.slice(0).reverse().map(getComment)}
+      {document.comments.slice(0).reverse().map(getComment)}
 
       <Modal show={show} onHide={hideModal} backdrop='static' centered>
         <Modal.Header closeButton>Create New Comment</Modal.Header>
