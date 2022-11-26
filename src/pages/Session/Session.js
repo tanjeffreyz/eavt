@@ -22,7 +22,6 @@ function SessionNav() {
   return (
     <NavigationBar
       title='Session'
-      subtitle={session.path}
       links={[
         {name: 'Visualization', to: {hash: 'visualization'}},
         {name: 'Data', to: {hash: 'data'}},
@@ -34,7 +33,9 @@ function SessionNav() {
         to: '/sessions'
       }}
       context={{session, loadSession, uri}}
-    />
+    >
+      {session.path}
+    </NavigationBar>
   );
 }
 

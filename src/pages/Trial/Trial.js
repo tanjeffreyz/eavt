@@ -31,7 +31,6 @@ function TrialNav() {
   return (
     <NavigationBar
       title='Trial'
-      subtitle={subtitle}
       links={[
         {name: 'Visualization', to: {hash: 'visualization'}},
         {name: 'Data', to: {hash: 'data'}},
@@ -42,7 +41,9 @@ function TrialNav() {
         to: `/sessions/${trial.parent_id}`
       }}
       context={{trial, loadTrial, uri}}
-    />
+    >
+      {subtitle}
+    </NavigationBar>
   );
 }
 

@@ -22,7 +22,7 @@ function getFlagSymbol(value) {
   if (value in SYMBOLS) {
     return SYMBOLS[value];
   }
-  return value;
+  return null;
 }
 
 export {
