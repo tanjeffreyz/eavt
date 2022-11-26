@@ -2,7 +2,7 @@ import './CommentList.css';
 import { useState } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import { sendRequest } from '../../utils';
-import { TrashCan } from '../Icons/Icons';
+import { Plus, TrashCan } from '../Icons/Icons';
 import { Form } from 'react-bootstrap';
 
 function CommentList({
@@ -59,7 +59,7 @@ function CommentList({
         onClick={showModal}
         style={{cursor: 'pointer'}}
       >
-        + New Comment
+        <Plus style={{position:'relative', top: '-1px'}}/> New Comment
       </div>
 
       {document.comments.slice(0).reverse().map(getComment)}
