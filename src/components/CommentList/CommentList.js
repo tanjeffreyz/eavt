@@ -133,7 +133,10 @@ function CommentEditor({
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({subject, body})
         },
-        pass: loadDocument
+        pass: () => {
+          setEditing(false);
+          loadDocument();
+        }
       });
     }
   }
