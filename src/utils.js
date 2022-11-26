@@ -29,21 +29,6 @@ async function sendRequest({
     );
 };
 
-function getFlagSymbol(flag) {
-  let symbol;
-  switch(flag) {
-    case 'star':
-      symbol = '⭐';
-      break;
-    case 'error':
-      symbol = '❌';
-      break;
-    default:
-      symbol = flag;
-  }
-  return <div title={flag}>{symbol}</div>;
-}
-
 function addWordBreaks(text) {
   const segments = text.split(/_/g);
   let result = segments[segments.length-1];
@@ -95,6 +80,5 @@ export {
   sendRequest,
   asyncFor,
   asyncMap,
-  getFlagSymbol,
   addWordBreaks
 };

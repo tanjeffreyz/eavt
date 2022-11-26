@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { getFlagSymbol, addWordBreaks } from '../../utils';
+import { addWordBreaks } from '../../utils';
+import { Flag } from '../../components/Flag/Flag';
 import DocumentList from '../../components/DocumentList/DocumentList';
 import { Collapse, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
@@ -20,7 +21,8 @@ function Sessions() {
 }
 
 function SessionRow({
-  document, index
+  document, 
+  index
 }) {
   const [dropdownState, setDropdownState] = useState(false);
   const sessionName = addWordBreaks(document.path);
@@ -45,7 +47,7 @@ function SessionRow({
           </Collapse>
         </td>
         <td>{document.dt}</td>
-        <td>{getFlagSymbol(document.flag)}</td>
+        <td>{<Flag value={document.flag} />}</td>
       </tr>
     </LinkContainer>
   );

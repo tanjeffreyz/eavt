@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useParams, useOutletContext } from 'react-router-dom';
 import { Collapse, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
-import { addWordBreaks, getFlagSymbol } from '../../utils';
+import { addWordBreaks } from '../../utils';
+import { Flag } from '../../components/Flag/Flag';
 import { useLoadDocument } from '../../hooks';
 import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import LoadingScreen from '../../components/LoadingScreen/LoadingScreen';
@@ -73,7 +74,8 @@ function Session() {
 }
 
 function TrialRow({
-  document, index
+  document, 
+  index
 }) {
   const [dropdownState, setDropdownState] = useState(false);
   const paths = document.path.split('/');
@@ -99,7 +101,7 @@ function TrialRow({
           </Collapse>
         </td>
         <td>{document.dt}</td>
-        <td>{getFlagSymbol(document.flag)}</td>
+        <td>{<Flag value={document.flag} />}</td>
       </tr>
     </LinkContainer>
   );
