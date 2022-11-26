@@ -215,13 +215,11 @@ function CommentDisplay({
         <TrashCan 
           className='comment-button'
           style={{fill: 'red', top: '5px', right: '5px'}}
-          title='Delete'
           onClick={showModal}
         />
         <Edit 
           className='comment-button'
-          style={{fill: '#656565', top: '5px', right: '25px'}}
-          title='Edit'
+          style={{fill: '#0d6efd', top: '5px', right: '25px'}}
           onClick={() => setEditing(true)}
         />
       </div>
