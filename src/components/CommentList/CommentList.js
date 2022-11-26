@@ -128,7 +128,7 @@ function Comment({
       <div align='left' className='comment mb-2 px-2 py-2'>
         {data.subject ? <span><b>{data.subject}</b></span> : null}
         <p style={{color: 'gray'}}>{date.toLocaleString()}</p>
-        <span>{data.body}</span>
+        <span dangerouslySetInnerHTML={{__html: data.body}} />
         <TrashCan 
           width={20} 
           height={20} 

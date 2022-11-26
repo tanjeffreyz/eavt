@@ -5,10 +5,10 @@ import { Container, Nav, Navbar } from 'react-bootstrap';
 
 function NavigationBar({
   title,
-  subtitle,
   links,
   back=null,
-  context=[]
+  context=[],
+  ...props
 }) {
   const linkElements = links.map((r, i) => {
     return (
@@ -26,12 +26,12 @@ function NavigationBar({
 
   return (
     <>
-      <Navbar bg='light' expand='md' fixed='top'>
+      <Navbar bg='light' expand='lg' fixed='top'>
         <Container fluid>
           <span>
             {backLink}
             <Navbar.Brand className='pe-3'>{title}</Navbar.Brand>
-            {subtitle}
+            {props.children}
           </span>
           <Navbar.Toggle aria-controls='index-navbar-nav' />
           <Navbar.Collapse id='index-navbar-nav'>

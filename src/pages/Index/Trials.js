@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { getFlagSymbol, addWordBreaks } from '../../utils';
+import { addWordBreaks } from '../../utils';
+import { Flag } from '../../components/Flag/Flag';
 import DocumentList from '../../components/DocumentList/DocumentList';
 import { Collapse, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
@@ -20,7 +21,8 @@ function Trials() {
 }
 
 function TrialRow({
-  document, index
+  document, 
+  index
 }) {
   const [dropdownState, setDropdownState] = useState(false);
   const paths = document.path.split('/');
@@ -48,7 +50,7 @@ function TrialRow({
         </td>
         <td>{sessionName}</td>
         <td>{document.dt}</td>
-        <td>{getFlagSymbol(document.flag)}</td>
+        <td>{<Flag value={document.flag} />}</td>
       </tr>
     </LinkContainer>
   );
