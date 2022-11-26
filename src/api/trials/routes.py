@@ -61,7 +61,7 @@ async def reindex_trial(rq: Request, trial_id: str):
 )
 async def update_trial(rq: Request, trial_id: str, body: PatchTrialRq):
     old_trial = Trial(**get_document_by_id(rq.app.db['trials'], trial_id))
-    new_trial = update_model(old_trial, body.dict())
+    new_trial = update_model(old_trial, body.dict(exclude_unset=True))
     rq.app.db['trials'].replace_one(
         {'_id': trial_id},
         jsonable_encoder(new_trial)

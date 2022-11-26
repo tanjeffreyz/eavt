@@ -70,7 +70,7 @@ async def create_new_session(rq: Request, body: CreateSessionRq):
 )
 async def update_session(rq: Request, session_id: str, body: PatchSessionRq):
     old_session = Session(**get_document_by_id(rq.app.db['sessions'], session_id))
-    new_session = update_model(old_session, body.dict())
+    new_session = update_model(old_session, body.dict(exclude_unset=True))
     rq.app.db['sessions'].replace_one(
         {'_id': session_id},
         jsonable_encoder(new_session)
