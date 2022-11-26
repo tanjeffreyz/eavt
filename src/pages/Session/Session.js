@@ -1,26 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useParams, useOutletContext } from 'react-router-dom';
 import { Collapse, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
-import { sendRequest, addWordBreaks, getFlagSymbol } from '../../utils';
+import { addWordBreaks, getFlagSymbol } from '../../utils';
+import { useLoadDocument } from '../../hooks';
 import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import LoadingScreen from '../../components/LoadingScreen/LoadingScreen';
 import DocumentList from '../../components/DocumentList/DocumentList';
 import { Back } from '../../components/Icons/Icons';
 import Section from '../../components/Section/Section';
+import CommentList from '../../components/CommentList/CommentList';
 
 function SessionNav() {
   const params = useParams();
-  const [session, setSession] = useState(null);
-
-  useEffect(() => {
-    sendRequest({
-      uri: `/sessions/${params.id}`,
-      pass: (data) => setSession(data)
-    })
-  }, [params.id]);
+  const uri = `/sessions/${params.id}`;
+  const [session, loadSession] = useLoadDocument(uri);
 
   if (!session) return <LoadingScreen />;
+
   return (
     <NavigationBar
       title='Session'
@@ -35,13 +32,13 @@ function SessionNav() {
         icon: <Back />,
         to: '/sessions'
       }}
-      context={{session}}
+      context={{session, loadSession, uri}}
     />
   );
 }
 
 function Session() {
-  const { session } = useOutletContext();
+  const { session, loadSession, uri } = useOutletContext();
   return (
     <>
       <Section fluid align='center' id='visualization'>
@@ -54,6 +51,11 @@ function Session() {
 
       <Section fluid align='center' id='comments'>
         <h1>Comments</h1>
+        <CommentList 
+          document={session}
+          loadDocument={loadSession}
+          uri={uri}
+        />
       </Section>
 
       <Section fluid align='center' id='trials'>
@@ -64,7 +66,6 @@ function Session() {
           params={{ field: 'dt' }}
           Row={TrialRow}
         />
-        {[...Array(100).keys()].map(i => <><br key={i}></br>a</>)}
       </Section>
     </>
     
