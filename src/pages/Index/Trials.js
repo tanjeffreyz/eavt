@@ -28,6 +28,7 @@ function TrialRow({
   const paths = document.path.split('/');
   const sessionName = addWordBreaks(paths[0]);
   const trialName = addWordBreaks(paths[paths.length-1]);
+  const date = new Date(document.dt);
   return (
     <LinkContainer key={index} to={`/trials/${document._id}`}>
       <tr>
@@ -49,7 +50,7 @@ function TrialRow({
           </Collapse>
         </td>
         <td>{sessionName}</td>
-        <td>{document.dt}</td>
+        <td>{date.toLocaleString()}</td>
         <td>{<Flag value={document.flag} />}</td>
       </tr>
     </LinkContainer>

@@ -26,6 +26,7 @@ function SessionRow({
 }) {
   const [dropdownState, setDropdownState] = useState(false);
   const sessionName = addWordBreaks(document.path);
+  const date = new Date(document.dt);
   return (
     <LinkContainer key={index} to={`/sessions/${document._id}`}>
       <tr>
@@ -46,7 +47,7 @@ function SessionRow({
             <div>sparkline or metadata</div>
           </Collapse>
         </td>
-        <td>{document.dt}</td>
+        <td>{date.toLocaleString()}</td>
         <td>{<Flag value={document.flag} />}</td>
       </tr>
     </LinkContainer>

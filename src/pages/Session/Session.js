@@ -87,6 +87,7 @@ function TrialRow({
   const [dropdownState, setDropdownState] = useState(false);
   const paths = document.path.split('/');
   const trialName = addWordBreaks(paths[paths.length-1]);
+  const date = new Date(document.dt);
   return (
     <LinkContainer key={index} to={`/trials/${document._id}`}>
       <tr>
@@ -107,7 +108,7 @@ function TrialRow({
             <div>sparkline or metadata</div>
           </Collapse>
         </td>
-        <td>{document.dt}</td>
+        <td>{date.toLocaleString()}</td>
         <td>{<Flag value={document.flag} />}</td>
       </tr>
     </LinkContainer>
