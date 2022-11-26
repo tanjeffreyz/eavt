@@ -2,7 +2,7 @@ import './CommentList.css';
 import { useState } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import { sendRequest } from '../../utils';
-import { Plus, TrashCan } from '../Icons/Icons';
+import { Edit, Plus, TrashCan } from '../Icons/Icons';
 import { Form } from 'react-bootstrap';
 
 function CommentList({
@@ -103,15 +103,98 @@ function CommentList({
   );
 }
 
-function Comment({
+function Comment(props) {
+  const [editing, setEditing] = useState(false);
+  if (editing) {
+    return <CommentEditor {...props} setEditing={setEditing} />;
+  } else {
+    return <CommentDisplay {...props} setEditing={setEditing} />;
+  }
+}
+
+function CommentEditor({
   data,
   loadDocument,
-  uri
+  uri,
+  setEditing
 }) {
-  const [show, setShow] = useState(false);
+  const [subject, setSubject] = useState(data.subject);
+  const [body, setBody] = useState(data.body);
+  const [validBody, setValidBody] = useState(true);
 
-  const showModal = () => setShow(true);
-  const hideModal = () => setShow(false);
+  function updateComment() {
+    if (body.length === 0) {
+      setValidBody(false);
+    } else {
+      sendRequest({
+        uri: `${uri}/${data._id}`,
+        config: { 
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({subject, body})
+        },
+        pass: () => {
+          setEditing(false);
+          loadDocument();
+        }
+      });
+    }
+  }
+
+  const date = new Date(data.dt);
+  return (
+    <div align='left' className='comment mb-2 px-2 py-2'>
+      <Form.Control 
+        value={subject}
+        onChange={(e) => setSubject(e.target.value)}
+        placeholder='Subject' 
+        className='mb-2'
+      />
+      <p style={{color: 'gray'}}>{date.toLocaleString()}</p>
+      <Form.Control 
+        value={body}
+        onChange={(e) => {
+          setBody(e.target.value);
+          setValidBody(e.target.value.length > 0);
+        }}
+        as='textarea' 
+        placeholder='Body'
+        rows={10}
+        isInvalid={!validBody}
+      />
+      <Form.Control.Feedback type='invalid'>
+        Comment body must be non-empty
+      </Form.Control.Feedback>
+
+      <div align='right' className='mt-2'>
+        <Button 
+          variant='secondary' 
+          className='me-2'
+          onClick={() => setEditing(false)}
+        >
+          Cancel
+        </Button>
+        <Button 
+          variant='primary' 
+          onClick={updateComment}
+        >
+          Save
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+function CommentDisplay({
+  data,
+  loadDocument,
+  uri,
+  setEditing
+}) {
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  const showModal = () => setShowConfirm(true);
+  const hideModal = () => setShowConfirm(false);
 
   function deleteComment() {
     sendRequest({
@@ -130,16 +213,18 @@ function Comment({
         <p style={{color: 'gray'}}>{date.toLocaleString()}</p>
         <span dangerouslySetInnerHTML={{__html: data.body}} />
         <TrashCan 
-          width={20} 
-          height={20} 
           className='comment-button'
           style={{fill: 'red', top: '5px', right: '5px'}}
-          title='Delete comment'
           onClick={showModal}
+        />
+        <Edit 
+          className='comment-button'
+          style={{fill: '#0d6efd', top: '5px', right: '25px'}}
+          onClick={() => setEditing(true)}
         />
       </div>
 
-      <Modal show={show} onHide={hideModal} centered>
+      <Modal show={showConfirm} onHide={hideModal} centered>
         <Modal.Header closeButton>Delete Comment</Modal.Header>
         <Modal.Body>Are you sure you want to delete this comment?</Modal.Body>
         <Modal.Footer>
@@ -148,7 +233,6 @@ function Comment({
         </Modal.Footer>
       </Modal>
     </>
-    
   );
 }
 
