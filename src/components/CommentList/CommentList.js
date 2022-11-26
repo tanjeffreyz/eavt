@@ -108,10 +108,10 @@ function Comment({
   loadDocument,
   uri
 }) {
-  const [show, setShow] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
-  const showModal = () => setShow(true);
-  const hideModal = () => setShow(false);
+  const showModal = () => setShowConfirm(true);
+  const hideModal = () => setShowConfirm(false);
 
   function deleteComment() {
     sendRequest({
@@ -139,7 +139,7 @@ function Comment({
         />
       </div>
 
-      <Modal show={show} onHide={hideModal} centered>
+      <Modal show={showConfirm} onHide={hideModal} centered>
         <Modal.Header closeButton>Delete Comment</Modal.Header>
         <Modal.Body>Are you sure you want to delete this comment?</Modal.Body>
         <Modal.Footer>
