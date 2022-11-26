@@ -3,7 +3,7 @@ import { useParams, useOutletContext } from 'react-router-dom';
 import { Collapse, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { addWordBreaks } from '../../utils';
-import { Flag } from '../../components/Flag/Flag';
+import { Flag, FlagSelector } from '../../components/Flag/Flag';
 import { useLoadDocument } from '../../hooks';
 import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import LoadingScreen from '../../components/LoadingScreen/LoadingScreen';
@@ -35,6 +35,12 @@ function SessionNav() {
       context={{session, loadSession, uri}}
     >
       {session.path}
+      <FlagSelector 
+        value={session.flag} 
+        uri={uri} 
+        className='ms-3'
+        loadDocument={loadSession}
+      />
     </NavigationBar>
   );
 }

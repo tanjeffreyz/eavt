@@ -54,7 +54,7 @@ function DocumentList({
           </tr>
         </thead>
         <tbody>
-          {documents.map((d, i) => <Row index={i} document={d} />)}
+          {documents.map((d, i) => <Row key={i} index={i} document={d} />)}
         </tbody>
       </Table>
       {loading && <Loader />}

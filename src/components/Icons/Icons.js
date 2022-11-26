@@ -7,6 +7,7 @@ import { ReactComponent as pause } from './pause.svg';
 import { ReactComponent as crosshair } from './crosshair.svg';
 import { ReactComponent as trashCan } from './trash-can.svg';
 import { ReactComponent as plus } from './plus.svg';
+import { ReactComponent as flag } from './flag.svg';
 
 function getIcon(Source) {
   function Icon({ 
@@ -40,6 +41,7 @@ const Pause = getIcon(pause);
 const Crosshair = getIcon(crosshair);
 const TrashCan = getIcon(trashCan);
 const Plus = getIcon(plus);
+const Flag = getIcon(flag);
 
 export {
   Home,
@@ -50,5 +52,6 @@ export {
   Pause,
   Crosshair,
   TrashCan,
-  Plus
+  Plus,
+  Flag
 };
