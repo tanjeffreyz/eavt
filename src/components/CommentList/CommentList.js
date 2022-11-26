@@ -178,7 +178,7 @@ function CommentEditor({
           variant='primary' 
           onClick={updateComment}
         >
-          Submit
+          Save
         </Button>
       </div>
     </div>
