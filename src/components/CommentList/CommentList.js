@@ -113,8 +113,8 @@ function Comment({
   return (
     <>
       <div align='left' className='comment mb-2 px-2 py-2'>
-        <span>Subject: {data.subject ? data.subject : 'N/A'}</span>
-        <p>{date.toLocaleString()}</p>
+        {data.subject ? <span><b>{data.subject}</b></span> : null}
+        <p style={{color: 'gray'}}>{date.toLocaleString()}</p>
         <span>{data.body}</span>
         <TrashCan 
           width={20} 
