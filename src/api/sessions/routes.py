@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Request, status
 from fastapi.encoders import jsonable_encoder
 from src.common import utils
 from src.database.schema import Session
-from .models import CreateSessionRq
+from .models import CreateSessionRq, PatchSessionRq
 from src.api.interfaces import QueryRq, PageRs, Cursor
 from src.api.utils import get_document_by_id, get_query_page, update_model
 
@@ -68,7 +68,7 @@ async def create_new_session(rq: Request, body: CreateSessionRq):
     description='Patches the session with new information',
     response_model=Session
 )
-async def update_session(rq: Request, session_id: str, body: Session):
+async def update_session(rq: Request, session_id: str, body: PatchSessionRq):
     old_session = Session(**get_document_by_id(rq.app.db['sessions'], session_id))
     new_session = update_model(old_session, body.dict())
     rq.app.db['sessions'].replace_one(

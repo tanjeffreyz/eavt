@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Request
 from fastapi.encoders import jsonable_encoder
 from src.api.utils import get_document_by_id, parse_trial, update_model, get_query_page
+from .models import PatchTrialRq
 from src.api.interfaces import QueryRq, PageRs, Cursor
 from src.database.schema import Trial
 
@@ -58,7 +59,7 @@ async def reindex_trial(rq: Request, trial_id: str):
     description='Patches the trial with new information',
     response_model=Trial
 )
-async def update_trial(rq: Request, trial_id: str, body: Trial):
+async def update_trial(rq: Request, trial_id: str, body: PatchTrialRq):
     old_trial = Trial(**get_document_by_id(rq.app.db['trials'], trial_id))
     new_trial = update_model(old_trial, body.dict())
     rq.app.db['trials'].replace_one(
