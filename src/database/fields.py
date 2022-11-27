@@ -1,6 +1,6 @@
 """Templates to standardize frequently-used fields across all Models."""
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
 from datetime import datetime
 from src.database.types import Rank, Flag, ImmutableString
 
@@ -13,6 +13,10 @@ class Req:
 
     class Path(BaseModel):
         path: ImmutableString
+
+        @validator('path')
+        def clean_path(cls, p):
+            return p.strip('/')
 
 
 #############################
