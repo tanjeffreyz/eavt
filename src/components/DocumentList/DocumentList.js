@@ -13,7 +13,7 @@ function DocumentList({
 }) {
   const [documents, setDocuments] = useState([]);
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useInfiniteScroll(fetchNextPage);
+  const [loading, setLoading, setFinished] = useInfiniteScroll(fetchNextPage);
   const [pageState, setPageState] = useState({cursor: null, hasNext: true});
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -22,7 +22,7 @@ function DocumentList({
   function fetchNextPage(reset=false) {
     if (!pageState.hasNext) {
       setLoading(false);
-      return;
+      setFinished();
     }
     sendRequest({
       uri,

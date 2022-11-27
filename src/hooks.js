@@ -1,14 +1,26 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { sendRequest } from './utils';
 
+/** 
+ * Hook for infinite pagination.
+ * Remember to `setLoading(false)` after pulling the next page
+ * Do `setFinished(true)` when there are no more pages left
+ */
 function useInfiniteScroll(callback) {
   const [loading, setLoading] = useState(false);
+  const finishedRef = useRef(false);
+
+  function setFinished() {
+    finishedRef.current = true;
+  }
 
   const handleScroll = () => {
     const doc = document.documentElement;
     const tolerance = window.innerHeight;
     if (window.innerHeight + doc.scrollTop + tolerance >= doc.offsetHeight) {
-      setLoading(true);
+      if (!finishedRef.current) {
+        setLoading(true);
+      }
     }
   };
 
@@ -22,7 +34,7 @@ function useInfiniteScroll(callback) {
     callback();     // Load more items
   }, [loading, callback]);
 
-  return [loading, setLoading];
+  return [loading, setLoading, setFinished];
 }
 
 function useLoadDocument(uri) {
