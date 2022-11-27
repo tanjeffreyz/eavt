@@ -2,12 +2,12 @@ import { useState, useEffect, useCallback } from 'react';
 import { sendRequest } from './utils';
 
 function useInfiniteScroll(callback) {
-  const SCROLL_TOLERANCE = 25;
   const [loading, setLoading] = useState(false);
 
   const handleScroll = () => {
     const doc = document.documentElement;
-    if (window.innerHeight + doc.scrollTop + SCROLL_TOLERANCE >= doc.offsetHeight) {
+    const tolerance = window.innerHeight;
+    if (window.innerHeight + doc.scrollTop + tolerance >= doc.offsetHeight) {
       setLoading(true);
     }
   };
