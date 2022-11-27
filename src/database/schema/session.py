@@ -6,7 +6,7 @@ from src.database.types import ImmutableList
 from .comment import Comment
 
 
-class Session(Document,     # TODO: validate folder length/depth = 1
+class Session(Document,
               Req.Path,
               Opt.Rank,
               Val.FolderExists):

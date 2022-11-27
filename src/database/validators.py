@@ -1,5 +1,6 @@
 from pydantic import BaseModel, validator
 from fastapi import HTTPException, status
+from pathlib import Path
 from src.common import utils
 
 
@@ -27,3 +28,16 @@ class Val:
                     detail=f'Folder does not exist in OZ.ROOT: {p}'
                 )
             return p
+
+    @staticmethod
+    def PathDepth(depth):
+        class PathDepthValidator(BaseModel):
+            @validator('path', check_fields=False, allow_reuse=True)
+            def valid_path_depth(cls, p):
+                if len(Path(p).parents) != depth:
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail=f'Path is not of depth {depth}: {p}'
+                    )
+                return p
+        return PathDepthValidator
