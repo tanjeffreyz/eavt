@@ -4,7 +4,11 @@ from src.common import utils
 from src.database.schema import Session
 from .models import CreateSessionRq, PatchSessionRq
 from src.api.interfaces import QueryRq, PageRs, Cursor
-from src.api.utils import get_document_by_id, get_query_page, update_model
+from src.api.utils import get_document_by_id, get_query_page, update_model, get_all_paths
+from src.api.trials_within_session.routes import create_new_trial_within_session
+from src.api.trials_within_session.models import CreateTrialRq
+from src.api.trials.routes import reindex_trial
+
 
 router = APIRouter(
     prefix='/sessions',
@@ -61,6 +65,36 @@ async def create_new_session(rq: Request, body: CreateSessionRq):
 
     # Return document as response
     return get_document_by_id(rq.app.db['sessions'], db_session.inserted_id)
+
+
+@router.put(
+    '/{session_id}',
+    description='Re-indexes the session and all trials within it',
+    response_model=Session
+)
+async def reindex_session(rq: Request, session_id: str):
+    old_session = Session(**get_document_by_id(rq.app.db['sessions'], session_id))
+
+    # Re-index existing trials
+    for trial_id in old_session.trials:
+        try:
+            await reindex_trial(rq, trial_id)
+        except HTTPException:
+            pass
+
+    # Add untracked trials to session and reindex those as well
+    logs_dir = utils.abs_path(old_session.path) / 'wizard_logs'
+    for p in get_all_paths(logs_dir, match='*/*/*/', type='abs'):
+        if p.is_dir() and p.name != '__trialless_data__':
+            try:
+                trial_path = utils.rel_path(p)
+                create_trial_rq = CreateTrialRq(path=str(trial_path))
+                rs = await create_new_trial_within_session(rq, session_id, create_trial_rq)
+                await reindex_trial(rq, rs['_id'])
+            except HTTPException:
+                pass  # Trial already tracked, should've already been re-indexed in first loop
+
+    return get_document_by_id(rq.app.db['sessions'], session_id)
 
 
 @router.patch(
