@@ -4,7 +4,7 @@ from src.database.validators import Val
 
 
 class CreateSessionRq(Req.Path, Val.PathDepth(1)):
-    subject: str
+    pass
 
 
 class PatchSessionRq(Session):
