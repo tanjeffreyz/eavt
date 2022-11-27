@@ -20,13 +20,6 @@ function TrialRaw() {
   
   const datasets = [
     {uri: `/trials/${trial._id}/raw/strip-raw`, setData: setStripRaw},
-    {uri: `/trials/${trial._id}/raw/strip-raw`, setData: setStripRaw},
-    {uri: `/trials/${trial._id}/raw/strip-raw`, setData: setStripRaw},
-    {uri: `/trials/${trial._id}/raw/strip-raw`, setData: setStripRaw},
-    {uri: `/trials/${trial._id}/raw/strip-raw`, setData: setStripRaw},
-    {uri: `/trials/${trial._id}/raw/strip-raw`, setData: setStripRaw},
-    {uri: `/trials/${trial._id}/raw/strip-raw`, setData: setStripRaw},
-    {uri: `/trials/${trial._id}/raw/strip-raw`, setData: setStripRaw},
     {uri: `/trials/${trial._id}/raw/strip-raw-output`, setData: setStripRawOutput}
   ]
 
