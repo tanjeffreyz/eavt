@@ -85,7 +85,7 @@ function TrialRow({
   index
 }) {
   const [dropdownState, setDropdownState] = useState(false);
-  const paths = document.path.split('/');
+  const paths = document.path.split(/[/\\]+/);
   const trialName = addWordBreaks(paths[paths.length-1]);
   const date = new Date(document.dt);
   return (

@@ -20,7 +20,7 @@ function TrialNav() {
 
   if (!trial) return <LoadingScreen />;
 
-  const paths = trial.path.split('/');
+  const paths = trial.path.split(/[/\\]+/);
   const sessionName = paths[0];
   const trialName = paths[paths.length-1];
   const subtitle = (
