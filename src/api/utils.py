@@ -24,13 +24,16 @@ def update_model(model: BaseModel, diff: dict):
     return model
 
 
-def get_all_paths(path, match):
-    return [str(rel_path(x)) for x in path.glob(match)]
+def get_all_paths(path, match='*', type='rel'):
+    assert type == 'abs' or type == 'rel'
+    return [(rel_path(x) if type == 'rel' else abs_path(x)) for x in path.glob(match)]
 
 
-def get_first_path(path, match):
+def get_first_path(path, match, type='rel'):
+    assert type == 'abs' or type == 'rel'
     try:
-        return str(rel_path(next(path.glob(match))))
+        x = next(path.glob(match))
+        return rel_path(x) if type == 'rel' else abs_path(x)
     except StopIteration:
         return None
 
@@ -40,12 +43,14 @@ def parse_trial(path):
     root = abs_path(path)
     tca_correction_path = str(rel_path(p)) if (p := root / 'tca_correction.json').exists() else None
     desinusoid_path = str(rel_path(p)) if (p := root / 'desinusoid.lut').exists() else None
+    strip_raw_paths = [str(x) for x in get_all_paths(root / 'strip_raw', match='**/*.tar')]
+    strip_raw_output_paths = [str(x) for x in get_all_paths(root / 'strip_raw_output', match='**/*.tar')]
 
     raw = {
-        'stripRaw': get_all_paths(root / 'strip_raw', '**/*.tar'),
-        'stripRawOutput': get_all_paths(root / 'strip_raw_output', '**/*.tar'),
-        'rasterize': get_first_path(root / 'rasterize', '*.txt'),
-        'trajectory': get_first_path(root / 'trajectory', '*.txt'),
+        'stripRaw': strip_raw_paths,
+        'stripRawOutput': strip_raw_output_paths,
+        'rasterize': str(get_first_path(root / 'rasterize', match='*.txt')),
+        'trajectory': str(get_first_path(root / 'trajectory', match='*.txt')),
         'tcaCorrection': tca_correction_path,
         'desinusoidLUT': desinusoid_path
     }

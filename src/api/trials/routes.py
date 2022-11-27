@@ -39,7 +39,7 @@ async def query_trials_by_multiple_fields(rq: Request, body: list[QueryRq], curs
 #############################
 @router.put(
     '/{trial_id}',
-    description='Reindexes the trial',
+    description='Re-indexes the trial',
     response_model=Trial
 )
 async def reindex_trial(rq: Request, trial_id: str):

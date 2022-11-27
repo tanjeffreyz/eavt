@@ -70,7 +70,7 @@ async def create_new_trial_within_session(rq: Request, session_id: str, body: Cr
     description='List all trials within the session',
     response_model=PageRs[Trial]
 )
-async def list_trials_within_session(rq: Request, session_id: str, cursor: int | str = Cursor.NULL, limit: int = 100):
+async def list_trials_within_session(rq: Request, session_id: str, cursor: int | str = Cursor.NULL, limit: int = 50):
     if cursor == Cursor.NULL:
         cursor = -1
     elif type(cursor) != int:
