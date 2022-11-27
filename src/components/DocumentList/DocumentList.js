@@ -28,7 +28,7 @@ function DocumentList({
       uri,
       params: {
         ...params,
-        limit: 100,
+        limit: 50,
         cursor: pageState.cursor
       },
       pass: (data) => {
