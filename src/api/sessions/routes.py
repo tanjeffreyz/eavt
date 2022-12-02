@@ -20,7 +20,7 @@ router = APIRouter(
 #       Query Sessions      #
 #############################
 @router.get(
-    '/query',
+    '',
     description='Lists all sessions ordered by a single field',
     response_model=PageRs[Session]
 )

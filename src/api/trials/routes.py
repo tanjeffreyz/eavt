@@ -16,7 +16,7 @@ router = APIRouter(
 #       Query Trials        #
 #############################
 @router.get(
-    '/query',
+    '',
     description='Lists all trials ordered by a single field',
     response_model=PageRs[Trial]
 )
