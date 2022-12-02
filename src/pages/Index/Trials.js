@@ -12,7 +12,7 @@ function Trials() {
       <h1>Trials</h1>
       <DocumentList 
         headers={['#', 'Name', 'Session', 'Date & Time', 'Flag']}
-        uri='/trials/query'
+        uri='/trials'
         params={{ field: 'dt' }}
         Row={TrialRow}
       />

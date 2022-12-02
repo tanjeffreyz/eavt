@@ -12,7 +12,7 @@ function Sessions() {
       <h1>Sessions</h1>
       <DocumentList 
         headers={['#', 'Name', 'Date & Time', 'Flag']}
-        uri='/sessions/query'
+        uri='/sessions'
         params={{ field: 'dt' }}
         Row={SessionRow}
       />
