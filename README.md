@@ -1,2 +1,2 @@
-# session-toolkit-backend-poc
+# eavt-backend
 POC backend server to host and query Oz data
