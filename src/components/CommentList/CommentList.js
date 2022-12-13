@@ -219,7 +219,7 @@ function CommentDisplay({
         />
         <Edit 
           className='comment-button'
-          style={{fill: '#0d6efd', top: '5px', right: '25px'}}
+          style={{fill: '#0d6efd', top: '5px', right: '35px'}}
           onClick={() => setEditing(true)}
         />
       </div>
