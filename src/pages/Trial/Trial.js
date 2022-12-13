@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useParams, useOutletContext } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
-import { addWordBreaks } from '../../utils';
+import { addWordBreaks, sendRequest } from '../../utils';
 import { useLoadDocument } from '../../hooks';
 import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import LoadingScreen from '../../components/LoadingScreen/LoadingScreen';
-import { Back } from '../../components/Icons/Icons';
+import { Back, Refresh } from '../../components/Icons/Icons';
 import Section from '../../components/Section/Section';
 import TrialRaw from './TrialRaw';
 import CommentList from '../../components/CommentList/CommentList';
@@ -17,6 +17,16 @@ function TrialNav() {
   const [trial, loadTrial] = useLoadDocument(uri);
 
   console.log('rendered trial nav');
+
+  function reindexTrial() {
+    sendRequest({
+      uri,
+      config: {
+        method: 'PUT'
+      },
+      pass: () => window.location.reload(false)
+    })
+  }
 
   if (!trial) return <LoadingScreen />;
 
@@ -49,6 +59,12 @@ function TrialNav() {
         uri={uri} 
         className='ms-3'
         loadDocument={loadTrial}
+      />
+      <Refresh 
+        className='ms-3' 
+        title='Re-index Trial' 
+        style={{position: 'relative', top: '-1px'}}
+        onClick={reindexTrial}
       />
     </NavigationBar>
   );
