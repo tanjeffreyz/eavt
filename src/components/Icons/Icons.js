@@ -9,12 +9,14 @@ import { ReactComponent as trashCan } from './trash-can.svg';
 import { ReactComponent as plus } from './plus.svg';
 import { ReactComponent as flag } from './flag.svg';
 import { ReactComponent as edit } from './edit.svg';
+import { ReactComponent as refresh } from './refresh.svg';
 
 function getIcon(Source) {
   function Icon({ 
     width=20, 
     height=20,
     onClick,
+    className,
     ...props
   }) {
     return (
@@ -22,6 +24,7 @@ function getIcon(Source) {
         width={width} 
         height={height}
         onClick={onClick}
+        className={className}
         {...props} 
         style={{...props.style, cursor: 'pointer', display: 'inline-block'}}
       >
@@ -44,6 +47,7 @@ const TrashCan = getIcon(trashCan);
 const Plus = getIcon(plus);
 const Flag = getIcon(flag);
 const Edit = getIcon(edit);
+const Refresh = getIcon(refresh);
 
 export {
   Home,
@@ -56,5 +60,6 @@ export {
   TrashCan,
   Plus,
   Flag,
-  Edit
+  Edit,
+  Refresh
 };
