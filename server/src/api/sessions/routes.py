@@ -59,6 +59,10 @@ async def create_new_session(rq: Request, body: CreateSessionRq):
     utils.abs_path(body.path).mkdir(exist_ok=True)
     new_session = Session(**jsonable_encoder(body))
 
+    # Update current session for Wizard
+    with open(utils.abs_path('selected_session.txt'), 'w') as file:
+        file.write(body.path)
+
     # Add to database
     new_document = jsonable_encoder(new_session)
     db_session = rq.app.db['sessions'].insert_one(new_document)
