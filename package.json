@@ -1,6 +1,6 @@
 {
     "name": "eavt",
     "workspaces": [
-        "web"
+        "webapp"
     ]
 }
