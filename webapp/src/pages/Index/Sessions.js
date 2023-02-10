@@ -68,7 +68,7 @@ function Sessions() {
             isInvalid={!validSessionName}
           />
           <Form.Control.Feedback type='invalid'>
-            Session already exists
+            {sessionName.length === 0 ? 'Invalid session name' : 'Session already exists'}
           </Form.Control.Feedback>
         </Modal.Body>
         <Modal.Footer>
