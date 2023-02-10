@@ -18,7 +18,7 @@ function getIcon(Source) {
     height=20,
     onClick,
     className,
-    animation,
+    iconClassName,
     ...props
   }) {
     return (
@@ -30,7 +30,7 @@ function getIcon(Source) {
         {...props} 
         style={{...props.style, cursor: 'pointer', display: 'inline-block'}}
       >
-        <Source width={width} height={height} className={animation} {...props} />
+        <Source width={width} height={height} className={iconClassName} {...props} />
       </div>
     );
   }

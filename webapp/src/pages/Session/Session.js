@@ -55,7 +55,7 @@ function SessionNav() {
       />
       <Refresh 
         className='ms-3'
-        animation={reindexing ? 'icon-spinning' : ''}
+        iconClassName={reindexing ? 'icon-spinning' : ''}
         title='Re-index Session' 
         style={{position: 'relative', top: '-1px'}}
         onClick={reindexSession}

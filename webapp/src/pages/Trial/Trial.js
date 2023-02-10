@@ -64,7 +64,7 @@ function TrialNav() {
       />
       <Refresh 
         className='ms-3'
-        animation={reindexing ? 'icon-spinning' : ''}
+        iconClassName={reindexing ? 'icon-spinning' : ''}
         title='Re-index Trial' 
         style={{position: 'relative', top: '-1px'}}
         onClick={reindexTrial}
