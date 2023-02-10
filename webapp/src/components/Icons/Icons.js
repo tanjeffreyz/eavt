@@ -1,3 +1,4 @@
+import './Icons.css';
 import { ReactComponent as home } from './home.svg';
 import { ReactComponent as backChevron } from './back-chevron.svg';
 import { ReactComponent as chevronLeft } from './chevron-left.svg';
@@ -17,6 +18,7 @@ function getIcon(Source) {
     height=20,
     onClick,
     className,
+    iconClassName,
     ...props
   }) {
     return (
@@ -28,7 +30,7 @@ function getIcon(Source) {
         {...props} 
         style={{...props.style, cursor: 'pointer', display: 'inline-block'}}
       >
-        <Source width={width} height={height} {...props} />
+        <Source width={width} height={height} className={iconClassName} {...props} />
       </div>
     );
   }

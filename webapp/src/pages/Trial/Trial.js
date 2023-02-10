@@ -15,10 +15,12 @@ function TrialNav() {
   const params = useParams();
   const uri = `/trials/${params.id}`;
   const [trial, loadTrial] = useLoadDocument(uri);
+  const [reindexing, setReindexing] = useState(false);
 
   console.log('rendered trial nav');
 
   function reindexTrial() {
+    setReindexing(true);
     sendRequest({
       uri,
       config: {
@@ -61,7 +63,8 @@ function TrialNav() {
         loadDocument={loadTrial}
       />
       <Refresh 
-        className='ms-3' 
+        className='ms-3'
+        iconClassName={reindexing ? 'icon-spinning' : ''}
         title='Re-index Trial' 
         style={{position: 'relative', top: '-1px'}}
         onClick={reindexTrial}

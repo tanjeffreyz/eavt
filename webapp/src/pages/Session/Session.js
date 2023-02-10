@@ -16,8 +16,10 @@ function SessionNav() {
   const params = useParams();
   const uri = `/sessions/${params.id}`;
   const [session, loadSession] = useLoadDocument(uri);
+  const [reindexing, setReindexing] = useState(false);
 
   function reindexSession() {
+    setReindexing(true);
     sendRequest({
       uri,
       config: {
@@ -52,7 +54,8 @@ function SessionNav() {
         loadDocument={loadSession}
       />
       <Refresh 
-        className='ms-3' 
+        className='ms-3'
+        iconClassName={reindexing ? 'icon-spinning' : ''}
         title='Re-index Session' 
         style={{position: 'relative', top: '-1px'}}
         onClick={reindexSession}
