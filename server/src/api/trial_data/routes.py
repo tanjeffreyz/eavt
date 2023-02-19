@@ -53,8 +53,22 @@ async def get_strip_raw_output(rq: Request, trial_id: str, cursor: str = Cursor.
     description='Retrieves raw microdose data from the trial',
     response_model=PageRs[MicrodoseStrip]
 )
-async def get_strip_microdoses(rq: Request, trial_id: str, cursor: int = Cursor.NULL, limit: int = 100):
-    pass
+async def get_strip_microdoses(rq: Request, trial_id: str, cursor: int | str = Cursor.NULL, limit: int = 100):
+    if cursor == Cursor.NULL:
+        cursor = -1
+    Cursor.validate_type(cursor, int)
+
+    if cursor < -1:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Cursor must be at least -1"
+        )
+
+    trial = Trial(**get_document_by_id(rq.app.db['trials'], trial_id))
+
+
+
+    return PageRs()
 
 
 #########################

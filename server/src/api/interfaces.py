@@ -33,5 +33,5 @@ class Cursor:
         if type(cursor) != kind:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Cursor must either be '{Cursor.NULL}' or an integer >= -1"
+                detail=f"Cursor must either be a '{kind}'"
             )
