@@ -103,12 +103,12 @@ function loadStripSprites({
   renderer, 
   setData
 }) {
-  const minIndex = Math.floor(strips[0].name / 32);
+  const minIndex = Math.floor(strips[0].id / 32);
   const frames = [];
 
   const f = (strip) => {
-    const offset = strip.name % 32;
-    const index = Math.floor(strip.name / 32) - minIndex;
+    const offset = strip.id % 32;
+    const index = Math.floor(strip.id / 32) - minIndex;
 
     // Build image sprite
     const texture = new THREE.TextureLoader().load(
