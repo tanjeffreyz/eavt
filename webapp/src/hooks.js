@@ -17,6 +17,10 @@ function useInfiniteScroll(callback) {
   const handleScroll = () => {
     const doc = document.documentElement;
     const tolerance = window.innerHeight;
+    
+    // Ignore any scroll events that trigger on initial page load
+    if (doc.scrollTop === 0) return;
+
     if (window.innerHeight + doc.scrollTop + tolerance >= doc.offsetHeight) {
       if (!finishedRef.current) {
         setLoading(true);
