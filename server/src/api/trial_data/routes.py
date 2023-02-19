@@ -6,7 +6,7 @@ from fastapi.encoders import jsonable_encoder
 from src.api.utils import get_document_by_id
 from src.api.interfaces import PageRs, Cursor
 from src.database.schema import Trial, Comment
-from .models import Strip
+from .models import RetinaStrip, MicrodoseStrip
 
 
 router = APIRouter(
@@ -21,7 +21,7 @@ router = APIRouter(
 @router.get(
     '/{trial_id}/raw/strip-raw',
     description='Retrieves raw strip data from the trial',
-    response_model=PageRs[Strip]
+    response_model=PageRs[RetinaStrip]
 )
 async def get_strip_raw(rq: Request, trial_id: str, cursor: str = Cursor.NULL, limit: int = 100):
     trial = Trial(**get_document_by_id(rq.app.db['trials'], trial_id))
@@ -36,7 +36,7 @@ async def get_strip_raw(rq: Request, trial_id: str, cursor: str = Cursor.NULL, l
 @router.get(
     '/{trial_id}/raw/strip-raw-output',
     description='Retrieves raw strip output data from the trial',
-    response_model=PageRs[Strip]
+    response_model=PageRs[RetinaStrip]
 )
 async def get_strip_raw_output(rq: Request, trial_id: str, cursor: str = Cursor.NULL, limit: int = 100):
     trial = Trial(**get_document_by_id(rq.app.db['trials'], trial_id))
@@ -46,6 +46,15 @@ async def get_strip_raw_output(rq: Request, trial_id: str, cursor: str = Cursor.
             detail=f"No raw strip output data associated with trial: {trial.path}"
         )
     return get_tar_page(tars, cursor, limit)
+
+
+@router.get(
+    '/{trial_id}/raw/strip-microdoses',
+    description='Retrieves raw microdose data from the trial',
+    response_model=PageRs[MicrodoseStrip]
+)
+async def get_strip_microdoses(rq: Request, trial_id: str, cursor: int = Cursor.NULL, limit: int = 100):
+    pass
 
 
 #########################
@@ -124,8 +133,8 @@ def get_tar_page(tars, cursor, limit):      # TODO: generalize to all image type
 
             # Add file contents to documents
             for m in members[start:start + remaining]:
-                new_strip = Strip(
-                    name=int(m.name.split('.', 1)[0]),
+                new_strip = RetinaStrip(
+                    id=int(m.name.split('.', 1)[0]),
                     data=b64encode(tar.extractfile(m).read())
                 )
                 documents.append(new_strip)

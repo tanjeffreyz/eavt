@@ -1,6 +1,11 @@
 from pydantic import BaseModel
 
 
-class Strip(BaseModel):
-    name: int
+class RetinaStrip(BaseModel):
+    id: int
     data: str
+
+
+class MicrodoseStrip(BaseModel):
+    id: int
+    data: list

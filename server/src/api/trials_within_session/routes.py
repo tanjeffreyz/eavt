@@ -73,11 +73,8 @@ async def create_new_trial_within_session(rq: Request, session_id: str, body: Cr
 async def list_trials_within_session(rq: Request, session_id: str, cursor: int | str = Cursor.NULL, limit: int = 50):
     if cursor == Cursor.NULL:
         cursor = -1
-    elif type(cursor) != int:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Cursor must either be '{Cursor.NULL}' or an integer >= -1"
-        )
+    Cursor.validate_type(cursor, int)
+
     if cursor < -1:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
