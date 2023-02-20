@@ -5,10 +5,11 @@ import InteractiveCanvas from '../../components/InteractiveCanvas/InteractiveCan
 import Loader from '../../components/Loader/Loader';
 import { Scrubber, useScrubberState } from '../../components/Scrubber/Scrubber';
 import { sendRequest, asyncFor } from '../../utils';
+import { useLoadDatasets } from '../../hooks';
 
 function TrialRaw() {
   const { trial } = useOutletContext();
-  const [numLoaded, setNumLoaded] = useState(0);    // Tracks number of datasets loaded
+  const [numLoaded, loadDatasets] = useLoadDatasets({limit: 1000});
   const [index, setIndex] = useScrubberState();
 
   // Load data
@@ -26,10 +27,7 @@ function TrialRaw() {
   ]
 
   useEffect(() => {
-    loadAllDatasets({
-      datasets,
-      callback: () => setNumLoaded((prev) => prev + 1)
-    });
+    loadDatasets(datasets);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -137,42 +135,6 @@ function loadStripSprites({
     f, 
     callback: () => setData(frames)
   });
-}
-
-/** Gets all pages of data from multiple endpoints */
-function loadAllDatasets({
-  datasets, 
-  callback
-}) {
-  datasets.forEach((params) => {
-    getAllPages({
-      ...params,
-      callback
-    });
-  });
-}
-
-/** Gets all pages of data from `uri`, appends to data using `setData`. */
-function getAllPages({
-  uri,
-  setData=((data) => {}),
-  callback=(() => {})
-}) {
-  function recur(cursor) {
-    sendRequest({
-      uri,
-      params: { cursor, limit: 1000 },
-      pass: (data) => {
-        setData((prev) => [...prev, ...data.documents]);
-        if (data.hasNext) {
-          recur(data.cursor);
-        } else {
-          callback();
-        }
-      }
-    });
-  }
-  recur(null);
 }
 
 export default TrialRaw;
