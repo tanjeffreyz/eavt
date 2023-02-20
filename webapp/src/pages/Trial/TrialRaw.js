@@ -17,7 +17,6 @@ function TrialRaw() {
   const [stripRawOutput, setStripRawOutput] = useState([]);
   const [stripMicrodoses, setStripMicrodoses] = useState([]);
 
-  const [frames, setFrames] = useState([]);
   const [stripRawFrames, setStripRawFrames] = useState([]);
   const [stripRawOutputFrames, setStripRawOutputFrames] = useState([]);
   
@@ -32,12 +31,24 @@ function TrialRaw() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Initialize all objects in the scene
   function init({scene, camera, renderer}) {
     console.log('init start');
+    const minIndex = Math.min(
+      getIndex(stripRaw[0].id),
+      getIndex(stripRawOutput[0].id),
+      getIndex(stripMicrodoses[0].id)
+    );
+    const maxIndex = Math.max(
+      getIndex(stripRaw[stripRaw.length-1].id),
+      getIndex(stripRawOutput[stripRawOutput.length-1].id),
+      getIndex(stripMicrodoses[stripMicrodoses.length-1].id)
+    );
+    console.log(minIndex, maxIndex - minIndex);
+    
     loadStripSprites({
       strips: stripRaw, 
       scene, 
-      renderer, 
       setData: setStripRawFrames
     });
     setStripRaw([]);    // Free up memory, working with only sprites now
@@ -45,7 +56,6 @@ function TrialRaw() {
     loadStripSprites({
       strips: stripRawOutput, 
       scene, 
-      renderer, 
       setData: setStripRawOutputFrames
     });
     setStripRawOutput([]);
@@ -59,10 +69,6 @@ function TrialRaw() {
       stripRawFrames[index.prev].visible = false;
       stripRawFrames[index.curr].visible = true;
     }
-    // if (stripRawOutput && stripRawOutput.length > 0 && Array.isArray(stripRawOutput[0])) {
-    //   stripRawOutput[prevIndexRef.current].forEach((s) => { s.visible = false; });
-    //   stripRawOutput[index].forEach((s) => { s.visible = true; });
-    // }
     console.log('update end');
   }
 
@@ -102,10 +108,19 @@ function TrialRaw() {
 ////////////////////////////
 //    Helper Functions    //
 ////////////////////////////
+/** Returns the frame index for the given strip ID */
+function getIndex(stripId) {
+  return Math.floor(stripId / 32);
+}
+
+/** Returns the strip's offset within its frame */
+function getOffset(stripId) {
+  return stripId % 32;
+}
+
 function loadStripSprites({
   strips, 
   scene, 
-  renderer, 
   setData
 }) {
   const minIndex = Math.floor(strips[0].id / 32);
