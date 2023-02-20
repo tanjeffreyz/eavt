@@ -14,13 +14,15 @@ function TrialRaw() {
   // Load data
   const [stripRaw, setStripRaw] = useState([]);
   const [stripRawOutput, setStripRawOutput] = useState([]);
+  const [stripMicrodoses, setStripMicrodoses] = useState([]);
 
   const [stripRawFrames, setStripRawFrames] = useState([]);
   const [stripRawOutputFrames, setStripRawOutputFrames] = useState([]);
   
   const datasets = [
     {uri: `/trials/${trial._id}/raw/strip-raw`, setData: setStripRaw},
-    {uri: `/trials/${trial._id}/raw/strip-raw-output`, setData: setStripRawOutput}
+    {uri: `/trials/${trial._id}/raw/strip-raw-output`, setData: setStripRawOutput},
+    {uri: `/trials/${trial._id}/raw/strip-microdoses`, setData: setStripMicrodoses}
   ]
 
   useEffect(() => {
@@ -113,7 +115,7 @@ function loadStripSprites({
     // Build image sprite
     const texture = new THREE.TextureLoader().load(
       `data:image/bmp;base64,${strip.data}`,
-      (map) => renderer.initTexture(map)    // Init texture immediately, not on first-render
+      // (map) => renderer.initTexture(map)    // Init texture immediately, not on first-render
     );
     const material = new THREE.SpriteMaterial({ map: texture });
     const sprite = new THREE.Sprite(material);

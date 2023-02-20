@@ -1,4 +1,5 @@
 import tarfile
+import json
 from base64 import b64encode
 from src.common import utils
 from fastapi import APIRouter, Request, HTTPException, status
@@ -65,10 +66,37 @@ async def get_strip_microdoses(rq: Request, trial_id: str, cursor: int | str = C
         )
 
     trial = Trial(**get_document_by_id(rq.app.db['trials'], trial_id))
+    if trial.raw.rasterize is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"No raw microdose data associated with trial: {trial.path}"
+        )
 
+    documents = []
+    new_cursor = Cursor.NULL
+    new_has_next = False
+    last_index = cursor + limit
+    with open(utils.abs_path(trial.raw.rasterize), 'r') as file:
+        for i, line in enumerate(file):
+            if i < cursor + 1:      # Skip everything before and including the cursor
+                continue
+            elif i > last_index:    # More elements after last_index, so next cursor is non-null
+                new_cursor = last_index
+                new_has_next = True
+                break
+            else:
+                strip_id, _, _, _, channel, microdoses, intensities = json.loads(line)
+                documents.append(MicrodoseStrip(
+                    id=strip_id,
+                    microdoses=microdoses,
+                    intensities=intensities
+                ))
 
-
-    return PageRs()
+    return {
+        'documents': documents,
+        'cursor': new_cursor,
+        'hasNext': new_has_next
+    }
 
 
 #########################
