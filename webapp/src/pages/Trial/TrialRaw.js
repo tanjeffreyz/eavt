@@ -11,6 +11,7 @@ function TrialRaw() {
   const { trial } = useOutletContext();
   const [numLoaded, loadDatasets] = useLoadDatasets({limit: 1000});
   const [index, setIndex] = useScrubberState();
+  const [dataReady, setDataReady] = useState(false);
 
   // Load data
   const [stripRaw, setStripRaw] = useState([]);
@@ -19,6 +20,7 @@ function TrialRaw() {
 
   const [stripRawFrames, setStripRawFrames] = useState([]);
   const [stripRawOutputFrames, setStripRawOutputFrames] = useState([]);
+  const [stripMicrodoseFrames, setStripMicrodoseFrames] = useState([]);
   
   const datasets = [
     {uri: `/trials/${trial._id}/raw/strip-raw`, setData: setStripRaw},
@@ -39,33 +41,48 @@ function TrialRaw() {
       getIndex(stripRawOutput[0].id),
       getIndex(stripMicrodoses[0].id)
     );
-    // const maxIndex = Math.max(
-    //   getIndex(stripRaw[stripRaw.length-1].id),
-    //   getIndex(stripRawOutput[stripRawOutput.length-1].id),
-    //   getIndex(stripMicrodoses[stripMicrodoses.length-1].id)
-    // );
+    const maxIndex = Math.max(
+      getIndex(stripRaw[stripRaw.length-1].id),
+      getIndex(stripRawOutput[stripRawOutput.length-1].id),
+      getIndex(stripMicrodoses[stripMicrodoses.length-1].id)
+    );
     
     // Load all sprites into their respective groups, maintaining order through daisy chaining
     function first() {
-      loadStripSprites({
+      loadSprites({
         array: stripRaw, 
         minIndex,
+        maxIndex,
         scene, 
+        getSprite: getStripSprite,
         setData: setStripRawFrames,
-        // callback: second
+        callback: second
       });
       setStripRaw([]);    // Free up memory, working with only sprites now
     }
-    
+
     function second() {
-      loadStripSprites({
-        array: stripRawOutput, 
+      loadSprites({
+        array: stripMicrodoses, 
         minIndex,
+        maxIndex,
         scene, 
-        setData: setStripRawOutputFrames
+        getSprite: getMicrodoseSprite,
+        setData: setStripMicrodoseFrames,
+        callback: () => setDataReady(true)
       });
-      setStripRawOutput([]);
+      setStripMicrodoses([]);
     }
+    
+    // function second() {
+    //   loadStripSprites({
+    //     array: stripRawOutput, 
+    //     minIndex,
+    //     scene, 
+    //     setData: setStripRawOutputFrames
+    //   });
+    //   setStripRawOutput([]);
+    // }
 
     // Start the daisy chain
     first();
@@ -74,10 +91,15 @@ function TrialRaw() {
 
   /** Shows current frame's data and hides previous frame's data */
   function update({scene, camera, renderer}) {
-    if (numFrames === 0) return;
+    if (!dataReady || numFrames === 0) return;
     console.log('update start', numFrames);
+
     stripRawFrames[index.prev].visible = false;
     stripRawFrames[index.curr].visible = true;
+
+    stripMicrodoseFrames[index.prev].visible = false;
+    stripMicrodoseFrames[index.curr].visible = true;
+
     console.log('update end');
   }
 
@@ -127,47 +149,69 @@ function getOffset(stripId) {
   return stripId % 32;
 }
 
-function loadStripSprites({
+/** Loads the strips as sprite textures into their respective frame groups */
+function loadSprites({
   array, 
   minIndex,
+  maxIndex,
   scene, 
+  getSprite,    // Function that returns the sprite for that strip's data
   setData,
-  callback
+  callback=(() => {})
 }) {
   const frames = [];
-
-  function f(strip) {
-    const offset = getOffset(strip.id);
-    const index = getIndex(strip.id) - minIndex;
-
-    // Build image sprite
-    const texture = new THREE.TextureLoader().load(
-      `data:image/bmp;base64,${strip.data}`,
-      // (map) => renderer.initTexture(map)    // Init texture immediately, not on first-render
-    );
-    const material = new THREE.SpriteMaterial({ map: texture });
-    const sprite = new THREE.Sprite(material);
-    sprite.scale.set(512, 16, 1);
-    sprite.position.set(0, 256 - 8 - 16 * offset, 0);
-    
-    // Add sprite to appropriate group
-    while (index >= frames.length) {
-      const group = new THREE.Group();
-      group.visible = (frames.length === 0);   // Make first frame visible by default
-      scene.add(group);
-      frames.push(group);
-    }
-    frames[index].add(sprite);
-  };
+  for (let i = minIndex; i <= maxIndex; ++i) {
+    const group = new THREE.Group();
+    group.visible = (frames.length === 0);   // Make first frame visible by default
+    scene.add(group);
+    frames.push(group);
+  }
 
   asyncFor({
     array,
-    f, 
+    f: (strip) => {
+      const index = getIndex(strip.id) - minIndex;
+      frames[index].add(getSprite(strip));
+    }, 
     callback: () => {
       setData(frames);
       callback();
     }
   });
+}
+
+/** Returns the sprite for an image strip using the image as a texture */
+function getStripSprite(strip) {
+  const offset = getOffset(strip.id);
+
+  // Build image sprite
+  const texture = new THREE.TextureLoader().load(
+    `data:image/bmp;base64,${strip.data}`,
+    // (map) => renderer.initTexture(map)    // Init texture immediately, not on first-render
+  );
+  const material = new THREE.SpriteMaterial({ map: texture });
+  const sprite = new THREE.Sprite(material);
+  sprite.scale.set(512, 16, 1);
+  sprite.position.set(0, 256 - 8 - 16 * offset, 0);
+  return sprite;
+}
+
+/** Returns the sprite for a list of microdoses as a group of dots */
+function getMicrodoseSprite(strip) {
+  const offset = getOffset(strip.id);
+  const microdoseGroup = new THREE.Group();
+  for (let microdose of strip.microdoses) {
+    const x = microdose[1];
+    const y = microdose[2];
+
+    const circleGeometry = new THREE.CircleGeometry(2, 8);
+    const circleMaterial = new THREE.MeshBasicMaterial({color: 0xff0000});
+    const circle = new THREE.Mesh(circleGeometry, circleMaterial);
+    circle.position.set(x - 256, 256 - 8 - 16 * offset + y, 1E-3);
+
+    microdoseGroup.add(circle);
+  }
+  return microdoseGroup;
 }
 
 export default TrialRaw;
