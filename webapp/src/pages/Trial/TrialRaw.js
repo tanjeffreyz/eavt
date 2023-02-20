@@ -47,14 +47,16 @@ function TrialRaw() {
     console.log(minIndex, maxIndex - minIndex);
     
     loadStripSprites({
-      strips: stripRaw, 
+      array: stripRaw, 
+      minIndex,
       scene, 
       setData: setStripRawFrames
     });
     setStripRaw([]);    // Free up memory, working with only sprites now
     
     loadStripSprites({
-      strips: stripRawOutput, 
+      array: stripRawOutput, 
+      minIndex,
       scene, 
       setData: setStripRawOutputFrames
     });
@@ -64,11 +66,10 @@ function TrialRaw() {
 
   /** Shows current frame's data and hides previous frame's data */
   function update({scene, camera, renderer}) {
-    console.log('update start');
-    if (numFrames > 0) {
-      stripRawFrames[index.prev].visible = false;
-      stripRawFrames[index.curr].visible = true;
-    }
+    if (numFrames === 0) return;
+    console.log('update start', numFrames);
+    stripRawFrames[index.prev].visible = false;
+    stripRawFrames[index.curr].visible = true;
     console.log('update end');
   }
 
@@ -119,16 +120,16 @@ function getOffset(stripId) {
 }
 
 function loadStripSprites({
-  strips, 
+  array, 
+  minIndex,
   scene, 
   setData
 }) {
-  const minIndex = Math.floor(strips[0].id / 32);
   const frames = [];
 
-  const f = (strip) => {
-    const offset = strip.id % 32;
-    const index = Math.floor(strip.id / 32) - minIndex;
+  function f(strip) {
+    const offset = getOffset(strip.id);
+    const index = getIndex(strip.id) - minIndex;
 
     // Build image sprite
     const texture = new THREE.TextureLoader().load(
@@ -141,9 +142,9 @@ function loadStripSprites({
     sprite.position.set(0, 256 - 8 - 16 * offset, 0);
     
     // Add sprite to appropriate group
-    if (index >= frames.length) {
+    while (index >= frames.length) {
       const group = new THREE.Group();
-      group.visible = (index === 0);   // Make first frame visible by default
+      group.visible = (frames.length === 0);   // Make first frame visible by default
       scene.add(group);
       frames.push(group);
     }
@@ -151,7 +152,7 @@ function loadStripSprites({
   };
 
   asyncFor({
-    array: strips,
+    array,
     f, 
     callback: () => setData(frames)
   });
