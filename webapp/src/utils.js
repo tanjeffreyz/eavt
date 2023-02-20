@@ -76,6 +76,23 @@ function asyncMap({
   recur(0);
 }
 
+/** Stores a key, value pair into localStorage with an optional expiration time (in milliseconds) */
+function storageAdd(key, value, maxAge=null) {
+  const data = {
+    value,
+    expiration: (maxAge === null ? null : Date.now() + maxAge)
+  };
+  localStorage.setItem(key, JSON.stringify(data));
+}
+
+/** Retrieves the data associated with KEY from localStorage */
+function storageGet(key) {
+  const now = Date.now();
+  const data = JSON.parse(localStorage.getItem(key));
+  const expired = (data.expiration === null ? false : now > data.expiration);
+  return [data.value, expired];
+}
+
 export {
   sendRequest,
   asyncFor,
