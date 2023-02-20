@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import InteractiveCanvas from '../../components/InteractiveCanvas/InteractiveCanvas';
 import Loader from '../../components/Loader/Loader';
 import { Scrubber, useScrubberState } from '../../components/Scrubber/Scrubber';
-import { sendRequest, asyncFor } from '../../utils';
+import { asyncFor } from '../../utils';
 import { useLoadDatasets } from '../../hooks';
 
 function TrialRaw() {
@@ -17,6 +17,7 @@ function TrialRaw() {
   const [stripRawOutput, setStripRawOutput] = useState([]);
   const [stripMicrodoses, setStripMicrodoses] = useState([]);
 
+  const [frames, setFrames] = useState([]);
   const [stripRawFrames, setStripRawFrames] = useState([]);
   const [stripRawOutputFrames, setStripRawOutputFrames] = useState([]);
   
@@ -32,6 +33,7 @@ function TrialRaw() {
   }, []);
 
   function init({scene, camera, renderer}) {
+    console.log('init start');
     loadStripSprites({
       strips: stripRaw, 
       scene, 
@@ -47,10 +49,12 @@ function TrialRaw() {
       setData: setStripRawOutputFrames
     });
     setStripRawOutput([]);
+    console.log('init end');
   }
 
   /** Shows current frame's data and hides previous frame's data */
   function update({scene, camera, renderer}) {
+    console.log('update start');
     if (numFrames > 0) {
       stripRawFrames[index.prev].visible = false;
       stripRawFrames[index.curr].visible = true;
@@ -59,6 +63,7 @@ function TrialRaw() {
     //   stripRawOutput[prevIndexRef.current].forEach((s) => { s.visible = false; });
     //   stripRawOutput[index].forEach((s) => { s.visible = true; });
     // }
+    console.log('update end');
   }
 
   // Stall while loading
@@ -131,7 +136,7 @@ function loadStripSprites({
   };
 
   asyncFor({
-    arr: strips,
+    array: strips,
     f, 
     callback: () => setData(frames)
   });

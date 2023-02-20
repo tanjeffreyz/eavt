@@ -1,5 +1,5 @@
 import './InteractiveCanvas.css';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { Crosshair } from '../Icons/Icons';
 
@@ -17,6 +17,8 @@ function InteractiveCanvas({
   const HALF_FOV_RAD = Math.PI / 180 * (FOV / 2);
   const NEAR = 100;
   const FAR = 1000;
+
+  const [initialized, setInitialized] = useState(false);
 
   const canvasRef = useRef();
   const rendererRef = useRef(null);
@@ -64,6 +66,7 @@ function InteractiveCanvas({
     // Add objects to scene and initial render
     init({scene, camera, renderer});
     centerCanvas();
+    setInitialized(true);
 
     // Clean up event listeners
     return () => {
@@ -174,12 +177,14 @@ function InteractiveCanvas({
   ////////////////////////////
   //    Render Component    //
   ////////////////////////////
-  update({    // This should never be skipped, can't use animation frame here!
-    scene: sceneRef.current,
-    camera: cameraRef.current,
-    renderer: rendererRef.current
-  });
-  render();
+  if (initialized) {
+    update({    // This should never be skipped, can't use animation frame here!
+      scene: sceneRef.current,
+      camera: cameraRef.current,
+      renderer: rendererRef.current
+    });
+    render();
+  }
   
   return (
     <div 

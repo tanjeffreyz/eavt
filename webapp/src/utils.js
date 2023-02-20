@@ -38,37 +38,37 @@ function addWordBreaks(text) {
   return result;
 }
 
-/** Asynchronous batched for-loop that applies the function `f` to `arr` */
+/** Asynchronous batched for-loop that applies the function `f` to `array` */
 function asyncFor({
-  arr, 
+  array, 
   f, 
   batchSize=32, 
   callback=(() => {})
 }) {
   const recur = (i) => {
-    if (i >= arr.length) {
+    if (i >= array.length) {
       callback();
     } else {
-      arr.slice(i, i + batchSize).forEach(f);
+      array.slice(i, i + batchSize).forEach(f);
       setTimeout(() => recur(i + batchSize));
     }
   };
   recur(0);
 }
 
-/** Asynchronous batched map operation that maps the function `f` onto `arr` */
+/** Asynchronous batched map operation that maps the function `f` onto `array` */
 function asyncMap({
-  arr,
+  array,
   f,
   batchSize=32,
   callback=((data) => {})
 }) {
   const result = [];
   const recur = (i) => {
-    if (i >= arr.length) {
+    if (i >= array.length) {
       callback(result);
     } else {
-      const batch = arr.slice(i, i + batchSize);
+      const batch = array.slice(i, i + batchSize);
       result.push(...batch.map(f));
       setTimeout(() => recur(i + batchSize));
     }
