@@ -39,28 +39,36 @@ function TrialRaw() {
       getIndex(stripRawOutput[0].id),
       getIndex(stripMicrodoses[0].id)
     );
-    const maxIndex = Math.max(
-      getIndex(stripRaw[stripRaw.length-1].id),
-      getIndex(stripRawOutput[stripRawOutput.length-1].id),
-      getIndex(stripMicrodoses[stripMicrodoses.length-1].id)
-    );
-    console.log(minIndex, maxIndex - minIndex);
+    // const maxIndex = Math.max(
+    //   getIndex(stripRaw[stripRaw.length-1].id),
+    //   getIndex(stripRawOutput[stripRawOutput.length-1].id),
+    //   getIndex(stripMicrodoses[stripMicrodoses.length-1].id)
+    // );
     
-    loadStripSprites({
-      array: stripRaw, 
-      minIndex,
-      scene, 
-      setData: setStripRawFrames
-    });
-    setStripRaw([]);    // Free up memory, working with only sprites now
+    // Load all sprites into their respective groups, maintaining order through daisy chaining
+    function first() {
+      loadStripSprites({
+        array: stripRaw, 
+        minIndex,
+        scene, 
+        setData: setStripRawFrames,
+        // callback: second
+      });
+      setStripRaw([]);    // Free up memory, working with only sprites now
+    }
     
-    loadStripSprites({
-      array: stripRawOutput, 
-      minIndex,
-      scene, 
-      setData: setStripRawOutputFrames
-    });
-    setStripRawOutput([]);
+    function second() {
+      loadStripSprites({
+        array: stripRawOutput, 
+        minIndex,
+        scene, 
+        setData: setStripRawOutputFrames
+      });
+      setStripRawOutput([]);
+    }
+
+    // Start the daisy chain
+    first();
     console.log('init end');
   }
 
@@ -123,7 +131,8 @@ function loadStripSprites({
   array, 
   minIndex,
   scene, 
-  setData
+  setData,
+  callback
 }) {
   const frames = [];
 
@@ -154,7 +163,10 @@ function loadStripSprites({
   asyncFor({
     array,
     f, 
-    callback: () => setData(frames)
+    callback: () => {
+      setData(frames);
+      callback();
+    }
   });
 }
 
