@@ -92,7 +92,7 @@ function TrialRaw() {
   /** Shows current frame's data and hides previous frame's data */
   function update({scene, camera, renderer}) {
     if (!dataReady || numFrames === 0) return;
-    console.log('update start', numFrames);
+    // console.log('update start', numFrames);
 
     stripRawFrames[index.prev].visible = false;
     stripRawFrames[index.curr].visible = true;
@@ -100,7 +100,7 @@ function TrialRaw() {
     stripMicrodoseFrames[index.prev].visible = false;
     stripMicrodoseFrames[index.curr].visible = true;
 
-    console.log('update end');
+    // console.log('update end');
   }
 
   // Stall while loading
@@ -189,10 +189,12 @@ function getStripSprite(strip) {
     `data:image/bmp;base64,${strip.data}`,
     // (map) => renderer.initTexture(map)    // Init texture immediately, not on first-render
   );
+  texture.repeat.set(1, -1);
+  texture.offset.set(0, 1);
   const material = new THREE.SpriteMaterial({ map: texture });
   const sprite = new THREE.Sprite(material);
   sprite.scale.set(512, 16, 1);
-  sprite.position.set(0, 256 - 8 - 16 * offset, 0);
+  sprite.position.set(0, -256 + 8 + 16 * offset, 0);
   return sprite;
 }
 
@@ -207,7 +209,7 @@ function getMicrodoseSprite(strip) {
     const circleGeometry = new THREE.CircleGeometry(2, 8);
     const circleMaterial = new THREE.MeshBasicMaterial({color: 0xff0000});
     const circle = new THREE.Mesh(circleGeometry, circleMaterial);
-    circle.position.set(x - 256, 256 - 8 - 16 * offset + y, 1E-3);
+    circle.position.set(x - 256, -256 + 16 * offset + y, 1E-3);
 
     microdoseGroup.add(circle);
   }
