@@ -28,7 +28,7 @@ function getIcon(Source) {
         onClick={onClick}
         className={className}
         {...props} 
-        style={{...props.style, cursor: 'pointer', display: 'inline-block'}}
+        style={{...props.style, cursor: 'pointer', display: 'inline-block', userSelect: 'none'}}
       >
         <Source width={width} height={height} className={iconClassName} {...props} />
       </div>

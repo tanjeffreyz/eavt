@@ -41,6 +41,9 @@ function useInfiniteScroll(callback) {
   return [loading, setLoading, setFinished];
 }
 
+/**
+ * Loads a single document
+ */
 function useLoadDocument(uri) {
   const [document, setDocument] = useState(null);
 
@@ -56,7 +59,48 @@ function useLoadDocument(uri) {
   return [document, loadDocument];
 }
 
+/**
+ * Loads all pages from a list of datasets of the form: {uri, setDataFunction}
+ */
+function useLoadDatasets({
+  limit=100
+}) {
+  const [numLoaded, setNumLoaded] = useState(0);    // Tracks number of datasets loaded
+
+  /** Gets all pages of data from multiple endpoints */
+  function loadDatasets(datasets) {
+    datasets.forEach((params) => {
+      getAllPages({...params});
+    });
+  }
+
+  /** Gets all pages of data from `uri`, appends to data using `setData`. */
+  function getAllPages({
+    uri,
+    setData=((data) => {})
+  }) {
+    function recur(cursor) {
+      sendRequest({
+        uri,
+        params: { cursor, limit },
+        pass: (data) => {
+          setData((prev) => [...prev, ...data.documents]);
+          if (data.hasNext) {
+            recur(data.cursor);
+          } else {
+            setNumLoaded((prev) => prev + 1);
+          }
+        }
+      });
+    }
+    recur(null);
+  }
+
+  return [numLoaded, loadDatasets];
+}
+
 export {
   useInfiniteScroll,
-  useLoadDocument
+  useLoadDocument,
+  useLoadDatasets
 };

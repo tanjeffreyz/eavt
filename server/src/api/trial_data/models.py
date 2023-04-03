@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class RetinaStrip(BaseModel):
@@ -8,4 +8,5 @@ class RetinaStrip(BaseModel):
 
 class MicrodoseStrip(BaseModel):
     id: int
-    data: list
+    microdoses: list = Field(default=[])
+    intensities: list = Field(default=[])

@@ -45,12 +45,14 @@ def parse_trial(path):
     desinusoid_path = str(rel_path(p)) if (p := root / 'desinusoid.lut').exists() else None
     strip_raw_paths = [str(x) for x in get_all_paths(root / 'strip_raw', match='**/*.tar')]
     strip_raw_output_paths = [str(x) for x in get_all_paths(root / 'strip_raw_output', match='**/*.tar')]
+    rasterize_path = get_first_path(root / 'rasterize', match='*.txt')
+    trajectory_path = get_first_path(root / 'trajectory', match='*.txt')
 
     raw = {
         'stripRaw': strip_raw_paths,
         'stripRawOutput': strip_raw_output_paths,
-        'rasterize': str(get_first_path(root / 'rasterize', match='*.txt')),
-        'trajectory': str(get_first_path(root / 'trajectory', match='*.txt')),
+        'rasterize': str(rasterize_path) if rasterize_path is not None else None,
+        'trajectory': str(trajectory_path) if trajectory_path is not None else None,
         'tcaCorrection': tca_correction_path,
         'desinusoidLUT': desinusoid_path
     }

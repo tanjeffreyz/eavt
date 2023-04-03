@@ -38,42 +38,59 @@ function addWordBreaks(text) {
   return result;
 }
 
-/** Asynchronous batched for-loop that applies the function `f` to `arr` */
+/** Asynchronous batched for-loop that applies the function `f` to `array` */
 function asyncFor({
-  arr, 
+  array, 
   f, 
   batchSize=32, 
   callback=(() => {})
 }) {
   const recur = (i) => {
-    if (i >= arr.length) {
+    if (i >= array.length) {
       callback();
     } else {
-      arr.slice(i, i + batchSize).forEach(f);
+      array.slice(i, i + batchSize).forEach(f);
       setTimeout(() => recur(i + batchSize));
     }
   };
   recur(0);
 }
 
-/** Asynchronous batched map operation that maps the function `f` onto `arr` */
+/** Asynchronous batched map operation that maps the function `f` onto `array` */
 function asyncMap({
-  arr,
+  array,
   f,
   batchSize=32,
   callback=((data) => {})
 }) {
   const result = [];
   const recur = (i) => {
-    if (i >= arr.length) {
+    if (i >= array.length) {
       callback(result);
     } else {
-      const batch = arr.slice(i, i + batchSize);
+      const batch = array.slice(i, i + batchSize);
       result.push(...batch.map(f));
       setTimeout(() => recur(i + batchSize));
     }
   };
   recur(0);
+}
+
+/** Stores a key, value pair into localStorage with an optional expiration time (in milliseconds) */
+function storageAdd(key, value, maxAge=null) {
+  const data = {
+    value,
+    expiration: (maxAge === null ? null : Date.now() + maxAge)
+  };
+  localStorage.setItem(key, JSON.stringify(data));
+}
+
+/** Retrieves the data associated with KEY from localStorage */
+function storageGet(key) {
+  const now = Date.now();
+  const data = JSON.parse(localStorage.getItem(key));
+  const expired = (data.expiration === null ? false : now > data.expiration);
+  return [data.value, expired];
 }
 
 export {
